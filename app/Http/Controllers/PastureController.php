@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pasture;
+use App\Models\Lineage;
 
 class PastureController extends Controller
 {
@@ -14,7 +15,8 @@ class PastureController extends Controller
      */
     public function index()
     {
-        //
+        $data = Pasture::all();
+        return view('admin.content.pastures', ['pastures' => $data]);
     }
 
     /**
@@ -45,7 +47,8 @@ class PastureController extends Controller
         $pasture->user_id = $data['user_id'];
         $pasture->save();
         
-        return response()->json(['message' => 'success']);
+        $lineage = Lineage::inRandomOrder()->take(5)->get();
+        return response()->json(['data' => $lineage]);
     }
 
     /**

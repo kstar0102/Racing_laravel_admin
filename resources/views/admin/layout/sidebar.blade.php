@@ -1,5 +1,4 @@
-
-    <!-- MENU SIDEBAR-->
+<!-- MENU SIDEBAR-->
 <aside class="menu-sidebar d-none d-lg-block">
     <div class="logo">
         <a href="#">
@@ -9,12 +8,12 @@
     <div class="menu-sidebar__content js-scrollbar1">
         <nav class="navbar-sidebar">
             <ul class="list-unstyled navbar__list">
-                <li class="active">
-                    <a href="<?= route('dashboard')?>">
+                <li>
+                    <a href="<?= route('dashboard') ?>">
                         <i class="fas fa-chart-bar"></i>ダッシュボード</a>
                 </li>
                 <li>
-                    <a href="<?= route('user_index')?>">
+                    <a href="<?= route('user_index') ?>">
                         <i class="fa fa-user"></i>ユーザー</a>
                 </li>
                 <li>
@@ -22,7 +21,7 @@
                         <i class="fas fa-database"></i>ベースリスト</a>
                     <ul class="list-unstyled navbar__sub-list js-sub-list">
                         <li>
-                            <a href="#">牧場</a>
+                            <a href="<?= route('pasture_index') ?>">牧場</a>
                         </li>
                         <li>
                             <a href="#">施設</a>
@@ -31,7 +30,7 @@
                             <a href="#">競馬場</a>
                         </li>
                         <li>
-                            <a href="#">馬</a>
+                            <a href="<?= route("lineage_index")?>">馬</a>
                         </li>
                         <li>
                             <a href="#">基数</a>
@@ -70,4 +69,3 @@
     </div>
 </aside>
 <!-- END MENU SIDEBAR-->
-

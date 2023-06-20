@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('condition');
             $table->string('health');
             $table->string('price');
+            $table->boolean('hidden')->comment('隠し');
+            $table->boolean('triple_crown')->comment('三冠');
             //parents
             //1
             $table->string('f_sys')->comment('1系統');
@@ -48,7 +50,7 @@ return new class extends Migration
             $table->string('m_f_factor')->comment('因子');
             $table->string('m_m_sys')->comment('2系統');
             $table->string('m_m_name')->comment('母母');
-            
+
             $table->string('user_id');
             $table->string('pasture_id');
             $table->string('etc')->nullable();

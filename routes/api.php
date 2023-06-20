@@ -4,6 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PastureController;
+use App\Http\Controllers\LineageController;
+use App\Http\Controllers\HorseController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +18,18 @@ use App\Http\Controllers\PastureController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+// user handling
 Route::post('/user', [UserController::class, 'login']);
 
+
 Route::group(['middleware' => ['verifyJwt']], function () {
+    // pasture handling
     Route::post('/pasture', [PastureController::class, 'store']);
     Route::post('/checkPastureName', [PastureController::class, 'checkName']);
+
+    // lineage handling
+    Route::get('/getlineage', [LineageController::class, 'randomShow']);
+    
+    // horse handling
+    Route::post('/horse', [HorseController::class, 'store']);
  });

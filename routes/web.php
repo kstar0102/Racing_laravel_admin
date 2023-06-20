@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PastureController;
+use App\Http\Controllers\LineageController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,6 +28,11 @@ Route::resource('resources', UserController::class)->names([
     'index' => 'user_index',
     'store' => 'login_action'
 ]);
-
 Route::get('delete_user/{id}', [UserController::class, 'destroy']);
+Route::resource('pasture', PastureController::class)->names([
+    'index' => 'pasture_index',
+]);
+Route::resource('lineage', LineageController::class)->names([
+    'index' => 'lineage_index',
+]);
 

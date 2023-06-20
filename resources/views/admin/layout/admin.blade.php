@@ -32,6 +32,7 @@
 
     <!-- Main CSS-->
     <link href="<?= asset("css/theme.css") ?>" rel="stylesheet" media="all">
+    <script src="<?= asset("vendor/jquery-3.2.1.min.js") ?>"></script>
 
 </head>
 
