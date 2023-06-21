@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PastureController;
 use App\Http\Controllers\LineageController;
+use App\Http\Controllers\HorseController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,5 +36,9 @@ Route::resource('pasture', PastureController::class)->names([
 ]);
 Route::resource('lineage', LineageController::class)->names([
     'index' => 'lineage_index',
+]);
+
+Route::resource('horse', HorseController::class)->names([
+    'index' =>'horse_index',
 ]);
 

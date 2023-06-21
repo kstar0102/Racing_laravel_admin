@@ -11,6 +11,11 @@
                                 <i class="zmdi zmdi-plus"></i>新規追加</button>
                             </button>
                             <table class="table table-data2">
+                                <style>
+                                    th{
+                                        min-width: 100px;
+                                    }
+                                </style>
                                 <thead>
                                     <tr>
                                         <th>牧場名</th>

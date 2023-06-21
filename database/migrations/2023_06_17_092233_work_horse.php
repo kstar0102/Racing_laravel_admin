@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('age');
+            $table->string('type');
+            $table->string('class');
             $table->string('distance_max');
             $table->string('distance_min');
             $table->string('color');
@@ -22,13 +24,20 @@ return new class extends Migration
             $table->string('growth');
             $table->string('ground');
             $table->string('quality_leg');
-            $table->string('speed');
-            $table->string('strength');
-            $table->string('moment');
-            $table->string('stamina');
-            $table->string('condition');
-            $table->string('health');
+            $table->string('speed_b');
+            $table->string('strength_b');
+            $table->string('moment_b');
+            $table->string('stamina_b');
+            $table->string('condition_b');
+            $table->string('health_b');
+            $table->string('speed_w');
+            $table->string('strength_w');
+            $table->string('moment_w');
+            $table->string('stamina_w');
+            $table->string('condition_w');
+            $table->string('health_w');
             $table->string('price');
+            $table->string('state');
             $table->boolean('hidden')->comment('隠し');
             $table->boolean('triple_crown')->comment('三冠');
             //parents

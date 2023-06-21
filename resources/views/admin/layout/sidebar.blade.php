@@ -48,7 +48,7 @@
                         <i class="fas fa-copy"></i>仕事</a>
                     <ul class="list-unstyled navbar__sub-list js-sub-list">
                         <li>
-                            <a href="#">馬</a>
+                            <a href="<?= route("horse_index")?>">馬</a>
                         </li>
                         <li>
                             <a href="#">牧場</a>

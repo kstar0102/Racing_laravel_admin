@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('price');
             $table->string('style');
             $table->string('user_id');
+            $table->string('volumn');
+            $table->string('horses');
             $table->string('etc')->nullable();
             $table->timestamps();
         });

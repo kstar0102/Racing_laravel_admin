@@ -21,15 +21,18 @@ use App\Http\Controllers\HorseController;
 // user handling
 Route::post('/user', [UserController::class, 'login']);
 
+Route::get('/randomTest', [HorseController::class, 'percentage']);
 
 Route::group(['middleware' => ['verifyJwt']], function () {
     // pasture handling
     Route::post('/pasture', [PastureController::class, 'store']);
     Route::post('/checkPastureName', [PastureController::class, 'checkName']);
-
+    
     // lineage handling
-    Route::get('/getlineage', [LineageController::class, 'randomShow']);
+    Route::get('/getlineage', [HorseController::class, 'getRandHorse']);
     
     // horse handling
     Route::post('/horse', [HorseController::class, 'store']);
+    // when user arrived pasture page
+    Route::get('/horse', [HorseController::class, 'show']);
  });

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pasture;
 use App\Models\Lineage;
+use App\Http\Controllers\HorseController;
 
 class PastureController extends Controller
 {
@@ -45,10 +47,25 @@ class PastureController extends Controller
         $pasture->price = $data['price'];
         $pasture->style = $data['style'];
         $pasture->user_id = $data['user_id'];
+
+        if($data['price'] == 500){
+            $pasture->volumn = 6;
+        }
+        else if($data['price'] == 2000){
+            $pasture->volumn = 35;
+        }
+        else{
+            $pasture->volumn = 70;
+        }
+        $pasture->horses = 0;
+        User::where('id', $data['user_id'])->update(['user_pt' => \DB::raw('user_pt -'.$data['price'])]);
         $pasture->save();
         
-        $lineage = Lineage::inRandomOrder()->take(5)->get();
-        return response()->json(['data' => $lineage]);
+        $horseController = app()->make(HorseController::class);
+        
+        $horseData = $horseController->requestRand();
+
+        return $horseData;
     }
 
     /**
