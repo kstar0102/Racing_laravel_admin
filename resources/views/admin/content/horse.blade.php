@@ -9,7 +9,6 @@
                         <div class="table-responsive m-b-40">
                             <button class="au-btn au-btn-icon au-btn--green au-btn--small" style="margin-bottom: 20px" data-toggle="modal" data-target="#mediumModal">
                                 <i class="zmdi zmdi-plus"></i>新規追加</button>
-                            </button>
                             <table class="table table-data2">
                                 <style>
                                     th{

@@ -4,23 +4,21 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class Pool extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('pastures', function(Blueprint $table){
+        Schema::create('pools', function(Blueprint $table){
             $table->id();
-            $table->string('name')->unique();
-            $table->string('name_mean')->unique();
-            $table->string('price');
+            $table->string('pasture_name');
             $table->string('level');
-            $table->string('style');
+            $table->string('price');
             $table->string('user_id');
-            $table->string('volumn');
-            $table->string('horses');
             $table->string('etc')->nullable();
             $table->timestamps();
         });
@@ -28,9 +26,11 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         //
     }
-};
+}

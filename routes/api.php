@@ -35,4 +35,6 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/horse', [HorseController::class, 'store']);
     // when user arrived pasture page
     Route::get('/horse', [HorseController::class, 'show']);
+    Route::post('/feedtrain', [HorseController::class, 'grow']);
+    Route::post('/improvetrain', [HorseController::class, 'improve']);
  });

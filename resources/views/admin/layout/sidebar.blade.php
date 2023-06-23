@@ -24,7 +24,16 @@
                             <a href="<?= route('pasture_index') ?>">牧場</a>
                         </li>
                         <li>
-                            <a href="#">施設</a>
+                            <a href="#">ロンギ場</a>
+                        </li>
+                        <li>
+                            <a href="#">トラック</a>
+                        </li>
+                        <li>
+                            <a href="#">坂路</a>
+                        </li>
+                        <li>
+                            <a href="#">プール</a>
                         </li>
                         <li>
                             <a href="#">競馬場</a>

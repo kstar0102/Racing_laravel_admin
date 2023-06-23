@@ -36,6 +36,8 @@ return new class extends Migration
             $table->string('stamina_w');
             $table->string('condition_w');
             $table->string('health_w');
+            $table->string('happy');
+            $table->string('tired');
             $table->string('price');
             $table->string('state');
             $table->boolean('hidden')->comment('隠し');

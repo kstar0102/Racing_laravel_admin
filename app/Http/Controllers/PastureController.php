@@ -61,6 +61,10 @@ class PastureController extends Controller
         User::where('id', $data['user_id'])->update(['user_pt' => \DB::raw('user_pt -'.$data['price'])]);
         $pasture->save();
         
+        // start to register other buildings
+
+
+
         $horseController = app()->make(HorseController::class);
         
         $horseData = $horseController->requestRand();

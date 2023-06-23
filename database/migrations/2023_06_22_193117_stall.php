@@ -4,21 +4,22 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class Stall extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up(): void
     {
-        Schema::create('pastures', function(Blueprint $table){
+        Schema::create('stalls', function(Blueprint $table){
             $table->id();
             $table->string('name')->unique();
-            $table->string('name_mean')->unique();
+            $table->string('host')->unique();
+            $table->string('moto');
             $table->string('price');
-            $table->string('level');
-            $table->string('style');
-            $table->string('user_id');
+            $table->string('possable');
             $table->string('volumn');
             $table->string('horses');
             $table->string('etc')->nullable();
@@ -28,9 +29,11 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         //
     }
-};
+}

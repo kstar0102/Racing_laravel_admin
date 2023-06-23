@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Horse;
 use App\Models\Lineage;
 use App\Models\User;
 use App\Models\Pasture;
+use App\Models\trainHistory;
 
 class HorseController extends Controller
 {
@@ -40,13 +42,13 @@ class HorseController extends Controller
     public function store(Request $request)
     {
         $inputData = $request->input('data');
-         $inputName = $inputData['name'];
-         $user_id = $inputData['user_id'];
-         $pasture_id = $inputData['pasture_id'];
-         $cData = $inputData['data'];
+        $inputName = $inputData['name'];
+        $user_id = $inputData['user_id'];
+        $pasture_id = $inputData['pasture_id'];
+        $cData = $inputData['data'];
         $count = 0;
         $total_price = 0;
-        for ($i=0; $i < count($cData); $i++) { 
+        for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
             $horse = new Horse;
@@ -73,6 +75,8 @@ class HorseController extends Controller
             $horse->stamina_w = $cData[$i]['stamina_w'];
             $horse->condition_w = $cData[$i]['condition_w'];
             $horse->health_w = $cData[$i]['health_w'];
+            $horse->happy = "10";
+            $horse->tired = "100";
             $horse->price = $cData[$i]['price'];
             $horse->hidden = $cData[$i]['hidden'];
             $horse->state = 1;
@@ -100,7 +104,7 @@ class HorseController extends Controller
             $horse->pasture_id = $pasture_id;
             $horse->save();
         }
-        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$total_price)]);
+        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $total_price)]);
         Pasture::where('id', $pasture_id)->update(['horses' => $count]);
 
         return response()->json(['message' => count($cData)]);
@@ -112,10 +116,12 @@ class HorseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        $data = Horse::where('user_id', $id)->get();
-        return response()->json(['message' => $data]);
+        $id = $request->input('user_id');
+        $pasture_id = $request->input('pasture_id');
+        $data = Horse::where('user_id', $id)->where('pasture_id', $pasture_id)->get();
+        return response()->json(['data' => $data]);
     }
 
     /**
@@ -399,7 +405,9 @@ class HorseController extends Controller
         }
         return $final_result;
     }
-
+    /**
+     * Random set color
+     */
     public function setColor()
     {
         $color_option = [
@@ -421,4 +429,185 @@ class HorseController extends Controller
             }
         }
     }
+
+    /////////////////////// let's start to develop a training page/////////////////////////////////
+    // growing with training.
+    public function grow(Request $request)
+    {
+        $inputData = $request->input('data');
+        $horse_id = $inputData['horse_id'];
+        $pt = $inputData['pt'];
+        $what = $inputData['what'];
+        $user_id = $inputData['user_id'];
+
+        $element_1 = 0;
+        $element_2 = 1;
+        $element_3 = 0;
+        if ($what == "芝" || $what == "ダート" || $what == "ウッドチップ") {
+            if ($pt == "1") {
+                $element_1 = 1;
+                $element_3 = 1;
+            } else if ($pt == "3") {
+                $element_1 = 2;
+                $element_3 = 2;
+            } else {
+                $element_1 = 3;
+                $element_3 = 3;
+            }
+
+            if ($what == "芝") {
+                Horse::where('id', $horse_id)->update([
+                    'speed_b' => \DB::raw('speed_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+            } else if ($what == "ダート") {
+                Horse::where('id', $horse_id)->update([
+                    'strength_b' => \DB::raw('strength_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+            } else {
+                Horse::where('id', $horse_id)->update([
+                    'condition_b' => \DB::raw('condition_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+            }
+
+
+        }
+
+        if ($what == "併走" || $what == "坂路" || $what == "プール") {
+            if ($pt == "3") {
+                $element_1 = 1;
+                $element_3 = 1;
+            } else if ($pt == "5") {
+                $element_1 = 2;
+                $element_3 = 2;
+            } else {
+                $element_1 = 3;
+                $element_3 = 3;
+            }
+
+            if ($what == "併走") {
+                Horse::where('id', $horse_id)->update([
+                    'stamina_b' => \DB::raw('stamina_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+            } else if ($what == "坂路") {
+                Horse::where('id', $horse_id)->update([
+                    'moment_b' => \DB::raw('moment_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+
+            } else {
+                Horse::where('id', $horse_id)->update([
+                    'health_b' => \DB::raw('health_b + ' . $element_1),
+                    'happy' => \DB::raw('happy + ' . $element_2),
+                    'tired' => \DB::raw('tired - ' . $element_3)
+                ]);
+            }
+        }
+        if ($what == "スベシャル") {
+            Horse::where('id', $horse_id)->update([
+                'speed_b' => \DB::raw('speed_b + 5'),
+                'strength_b' => \DB::raw('strength_b + 5'),
+                'stamina_b' => \DB::raw('stamina_b + 5'),
+                'moment_b' => \DB::raw('moment_b + 5'),
+                'happy' => \DB::raw('happy + 5'),
+                'tired' => \DB::raw('tired - 5')
+            ]);
+        }
+        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $pt)]);
+        $user = User::where('id', $user_id)->get();
+        return response()->json(['data' => $user]);
+    }
+    // growing with eat.
+    public function improve(Request $request)
+    {
+        $inputData = $request->input('data');
+        if (!isset($inputData['horse_id']) || !isset($inputData['pt']) || !isset($inputData['what']) || !isset($inputData['user_id'])) {
+            return response()->json(['message' => 'missing fields'], 422);
+        }
+        $horse_id = $inputData['horse_id'];
+        $pt = $inputData['pt'];
+        $what = $inputData['what'];
+        $user_id = $inputData['user_id'];
+
+        $element = 0;
+        switch ($pt) {
+            case '1':
+                $element = 1;
+                break;
+            case '3':
+                $element = 2;
+                break;
+            case '5':
+                $element = 3;
+                break;
+            case '2':
+                $element = -1;
+                break;
+            case '4':
+                $element = -2;
+                break;
+            case '6':
+                $element = -3;
+                break;
+            default:
+                return response()->json(['message' => 'invalid value for pt'], 422);
+        }
+
+        // Refactored update statement
+        Horse::where('id', $horse_id)->update([
+            'happy' => \DB::raw('happy + ' . $element),
+            'tired' => \DB::raw('tired - ' . $element)
+        ]);
+        $today = Carbon::now();
+
+        $results = \DB::table('horse_train_history')
+            ->where('horse_id', $horse_id)
+            ->get();
+            
+        if ($results) {
+            $count = 0;
+            foreach ($results as $key => $ttt) {
+                if ($ttt->what == $what) {
+                    $count += 1;
+                    if ($ttt->number_horse < 3) {
+                        \DB::table('horse_train_history')
+                            ->where('horse_id', $horse_id)
+                            ->where('what', $what)
+                            ->update(
+                                array(
+                                    'time_t' => $today->toTimeString(),
+                                    'number_horse' => \DB::raw('number_horse + 1')
+                                )
+                          );
+                    }
+                }
+            }
+            if ($count == 0) {
+                \DB::table('horse_train_history')->insert(
+                    array('horse_id' => $horse_id, 'date_t' => $today->toDateString(), 'time_t' => $today->toTimeString(), 'date_type' => "normal", 'what' => $what, 'number_horse' => 1)
+                );
+            }
+        } else {
+            \DB::table('horse_train_history')->insert(
+                array('horse_id' => $horse_id, 'date_t' => $today->toDateString(), 'time_t' => $today->toTimeString(), 'date_type' => "normal", 'what' => $what, 'number_horse' => 1)
+            );
+        }
+
+        // Refactored update statement
+        User::where('id', $user_id)->update([
+            'user_pt' => \DB::raw('user_pt - ' . $pt)
+        ]);
+
+        $user = User::where('id', $user_id)->get();
+        return response()->json(['data' => $user]);
+    }
+
 }
