@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Slope extends Model
 {
     use HasFactory;
+    protected $table = 'slopes';
 }

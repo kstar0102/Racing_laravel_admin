@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pool;
+use App\Models\Ranch;
+use App\Models\Slope;
+use App\Models\Truck;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pasture;
-use App\Models\Lineage;
 use App\Http\Controllers\HorseController;
 
 class PastureController extends Controller
@@ -28,7 +31,7 @@ class PastureController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
@@ -40,7 +43,7 @@ class PastureController extends Controller
     public function store(Request $request)
     {
         $data = $request->input('data');
-        
+
         $pasture = new Pasture;
         $pasture->name = $data['name'];
         $pasture->name_mean = $data['name_mean'];
@@ -48,25 +51,21 @@ class PastureController extends Controller
         $pasture->style = $data['style'];
         $pasture->user_id = $data['user_id'];
 
-        if($data['price'] == 500){
+        if ($data['price'] == 500) {
             $pasture->volumn = 6;
-        }
-        else if($data['price'] == 2000){
+        } else if ($data['price'] == 2000) {
             $pasture->volumn = 35;
-        }
-        else{
+        } else {
             $pasture->volumn = 70;
         }
         $pasture->horses = 0;
-        User::where('id', $data['user_id'])->update(['user_pt' => \DB::raw('user_pt -'.$data['price'])]);
+        User::where('id', $data['user_id'])->update(['user_pt' => \DB::raw('user_pt -' . $data['price'])]);
         $pasture->save();
-        
+
         // start to register other buildings
 
-
-
         $horseController = app()->make(HorseController::class);
-        
+
         $horseData = $horseController->requestRand();
 
         return $horseData;
@@ -105,13 +104,11 @@ class PastureController extends Controller
         $data = $request->input('data');
         $checkName = Pasture::where('name', $data['name'])->first();
         $checkNameMean = Pasture::where('name_mean', $data['name_mean'])->first();
-        if($checkName){
+        if ($checkName) {
             return response()->json(['message' => 'noName']);
-        }
-        else if($checkNameMean){
+        } else if ($checkNameMean) {
             return response()->json(['message' => 'noNameMean']);
-        }
-        else{
+        } else {
             return response()->json(['message' => 'success']);
         }
     }
@@ -137,5 +134,57 @@ class PastureController extends Controller
     public function destroy($id)
     {
         //
+    }
+    // start to level up
+    public function levelUp(Request $request)
+    {
+        $data = $request->input('data');
+        $pasture_id = $data['pasture_id'];
+        $price = $data['price'];
+        $user_id = $data['user_id'];
+        $level = $data['level'];
+        $user_level = $data['user_level'];
+
+        $handle = Pasture::where('id', $pasture_id)->get();
+        $user = User::where('id', $data['user_id'])->get();
+        if ($handle) {
+            if ($level == 2) {
+                if ($user_level >= "50") {
+                    Pasture::where('id', $pasture_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    $data = Pasture::where('id', $pasture_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                } else {
+                    return response()->json(['message' => 'lacked user level']);
+                }
+            } else if ($level == 3) {
+                if ($user_level >= "100") {
+                    Pasture::where('id', $pasture_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    $data = Pasture::where('id', $pasture_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                } else {
+                    return response()->json(['message' => 'lacked user level']);
+                }
+            }
+        }
+
+        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+
+        return response()->json(['data' => $data, 'user' => $user]);
+    }
+
+    // get the all building data
+    public function getBuildingData(Request $request)
+    {
+        $data = $request->input('data');
+        $user_id = $data['user_id'];
+
+        $pool = Pool::where('user_id', $user_id)->get();
+        $ranch = Ranch::where('user_id', $user_id)->get();
+        $slope = Slope::where('user_id', $user_id)->get();
+        $truck = Truck::where('user_id', $user_id)->get();
+
+        return response()->json(['pool' => $pool, 'ranch' => $ranch, 'slope' => $slope, 'truck' => $truck]);
     }
 }

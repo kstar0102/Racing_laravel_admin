@@ -113,4 +113,11 @@ class UserController extends Controller
         User::where('id', $id)->delete();
         $this->index();
     }
+
+    public function getUser(Request $request){
+        $data = $request->input('data');
+        $data = User::where('id', $data['user_id'])->get();
+        dd("hh");
+        return response()->json(['data' => $data]);
+    }
 }
