@@ -97,7 +97,7 @@ class PoolController extends Controller
          if($pool_id != 0){
             if($level == 2){
                 if($user_level >= "50"){
-                    Pool::where('id', $pool_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Pool::where('id', $pool_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Pool::where('id', $pool_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -108,7 +108,7 @@ class PoolController extends Controller
             }
             else if($level == 3){
                 if($user_level >= "100"){
-                    Pool::where('id', $pool_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Pool::where('id', $pool_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Pool::where('id', $pool_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -128,8 +128,10 @@ class PoolController extends Controller
                 $pool->save();
                 $data = $pool;
 
+                $pool_data = array();
+                $pool_data[0] = $data;
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
-                return response()->json(['data' => $data, 'user' => $user]);
+                return response()->json(['data' => $pool_data, 'user' => $user]);
             }
             else{
                 return response()->json(['message' => 'lacked user level']);

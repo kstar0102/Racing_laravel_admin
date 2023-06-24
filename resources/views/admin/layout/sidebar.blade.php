@@ -24,19 +24,19 @@
                             <a href="<?= route('pasture_index') ?>">牧場</a>
                         </li>
                         <li>
-                            <a href="#">ロンギ場</a>
+                            <a href="<?= route('ranch_index') ?>">ロンギ場</a>
                         </li>
                         <li>
-                            <a href="#">トラック</a>
+                            <a href="<?= route('truck_index') ?>">トラック</a>
                         </li>
                         <li>
-                            <a href="#">坂路</a>
+                            <a href="<?= route('slope_index') ?>">坂路</a>
                         </li>
                         <li>
-                            <a href="#">プール</a>
+                            <a href="<?= route('pool_index') ?>">プール</a>
                         </li>
                         <li>
-                            <a href="#">競馬場</a>
+                            <a href="<?= route('racePlan_index') ?>">競馬場</a>
                         </li>
                         <li>
                             <a href="<?= route("lineage_index")?>">馬</a>

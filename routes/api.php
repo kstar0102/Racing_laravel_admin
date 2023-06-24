@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PastureController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\PoolController;
+use App\Http\Controllers\RacePlanController;
 use App\Http\Controllers\RanchController;
 use App\Http\Controllers\SlopeController;
 use App\Http\Controllers\TruckController;
@@ -26,6 +27,7 @@ Route::post('/user', [UserController::class, 'login']);
 
 Route::get('/randomTest', [HorseController::class, 'percentage']);
 
+// after login in mobile app
 Route::group(['middleware' => ['verifyJwt']], function () {
     // pasture handling
     Route::post('/pasture', [PastureController::class, 'store']);
@@ -35,7 +37,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::get('/getlineage', [HorseController::class, 'getRandHorse']);
     
     // horse handling
-    Route::post('/horse', [HorseController::class, 'store']);
+    Route::post('/savehorse', [HorseController::class, 'store']);
     // when user arrived pasture page
     Route::get('/horse', [HorseController::class, 'show']);
     Route::post('/feedtrain', [HorseController::class, 'grow']);
@@ -53,4 +55,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     // get all building data
     Route::post('/getbuildingdata', [PastureController::class, 'getBuildingData']);
+
+    // get all race's plan
+    Route::get('/getraceplan', [RacePlanController::class, 'getAll']);
  });

@@ -98,7 +98,7 @@ class TruckController extends Controller
          if($truck_id != 0){
             if($level == 2){
                 if($user_level >= "50"){
-                    Truck::where('id', $truck_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Truck::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Truck::where('id', $truck_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -109,7 +109,7 @@ class TruckController extends Controller
             }
             else if($level == 3){
                 if($user_level >= "100"){
-                    Truck::where('id', $truck_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Truck::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Truck::where('id', $truck_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -129,8 +129,10 @@ class TruckController extends Controller
                 $truck->save();
                 $data = $truck;
 
+                $truck_data = array();
+                $truck_data[0] = $data;
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
-                return response()->json(['data' => $data, 'user' => $user]);
+                return response()->json(['data' => $truck_data, 'user' => $user]);
             }
             else{
                 return response()->json(['message' => 'lacked user level']);

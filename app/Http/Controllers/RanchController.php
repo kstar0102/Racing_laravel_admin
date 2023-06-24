@@ -98,7 +98,7 @@ class RanchController extends Controller
          if($ranch_id != 0){
             if($level == 2){
                 if($user_level >= "50"){
-                    Ranch::where('id', $ranch_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Ranch::where('id', $ranch_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Ranch::where('id', $ranch_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -109,7 +109,7 @@ class RanchController extends Controller
             }
             else if($level == 3){
                 if($user_level >= "100"){
-                    Ranch::where('id', $ranch_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Ranch::where('id', $ranch_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Ranch::where('id', $ranch_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -129,8 +129,10 @@ class RanchController extends Controller
                 $ranch->save();
                 $data = $ranch;
 
+                $ranch_data = array();
+                $ranch_data[0] = $data;
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
-                return response()->json(['data' => $data, 'user' => $user]);
+                return response()->json(['data' => $ranch_data, 'user' => $user]);
             }
             else{
                 return response()->json(['message' => 'lacked user level']);

@@ -106,8 +106,8 @@ class HorseController extends Controller
         }
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $total_price)]);
         Pasture::where('id', $pasture_id)->update(['horses' => $count]);
-
-        return response()->json(['message' => count($cData)]);
+        $horses = Horse::where('user_id', $user_id)->where('pasture_id', $pasture_id)->get();
+        return response()->json(['data' => $horses]);
     }
 
     /**

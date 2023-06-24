@@ -50,6 +50,7 @@ class PastureController extends Controller
         $pasture->price = $data['price'];
         $pasture->style = $data['style'];
         $pasture->user_id = $data['user_id'];
+        $pasture->etc = 1;
 
         if ($data['price'] == 500) {
             $pasture->volumn = 6;
@@ -68,7 +69,7 @@ class PastureController extends Controller
 
         $horseData = $horseController->requestRand();
 
-        return $horseData;
+        return response()->json(['horse' => $horseData, 'pasture' => $pasture]);
     }
 
     /**

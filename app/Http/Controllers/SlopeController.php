@@ -99,7 +99,7 @@ class SlopeController extends Controller
          if($slope_id != 0){
             if($level == 2){
                 if($user_level >= "50"){
-                    Slope::where('id', $slope_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Slope::where('id', $slope_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Slope::where('id', $slope_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -110,7 +110,7 @@ class SlopeController extends Controller
             }
             else if($level == 3){
                 if($user_level >= "100"){
-                    Slope::where('id', $slope_id)->update(['etc' => \DB::raw('etc + 1')]);
+                    Slope::where('id', $slope_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Slope::where('id', $slope_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
@@ -130,8 +130,10 @@ class SlopeController extends Controller
                 $slope->save();
                 $data = $slope;
 
+                $slope_data = array();
+                $slope_data[0] = $data;
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
-                return response()->json(['data' => $data, 'user' => $user]);
+                return response()->json(['data' => $slope_data, 'user' => $user]);
             }
             else{
                 return response()->json(['message' => 'lacked user level']);

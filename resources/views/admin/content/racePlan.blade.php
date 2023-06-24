@@ -13,22 +13,26 @@
                             <table class="table table-data2">
                                 <thead>
                                     <tr>
-                                        <th>牧場名</th>
-                                        <th>レベル</th>
-                                        <th>価格</th>
-                                        <th>ユーザーID</th>
-                                        <th>その他</th>
+                                        <th>週</th>
+                                        <th>レース</th>
+                                        <th>タイプ</th>
+                                        <th>条件</th>
+                                        <th>年齢制限</th>
+                                        <th>距離</th>
+                                        <th>場所</th>
                                         <th>削除</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($slopes as $data)
+                                    @foreach ($races as $data)
                                         <tr class="tr-shadow">
-                                            <td>{{ $data->pasture_name }}</td>
-                                            <td>{{ $data->level }}</td>
-                                            <td>{{ $data->price }}</td>
-                                            <td>{{ $data->user_id }}</td>
-                                            <td>{{ $data->etc }}</td>
+                                            <td>{{ $data->weeks }}</td>
+                                            <td>{{ $data->name }}</td>
+                                            <td>{{ $data->type }}</td>
+                                            <td>{{ $data->ground }}</td>
+                                            <td>{{ $data->age_limit }}</td>
+                                            <td>{{ $data->distance }}</td>
+                                            <td>{{ $data->place }}</td>
                                             <td>
                                                 <div class="table-data-feature" style="justify-content:left" data-toggle="modal"
                                                 data-target="#staticModal" onclick="setId({{$data->id}})">

@@ -7,6 +7,9 @@ use App\Http\Controllers\LineageController;
 use App\Http\Controllers\HorseController;
 use App\Http\Controllers\PoolController;
 use App\Http\Controllers\SlopeController;
+use App\Http\Controllers\TruckController;
+use App\Http\Controllers\RanchController;
+use App\Http\Controllers\RacePlanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +51,23 @@ Route::resource('lineage', LineageController::class)->names([
 Route::resource('horse', HorseController::class)->names([
     'index' =>'horse_index',
 ]);
-
+// pool page
 Route::resource('pool', PoolController::class)->names([
     'index' => 'pool_index',
+]);
+//slope page
+Route::resource('slope', SlopeController::class)->names([
+    'index' => 'slope_index',
+]);
+//truck page
+Route::resource('truck', TruckController::class)->names([
+    'index' => 'truck_index',
+]);
+//ranch page
+Route::resource('ranch', RanchController::class)->names([
+    'index' => 'ranch_index',
+]);
+// rece plan page
+Route::resource('raceplan', RacePlanController::class)->names([
+    'index' => 'racePlan_index',
 ]);
