@@ -48,8 +48,9 @@
                             <a href="#">血統</a>
                         </li>
                         <li>
-                            <a href="#">能力</a>
+                            <a href="<?= route("illeword_index")?>">禁止ワード</a>
                         </li>
+
                     </ul>
                 </li>
                 <li class="has-sub">

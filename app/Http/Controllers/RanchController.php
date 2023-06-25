@@ -97,30 +97,30 @@ class RanchController extends Controller
         
          if($ranch_id != 0){
             if($level == 2){
-                if($user_level >= "50"){
+                if($user_level >= "90"){
                     Ranch::where('id', $ranch_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Ranch::where('id', $ranch_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
             else if($level == 3){
-                if($user_level >= "100"){
+                if($user_level >= "250"){
                     Ranch::where('id', $ranch_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Ranch::where('id', $ranch_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
          }
          else{
-            if($user_level >= 10){
+            if($user_level >= 20){
                 $ranch = new Ranch();
                 $ranch->pasture_name = $pasture_name;
                 $ranch->level = 1;
@@ -135,7 +135,7 @@ class RanchController extends Controller
                 return response()->json(['data' => $ranch_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => 'lacked user level']);
+                return response()->json(['message' => '馬主Lvが足りていない']);
             }
          }
          return response()->json(['message' => 'success']);

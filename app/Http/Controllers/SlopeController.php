@@ -98,17 +98,17 @@ class SlopeController extends Controller
         
          if($slope_id != 0){
             if($level == 2){
-                if($user_level >= "50"){
+                if($user_level >= 130){
                     Slope::where('id', $slope_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Slope::where('id', $slope_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
-            else if($level == 3){
+            else if($level == 350){
                 if($user_level >= "100"){
                     Slope::where('id', $slope_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Slope::where('id', $slope_id)->get();
@@ -116,12 +116,12 @@ class SlopeController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
          }
          else{
-            if($user_level >= 10){
+            if($user_level >= 40){
                 $slope = new Slope();
                 $slope->pasture_name = $pasture_name;
                 $slope->level = 1;
@@ -136,7 +136,7 @@ class SlopeController extends Controller
                 return response()->json(['data' => $slope_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => 'lacked user level']);
+                return response()->json(['message' => '馬主Lvが足りていない']);
             }
          }
          return response()->json(['message' => 'success']);

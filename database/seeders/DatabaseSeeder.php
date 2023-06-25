@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
                 'login_id' => 'user1',
                 'role' => '0',
                 'password' => bcrypt('secret'),
-                'user_pt' => 5000,
+                'user_pt' => 500000,
                 'created_at' => $now,
                 'updated_at' => $now
             ]

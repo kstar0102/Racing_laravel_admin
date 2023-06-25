@@ -7,6 +7,9 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        Commands\reserveFood::class
+    ];
     /**
      * Define the application's command schedule.
      *
@@ -17,6 +20,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         \Log::info("Cron is working fine!");
+        $schedule->command('reserve:food')->everyMinute();
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IllegalWord;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Horse;
@@ -51,6 +52,10 @@ class HorseController extends Controller
         for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
+            $illegal_name = IllegalWord::where('name', $inputName[$i])->get();
+            if($illegal_name){
+                return response()->json(['message' => '禁止ワード ['.$inputName[$i].']']);
+            }
             $horse = new Horse;
             $horse->name = $inputName[$i];
             $horse->age = $cData[$i]['age'];

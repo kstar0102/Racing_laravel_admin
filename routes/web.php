@@ -10,6 +10,7 @@ use App\Http\Controllers\SlopeController;
 use App\Http\Controllers\TruckController;
 use App\Http\Controllers\RanchController;
 use App\Http\Controllers\RacePlanController;
+use App\Http\Controllers\IlleWordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,3 +72,9 @@ Route::resource('ranch', RanchController::class)->names([
 Route::resource('raceplan', RacePlanController::class)->names([
     'index' => 'racePlan_index',
 ]);
+// illegalwords page
+Route::resource('illeword', IlleWordController::class)->names([
+    'index' => 'illeword_index',
+    'store' => 'illeword_save'
+]);
+Route::get('delete_illegal_word/{id}', [IlleWordController::class, 'destroy']);

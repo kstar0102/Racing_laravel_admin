@@ -97,30 +97,30 @@ class TruckController extends Controller
         
          if($truck_id != 0){
             if($level == 2){
-                if($user_level >= "50"){
+                if($user_level >= 110){
                     Truck::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Truck::where('id', $truck_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
             else if($level == 3){
-                if($user_level >= "100"){
+                if($user_level >= 300){
                     Truck::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
                     $data = Truck::where('id', $truck_id)->get();
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => 'lacked user level']);
+                    return response()->json(['message' => '馬主Lvが足りていない']);
                 }
             }
          }
          else{
-            if($user_level >= 10){
+            if($user_level >= 30){
                 $truck = new Truck();
                 $truck->pasture_name = $pasture_name;
                 $truck->level = 1;
@@ -135,7 +135,7 @@ class TruckController extends Controller
                 return response()->json(['data' => $truck_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => 'lacked user level']);
+                return response()->json(['message' => '馬主Lvが足りていない']);
             }
          }
          return response()->json(['message' => 'success']);
