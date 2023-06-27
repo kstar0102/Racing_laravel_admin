@@ -53,8 +53,8 @@ class HorseController extends Controller
             $total_price += $cData[$i]['price'];
             $count++;
             $illegal_name = IllegalWord::where('name', $inputName[$i])->get();
-            if($illegal_name){
-                return response()->json(['message' => '禁止ワード ['.$inputName[$i].']']);
+            if ($illegal_name->count() > 0) {
+                return response()->json(['message' => '禁止ワード [' . $inputName[$i] . ']']);
             }
             $horse = new Horse;
             $horse->name = $inputName[$i];
@@ -81,7 +81,8 @@ class HorseController extends Controller
             $horse->condition_w = $cData[$i]['condition_w'];
             $horse->health_w = $cData[$i]['health_w'];
             $horse->happy = "10";
-            $horse->tired = "100";
+            $horse->tired = "0";
+            $horse->direction = 1;
             $horse->price = $cData[$i]['price'];
             $horse->hidden = $cData[$i]['hidden'];
             $horse->state = 1;
@@ -445,9 +446,34 @@ class HorseController extends Controller
         $what = $inputData['what'];
         $user_id = $inputData['user_id'];
 
+        // get cal happy and tired values
+        $happy_value = Horse::select('happy')->where('id', $horse_id)->first();
+        $tired_value = Horse::select('tired')->where('id', $horse_id)->first();
+        $direction_value = Horse::select('direction')->where('id', $horse_id)->first();
+        
+        $cal_happy = $happy_value->happy;
+        $cal_tired = $tired_value->tired;
+        $cal_direction = $direction_value->direction;
+        
+        // start to calculate
         $element_1 = 0;
-        $element_2 = 1;
+        
+        if($cal_happy >= 9){
+            $cal_direction = 0;
+        }
+        
+        else if($cal_happy <= -9){
+            $cal_direction = 1;
+        }
+        
+        if($cal_direction == 1){
+            $element_2 = 1;
+        }
+        else if($cal_direction == 0){
+            $element_2 = -1;
+        }
         $element_3 = 0;
+
         if ($what == "芝" || $what == "ダート" || $what == "ウッドチップ") {
             if ($pt == "1") {
                 $element_1 = 1;
@@ -459,28 +485,32 @@ class HorseController extends Controller
                 $element_1 = 3;
                 $element_3 = 3;
             }
+            if($cal_tired >= 20){
+                $element_3 = 20 - $cal_tired;
+            }
 
             if ($what == "芝") {
                 Horse::where('id', $horse_id)->update([
                     'speed_b' => \DB::raw('speed_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
             } else if ($what == "ダート") {
                 Horse::where('id', $horse_id)->update([
                     'strength_b' => \DB::raw('strength_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
             } else {
                 Horse::where('id', $horse_id)->update([
                     'condition_b' => \DB::raw('condition_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
             }
-
-
         }
 
         if ($what == "併走" || $what == "坂路" || $what == "プール") {
@@ -495,35 +525,64 @@ class HorseController extends Controller
                 $element_3 = 3;
             }
 
+            if($cal_tired >= 20){
+                $element_3 = 20 - $cal_tired;
+            }
+
             if ($what == "併走") {
                 Horse::where('id', $horse_id)->update([
                     'stamina_b' => \DB::raw('stamina_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
             } else if ($what == "坂路") {
                 Horse::where('id', $horse_id)->update([
                     'moment_b' => \DB::raw('moment_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
 
             } else {
                 Horse::where('id', $horse_id)->update([
                     'health_b' => \DB::raw('health_b + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
-                    'tired' => \DB::raw('tired - ' . $element_3)
+                    'tired' => \DB::raw('tired + ' . $element_3),
+                    'direction' => $cal_direction
                 ]);
             }
         }
         if ($what == "スベシャル") {
+            if($cal_happy >= 9){
+                $cal_direction = 0;
+            }
+            
+            else if($cal_happy <= -9){
+                $cal_direction = 1;
+            }
+            
+            if($cal_direction == 1){
+                $element_2 = 5;
+            }
+            else if($cal_direction == 0){
+                $element_2 = -5;
+            }
+
+            $element_3 = 5; // when master the tired is raing 5
+
+            if($cal_tired >= 20){
+                $element_3 = 20 - $cal_tired;
+            }
+
             Horse::where('id', $horse_id)->update([
                 'speed_b' => \DB::raw('speed_b + 5'),
                 'strength_b' => \DB::raw('strength_b + 5'),
                 'stamina_b' => \DB::raw('stamina_b + 5'),
                 'moment_b' => \DB::raw('moment_b + 5'),
-                'happy' => \DB::raw('happy + 5'),
-                'tired' => \DB::raw('tired - 5')
+                'happy' => \DB::raw('happy + '.$element_2),
+                'tired' => \DB::raw('tired + '.$element_3),
+                'direction' => $cal_direction
             ]);
         }
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $pt)]);
@@ -576,7 +635,7 @@ class HorseController extends Controller
         $results = \DB::table('horse_train_history')
             ->where('horse_id', $horse_id)
             ->get();
-            
+
         if ($results) {
             $count = 0;
             foreach ($results as $key => $ttt) {
@@ -591,7 +650,7 @@ class HorseController extends Controller
                                     'time_t' => $today->toTimeString(),
                                     'number_horse' => \DB::raw('number_horse + 1')
                                 )
-                          );
+                            );
                     }
                 }
             }

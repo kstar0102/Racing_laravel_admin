@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('tired');
             $table->string('price');
             $table->string('state');
+            $table->string('direction');
             $table->boolean('hidden')->comment('隠し');
             $table->boolean('triple_crown')->comment('三冠');
             //parents
