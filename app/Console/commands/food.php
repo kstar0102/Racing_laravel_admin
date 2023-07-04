@@ -11,7 +11,7 @@ class food extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'deadline:food';
 
     /**
      * The console command description.
@@ -37,6 +37,6 @@ class food extends Command
      */
     public function handle()
     {
-        
+        \Log::info("here is handling foods");
     }
 }

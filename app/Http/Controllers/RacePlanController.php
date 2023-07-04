@@ -86,34 +86,33 @@ class RacePlanController extends Controller
     }
 
     // get all race plans
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $today = Carbon::today();
-        $first_day_of_month = Carbon::now()->startOfMonth();
-        $week_order_today = ceil(($today->dayOfWeek + $today->day - $first_day_of_month->dayOfWeek) / 7);
-        $month = $today->month;
+        $inputData = $request->input('data');
+
+        $this_month_week = $inputData['this_month_week'];
+        $before_month_week = $inputData['before_month_week'];
+        $before_before_month_week = $inputData['before_before_month_week'];
+        $next_month_week = $inputData['next_month_week'];
+        $next_next_month_week = $inputData['next_next_month_week'];
 
         // Query race plans for the current month and week order
-        $this_week_data = RacePlan::where('weeks', $month . "-" . $week_order_today)->get();
+        $this_week_data = RacePlan::where('weeks', $this_month_week)->get();
         // last week
-        $last_week_number = Carbon::now()->subWeek()->weekOfMonth;
-        $last_week_month = Carbon::now()->subWeek()->format('n');
-        $last_week_data = RacePlan::where('weeks', $last_week_month . "-" . $last_week_number)->get();
+       
+         $last_week_data = RacePlan::where('weeks', $before_month_week)->get();
 
         // before last week
-        $before_last_week_number = Carbon::now()->subWeek()->subWeek()->weekOfMonth;
-        $before_last_week_month = Carbon::now()->subWeek()->subWeek()->format('n');
-        $before_last_week_data = RacePlan::where('weeks', $before_last_week_month . "-" . $before_last_week_number)->get();
+        
+        $before_last_week_data = RacePlan::where('weeks', $before_before_month_week)->get();
 
         // next week
-        $next_week_number = Carbon::now()->addWeek()->weekOfMonth;
-        $next_week_month = Carbon::now()->addWeek()->format('n');
-        $next_week_data = RacePlan::where('weeks', $next_week_month . "-" . $next_week_number)->get();
+        $next_week_data = RacePlan::where('weeks', $next_month_week)->get();
 
         // next next week
-        $next_next_week_number = Carbon::now()->addWeek()->addWeek()->weekOfMonth;
-        $next_next_week_month = Carbon::now()->addWeek()->addWeek()->format('n');
-        $next_next_week_data = RacePlan::where('weeks', $next_next_week_month . "-" . $next_next_week_number)->get();
+
+        $next_next_week_data = RacePlan::where('weeks', $next_next_month_week)->get();
+        
         return response()->json([
             'this_week_data' => $this_week_data,
             'last_week_data' => $last_week_data,

@@ -36,19 +36,42 @@ class ReserveController extends Controller
     public function store(Request $request)
     {
         $inputData = $request->input('data');
-
-        foreach ($inputData as $key => $value) {
-            $model = new ReserveFood();
-            $model->horse_id = $value['horse_id'];
-            $model->pasture_id = $value['pasture_id'];
-            $model->food_name = $value['food_name'];
-            $model->user_id = $value['user_id'];
-            $model->price = $value['price'];
-            $model->order = $value['order'];
-            $model->save();
+        $foodNames = $inputData['food_name'];
+        $horse_id = $inputData['horse_id'];
+        $pasture_id = $inputData['pasture_id'];
+        $user_id = $inputData['user_id'];
+        $prices = $inputData['price'];
+        $orders = $inputData['order'];
+        $game_date = $inputData['game_date'];
+    
+        // Check if arrays have the same length
+        $arraysLength = count($foodNames);
+        if(count($prices) !== $arraysLength || count($orders) !== $arraysLength) {
+            return response()->json(['message' =>  'Invalid input data']);
         }
-        return response()->json(['message' => 'success']);
+    
+        try {
+            for ($i=0; $i < $arraysLength; $i++) { 
+                $model = new ReserveFood();
+                $model->horse_id = $horse_id;
+                $model->pasture_id = $pasture_id;
+                $model->food_name = $foodNames[$i];
+                $model->user_id = $user_id;
+                $model->game_date = $game_date;
+                $model->price = $prices[$i];
+                $model->order = $orders[$i];
+
+                $model->save();
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' =>  'Error occurred while saving data']);
+        }
+
+        $reserves = ReserveFood::where('game_date', $game_date)->where('pasture_id', $pasture_id)->get();
+    
+        return response()->json(['message' =>  'success', 'data' => $reserves]);
     }
+    
 
     /**
      * Display the specified resource.
@@ -56,9 +79,15 @@ class ReserveController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request)
     {
-        //
+        $inputData = $request->input('data');
+        $game_date = $inputData['game_date'];
+        $pasture_id = $inputData['pasture_id'];
+
+        $reserves = ReserveFood::where('game_date', $game_date)->where('pasture_id', $pasture_id)->get();
+
+        return response()->json(['data' =>  $reserves]);
     }
 
     /**

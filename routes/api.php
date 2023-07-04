@@ -10,6 +10,7 @@ use App\Http\Controllers\RacePlanController;
 use App\Http\Controllers\RanchController;
 use App\Http\Controllers\SlopeController;
 use App\Http\Controllers\TruckController;
+use App\Http\Controllers\ReserveController;
 
 
 /*
@@ -59,5 +60,9 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/getbuildingdata', [PastureController::class, 'getBuildingData']);
 
     // get all race's plan
-    Route::get('/getraceplan', [RacePlanController::class, 'getAll']);
+    Route::post('/getraceplan', [RacePlanController::class, 'getAll']);
+
+    // post reserve food
+    Route::post('/reservefood', [ReserveController::class, 'store']);
+    Route::post('/getreservemenu', [ReserveController::class, 'show']);
  });

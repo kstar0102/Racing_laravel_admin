@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ReserveFood extends Migration
+class HorseGrow extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,19 @@ class ReserveFood extends Migration
      */
     public function up()
     {
-        Schema::create('reserve_food', function(Blueprint $table){
+        Schema::create('grow_horse', function(Blueprint $table){
             $table->id();
             $table->string('horse_id');
-            $table->string('pasture_id');
-            $table->string('food_name');
-            $table->string('user_id');
-            $table->string('price');
-            $table->integer('order');
-            $table->string('game_date');
-            $table->string('etc')->nullable();
-            $table->timestamps();
+            $table->string('type');
+            $table->string('speed_b');
+            $table->string('strength_b');
+            $table->string('moment_b');
+            $table->string('stamina_b');
+            $table->string('condition_b');
+            $table->string('health_b');
+            $table->string('etc');
         });
     }
-
     /**
      * Reverse the migrations.
      *

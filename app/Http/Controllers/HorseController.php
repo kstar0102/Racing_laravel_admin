@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GrowHorse;
 use App\Models\IllegalWord;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -191,19 +192,19 @@ class HorseController extends Controller
                     break;
                 case 'C':
                     $factor_1_rand = [50, 135, 51, 100];
-                    $price = rand(1000, 4000);
+                    $price = rand(10, 40) * 100;
                     break;
                 case 'B':
                     $factor_1_rand = [50, 135, 101, 150];
-                    $price = rand(1000, 6000);
+                    $price = rand(10, 60) * 100;
                     break;
                 case 'A':
                     $factor_1_rand = [50, 135, 151, 200];
-                    $price = rand(1000, 8000);
+                    $price = rand(10, 80) * 100;
                     break;
                 case 'S':
                     $factor_1_rand = [50, 135, 201, 250];
-                    $price = rand(1000, 10000);
+                    $price = rand(10, 100) * 100;
                     break;
             }
             $speed_b = rand($factor_1_rand[0], $factor_1_rand[1]);
@@ -227,19 +228,19 @@ class HorseController extends Controller
                     break;
                 case 'C':
                     $factor_1_rand = [60, 120, 51, 100];
-                    $price = rand(2000, 6000);
+                    $price = rand(20, 60) * 100;
                     break;
                 case 'B':
                     $factor_1_rand = [60, 120, 101, 150];
-                    $price = rand(2000, 9000);
+                    $price = rand(20, 90) * 100;
                     break;
                 case 'A':
                     $factor_1_rand = [60, 120, 151, 200];
-                    $price = rand(2000, 12000);
+                    $price = rand(20, 120) * 100;
                     break;
                 case 'S':
                     $factor_1_rand = [60, 120, 201, 250];
-                    $price = rand(2000, 15000);
+                    $price = rand(20, 150) * 100;
                     break;
             }
             $speed_b = rand($factor_2_rand[0], $factor_2_rand[1]);
@@ -264,19 +265,19 @@ class HorseController extends Controller
                     break;
                 case 'C':
                     $factor_1_rand = [70, 100, 51, 100];
-                    $price = rand(3000, 8000);
+                    $price = rand(30, 80) * 100;
                     break;
                 case 'B':
                     $factor_1_rand = [70, 100, 101, 150];
-                    $price = rand(3000, 12000);
+                    $price = rand(30, 120) * 100;
                     break;
                 case 'A':
                     $factor_1_rand = [70, 100, 151, 200];
-                    $price = rand(3000, 16000);
+                    $price = rand(30, 160) * 100;
                     break;
                 case 'S':
                     $factor_1_rand = [70, 100, 201, 250];
-                    $price = rand(2000, 20000);
+                    $price = rand(20, 200) * 100;
                     break;
             }
             $speed_b = rand($factor_3_rand[0], $factor_3_rand[1]);
@@ -445,31 +446,130 @@ class HorseController extends Controller
         $pt = $inputData['pt'];
         $what = $inputData['what'];
         $user_id = $inputData['user_id'];
+        // $grow = $inputData['grow'];
+        // $age = $inputData['age'];
+
+        // check peak value
+        // switch ($grow) {
+        //     case '早熟':
+        //         $speed_max = 50;
+        //         $strength_max = 50;
+        //         $stamina_max = 10;
+        //         $moment_max = 50;
+        //         $condition_max = 50;
+        //         $health_max = 50;
+        //         $age_max = 2;
+        //         break;
+
+        //     case '早め':
+        //         $speed_max = 100;
+        //         $strength_max = 100;
+        //         $stamina_max = 10;
+        //         $moment_max = 80;
+        //         $condition_max = 100;
+        //         $health_max = 99;
+        //         $age_max = 3;
+        //         break;
+
+        //     case '普通':
+        //         $speed_max = 150;
+        //         $strength_max = 150;
+        //         $stamina_max = 10;
+        //         $moment_max = 80;
+        //         $condition_max = 150;
+        //         $health_max = 99;
+        //         $age_max = 4;
+        //         break;
+
+        //     case '持続':
+        //         $speed_max = 170;
+        //         $strength_max = 170;
+        //         $stamina_max = 10;
+        //         $moment_max = 80;
+        //         $condition_max = 170;
+        //         $health_max = 99;
+        //         $age_max = 4;
+        //         break;
+
+        //     case '遅め':
+        //         $speed_max = 170;
+        //         $strength_max = 200;
+        //         $stamina_max = 10;
+        //         $moment_max = 80;
+        //         $condition_max = 185;
+        //         $health_max = 99;
+        //         $age_max = 5;
+        //         break;
+
+        //     case '晩成':
+        //         $speed_max = 170;
+        //         $strength_max = 170;
+        //         $stamina_max = 10;
+        //         $moment_max = 80;
+        //         $condition_max = 170;
+        //         $health_max = 99;
+        //         $age_max = 6;
+        //         break;
+
+        //     default:
+        //         $speed_max = 0;
+        //         $strength_max = 0;
+        //         $stamina_max = 0;
+        //         $moment_max = 0;
+        //         $condition_max = 0;
+        //         $health_max = 0;
+        //         $age_max = 0;
+        //         break;
+        // }
+
+        // $out_factors = [];
+        // if ($age == $age_max) {
+        //     $grow_horse = GrowHorse::where('horse_id', $horse_id)->first();
+        //     if ($grow_horse->speed_b == $speed_max) {
+        //         array_push($out_factors, $speed_max);
+        //         //$input_speed = 0;
+        //     } elseif ($grow_horse->strength_b == $strength_max) {
+        //         array_push($out_factors, $strength_max);
+        //         //$input_strength = 0;
+        //     } elseif ($grow_horse->stamina_b == $stamina_max) {
+        //         array_push($out_factors, $stamina_max);
+        //         //$input_stamina = 0;
+        //     } elseif ($grow_horse->condition_b_b == $condition_max) {
+        //         array_push($out_factors, $condition_max);
+        //         //$input_stamina = 0;
+        //     } elseif ($grow_horse->moment_b == $moment_max) {
+        //         array_push($out_factors, $moment_max);
+        //         //$input_moment = 0;
+        //     } elseif ($grow_horse->health_b == $health_max) {
+        //         array_push($out_factors, $health_max);
+        //         //$input_health = 0;
+        //     }
+        //     if (!$out_factors) {
+        //         return response()->json(['limit' => $out_factors]);
+        //     }    
+        // }
 
         // get cal happy and tired values
         $happy_value = Horse::select('happy')->where('id', $horse_id)->first();
         $tired_value = Horse::select('tired')->where('id', $horse_id)->first();
         $direction_value = Horse::select('direction')->where('id', $horse_id)->first();
-        
+
         $cal_happy = $happy_value->happy;
         $cal_tired = $tired_value->tired;
         $cal_direction = $direction_value->direction;
-        
+
         // start to calculate
         $element_1 = 0;
-        
-        if($cal_happy >= 9){
+
+        if ($cal_happy >= 9) {
             $cal_direction = 0;
-        }
-        
-        else if($cal_happy <= -9){
+        } else if ($cal_happy <= -9) {
             $cal_direction = 1;
         }
-        
-        if($cal_direction == 1){
+
+        if ($cal_direction == 1) {
             $element_2 = 1;
-        }
-        else if($cal_direction == 0){
+        } else if ($cal_direction == 0) {
             $element_2 = -1;
         }
         $element_3 = 0;
@@ -485,7 +585,7 @@ class HorseController extends Controller
                 $element_1 = 3;
                 $element_3 = 3;
             }
-            if($cal_tired >= 20){
+            if ($cal_tired >= 20) {
                 $element_3 = 20 - $cal_tired;
             }
 
@@ -496,6 +596,11 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
+                // ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'speed_b' => \DB::raw('speed_b + ' . $element_1)
+                // ]);
+
             } else if ($what == "ダート") {
                 Horse::where('id', $horse_id)->update([
                     'strength_b' => \DB::raw('strength_b + ' . $element_1),
@@ -503,6 +608,10 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
+                ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'strength_b' => \DB::raw('strength_b + ' . $element_1)
+                // ]);
             } else {
                 Horse::where('id', $horse_id)->update([
                     'condition_b' => \DB::raw('condition_b + ' . $element_1),
@@ -510,6 +619,10 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
+                ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'condition_b' => \DB::raw('condition_b + ' . $element_1)
+                // ]);
             }
         }
 
@@ -525,7 +638,7 @@ class HorseController extends Controller
                 $element_3 = 3;
             }
 
-            if($cal_tired >= 20){
+            if ($cal_tired >= 20) {
                 $element_3 = 20 - $cal_tired;
             }
 
@@ -536,6 +649,12 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
+
+                ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'stamina_b' => \DB::raw('stamina_b + ' . $element_1)
+                // ]);
+
             } else if ($what == "坂路") {
                 Horse::where('id', $horse_id)->update([
                     'moment_b' => \DB::raw('moment_b + ' . $element_1),
@@ -544,6 +663,11 @@ class HorseController extends Controller
                     'direction' => $cal_direction
                 ]);
 
+                ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'moment_b' => \DB::raw('moment_b + ' . $element_1)
+                // ]);
+
             } else {
                 Horse::where('id', $horse_id)->update([
                     'health_b' => \DB::raw('health_b + ' . $element_1),
@@ -551,27 +675,29 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
+
+                ///
+                // GrowHorse::where('id', $horse_id)->update([
+                //     'health_b' => \DB::raw('health_b + ' . $element_1)
+                // ]);
             }
         }
         if ($what == "スベシャル") {
-            if($cal_happy >= 9){
+            if ($cal_happy >= 9) {
                 $cal_direction = 0;
-            }
-            
-            else if($cal_happy <= -9){
+            } else if ($cal_happy <= -9) {
                 $cal_direction = 1;
             }
-            
-            if($cal_direction == 1){
+
+            if ($cal_direction == 1) {
                 $element_2 = 5;
-            }
-            else if($cal_direction == 0){
+            } else if ($cal_direction == 0) {
                 $element_2 = -5;
             }
 
             $element_3 = 5; // when master the tired is raing 5
 
-            if($cal_tired >= 20){
+            if ($cal_tired >= 20) {
                 $element_3 = 20 - $cal_tired;
             }
 
@@ -580,14 +706,25 @@ class HorseController extends Controller
                 'strength_b' => \DB::raw('strength_b + 5'),
                 'stamina_b' => \DB::raw('stamina_b + 5'),
                 'moment_b' => \DB::raw('moment_b + 5'),
-                'happy' => \DB::raw('happy + '.$element_2),
-                'tired' => \DB::raw('tired + '.$element_3),
+                'happy' => \DB::raw('happy + ' . $element_2),
+                'tired' => \DB::raw('tired + ' . $element_3),
                 'direction' => $cal_direction
             ]);
+
+            ///
+            // GrowHorse::where('id', $horse_id)->update([
+            //     'speed_b' => \DB::raw('speed_b + 5'),
+            //     'strength_b' => \DB::raw('strength_b + 5'),
+            //     'stamina_b' => \DB::raw('stamina_b + 5'),
+            //     'moment_b' => \DB::raw('moment_b + 5')
+            // ]);
         }
+
+        Horse::where('id', $horse_id)->update(['etc' => 1]);
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $pt)]);
+        $send_horse = Horse::where('user_id', $user_id)->get();
         $user = User::where('id', $user_id)->get();
-        return response()->json(['data' => $user]);
+        return response()->json(['data' => $user, 'horse' => $send_horse]);
     }
     // growing with eat.
     public function improve(Request $request)
@@ -601,16 +738,41 @@ class HorseController extends Controller
         $what = $inputData['what'];
         $user_id = $inputData['user_id'];
 
+        $happy_value = Horse::select('happy')->where('id', $horse_id)->first();
+        $tired_value = Horse::select('tired')->where('id', $horse_id)->first();
+        $direction_value = Horse::select('direction')->where('id', $horse_id)->first();
+
+        $cal_happy = $happy_value->happy;
+        $cal_direction = $direction_value->direction;
+
+        if ($cal_happy >= 9) {
+            $cal_direction = 0;
+        } else if ($cal_happy <= -9) {
+            $cal_direction = 1;
+        }
+
         $element = 0;
         switch ($pt) {
             case '1':
-                $element = 1;
+                if ($cal_direction == 1) {
+                    $element = 1;
+                } else if ($cal_direction == 0) {
+                    $element = -1;
+                }
                 break;
             case '3':
-                $element = 2;
+                if ($cal_direction == 1) {
+                    $element = 2;
+                } else if ($cal_direction == 0) {
+                    $element = -2;
+                }
                 break;
             case '5':
-                $element = 3;
+                if ($cal_direction == 1) {
+                    $element = 3;
+                } else if ($cal_direction == 0) {
+                    $element = -3;
+                }
                 break;
             case '2':
                 $element = -1;
@@ -626,12 +788,21 @@ class HorseController extends Controller
         }
 
         // Refactored update statement
-        Horse::where('id', $horse_id)->update([
-            'happy' => \DB::raw('happy + ' . $element),
-            'tired' => \DB::raw('tired - ' . $element)
-        ]);
-        $today = Carbon::now();
 
+        if ($pt == 1 || $pt == 3 || $pt == 5) {
+            Horse::where('id', $horse_id)->update([
+                'happy' => \DB::raw('happy + ' . $element),
+                'direction' => $cal_direction
+            ]);
+        } else if ($pt == 2 || $pt == 4 || $pt == 6) {
+            Horse::where('id', $horse_id)->update([
+                'tired' => \DB::raw('tired + ' . $element),
+                'direction' => $cal_direction
+            ]);
+        }
+
+        // the histroy of feeding start
+        $today = Carbon::now();
         $results = \DB::table('horse_train_history')
             ->where('horse_id', $horse_id)
             ->get();
@@ -664,6 +835,7 @@ class HorseController extends Controller
                 array('horse_id' => $horse_id, 'date_t' => $today->toDateString(), 'time_t' => $today->toTimeString(), 'date_type' => "normal", 'what' => $what, 'number_horse' => 1)
             );
         }
+        // the histroy of feeding end
 
         // Refactored update statement
         User::where('id', $user_id)->update([
@@ -671,7 +843,8 @@ class HorseController extends Controller
         ]);
 
         $user = User::where('id', $user_id)->get();
-        return response()->json(['data' => $user]);
+        $send_horse = Horse::where('user_id', $user_id)->get();
+        return response()->json(['data' => $user, 'horse' => $send_horse]);
     }
 
 }
