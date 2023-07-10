@@ -17,7 +17,10 @@ class ReserveFood extends Migration
             $table->id();
             $table->string('horse_id');
             $table->string('pasture_id');
+            $table->string('stall_id');
+            $table->string('place');
             $table->string('food_name');
+            $table->string('food_type');
             $table->string('user_id');
             $table->string('price');
             $table->integer('order');

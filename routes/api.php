@@ -11,7 +11,8 @@ use App\Http\Controllers\RanchController;
 use App\Http\Controllers\SlopeController;
 use App\Http\Controllers\TruckController;
 use App\Http\Controllers\ReserveController;
-
+use App\Http\Controllers\StallController;
+use App\Http\Controllers\JockeyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +43,12 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/savehorse', [HorseController::class, 'store']);
 
     // when user arrived pasture page
-    Route::get('/horse', [HorseController::class, 'show']);
+    Route::get('/horse', [HorseController::class, 'show']); //pasture
+    Route::get('/horsestall', [HorseController::class, 'showStall']); //stall
     Route::post('/feedtrain', [HorseController::class, 'grow']);
     Route::post('/improvetrain', [HorseController::class, 'improve']);
+    Route::post('/gotostall', [HorseController::class, 'gotoStall']);
+
 
     // when level up buildings
     Route::post('/leveluppasture', [PastureController::class, 'levelUp']);
@@ -65,4 +69,10 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     // post reserve food
     Route::post('/reservefood', [ReserveController::class, 'store']);
     Route::post('/getreservemenu', [ReserveController::class, 'show']);
+
+    // get stall's data
+    Route::get('/getstalls', [StallController::class, 'show']);
+
+    // Jockey handling
+    Route::post('/storejockey', [JockeyController::class, 'store']);
  });

@@ -62,6 +62,7 @@ class HorseController extends Controller
             $horse->age = $cData[$i]['age'];
             $horse->type = "";
             $horse->class = "";
+            $horse->place = "pasture";
             $horse->distance_max = $cData[$i]['distance_max'];
             $horse->distance_min = $cData[$i]['distance_min'];
             $horse->color = $cData[$i]['color'];
@@ -109,6 +110,7 @@ class HorseController extends Controller
 
             $horse->user_id = $user_id;
             $horse->pasture_id = $pasture_id;
+            $horse->stall_id = 'none';
             $horse->save();
         }
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $total_price)]);
@@ -118,7 +120,7 @@ class HorseController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified resource.(pasture)
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -127,7 +129,21 @@ class HorseController extends Controller
     {
         $id = $request->input('user_id');
         $pasture_id = $request->input('pasture_id');
-        $data = Horse::where('user_id', $id)->where('pasture_id', $pasture_id)->get();
+        $data = Horse::where('user_id', $id)->where('pasture_id', $pasture_id)->where('place', 'pasture')->get();
+        return response()->json(['data' => $data]);
+    }
+
+    /**
+     * Display the specified resource.(stall)
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function showStall(Request $request)
+    {
+        //$inputData = $request->input('data');
+        $id = $request->input('user_id');
+
+        $data = Horse::where('user_id', $id)->where('place', 'stall')->get();
         return response()->json(['data' => $data]);
     }
 
@@ -149,9 +165,25 @@ class HorseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function gotoStall(Request $request)
     {
-        //
+        $inputData = $request->input('data');
+        $stall_id = $inputData['stall_id'];
+        $horse_id = $inputData['horse_id'];
+        $user_id = $inputData['user_id'];
+
+        Horse::where('id', $horse_id)->update([
+            'stall_id' => $stall_id,
+            'place' => 'stall',
+        ]);
+
+        User::where('id', $user_id)->update([
+            'user_pt' => \DB::raw('user_pt - 1000')
+        ]);
+
+        $user = User::where('id', $user_id)->get();
+        $horses = Horse::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+        return response()->json(['data' => $user, 'horses' => $horses]);
     }
 
     /**
@@ -795,6 +827,10 @@ class HorseController extends Controller
                 'direction' => $cal_direction
             ]);
         } else if ($pt == 2 || $pt == 4 || $pt == 6) {
+            $check_tired = Horse::select('tired')->where('id', $horse_id)->first();
+            if ($check_tired->tired < 0) {
+                $element = 0;
+            }
             Horse::where('id', $horse_id)->update([
                 'tired' => \DB::raw('tired + ' . $element),
                 'direction' => $cal_direction
@@ -846,5 +882,6 @@ class HorseController extends Controller
         $send_horse = Horse::where('user_id', $user_id)->get();
         return response()->json(['data' => $user, 'horse' => $send_horse]);
     }
+    // goto stall from pasture
 
 }

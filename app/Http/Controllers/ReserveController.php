@@ -37,11 +37,19 @@ class ReserveController extends Controller
     {
         $inputData = $request->input('data');
         $foodNames = $inputData['food_name'];
+        $foodTypes = $inputData['food_type'];
         $horse_id = $inputData['horse_id'];
         $pasture_id = $inputData['pasture_id'];
         $user_id = $inputData['user_id'];
         $prices = $inputData['price'];
         $orders = $inputData['order'];
+        $place = $inputData['place'];
+        if($place == 'pasture'){
+            $stall_id = 'none';
+        }
+        else if($place == 'stall'){
+            $pasture_id = 'none';
+        }
         $game_date = $inputData['game_date'];
     
         // Check if arrays have the same length
@@ -57,6 +65,9 @@ class ReserveController extends Controller
                 $model->pasture_id = $pasture_id;
                 $model->food_name = $foodNames[$i];
                 $model->user_id = $user_id;
+                $model->place = $place;
+                $model->stall_id = $stall_id;
+                $model->food_type = $foodTypes[$i];
                 $model->game_date = $game_date;
                 $model->price = $prices[$i];
                 $model->order = $orders[$i];

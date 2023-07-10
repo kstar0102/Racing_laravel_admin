@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('age');
             $table->string('type');
             $table->string('class');
+            $table->string('place');
             $table->string('distance_max');
             $table->string('distance_min');
             $table->string('color');
@@ -65,6 +66,7 @@ return new class extends Migration
 
             $table->string('user_id');
             $table->string('pasture_id');
+            $table->string('stall_id');
             $table->string('etc')->nullable();
             $table->timestamps();
         });
