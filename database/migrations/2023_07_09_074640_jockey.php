@@ -15,7 +15,6 @@ class Jockey extends Migration
     {
         Schema::create('jockey', function(Blueprint $table){
             $table->id();
-            $table->string('stall_id');
             $table->string('user_id');
             $table->string('name');
             $table->string('age');
@@ -32,6 +31,7 @@ class Jockey extends Migration
             $table->string('p_target');
             $table->string('p_difference');
             $table->string('p_add');
+            $table->string('direction');
             $table->string('special')->nullable();
             $table->string('etc')->nullable();
             $table->timestamps();

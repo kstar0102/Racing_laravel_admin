@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TruckStall;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Truck;
@@ -123,6 +124,63 @@ class TruckController extends Controller
             if($user_level >= 30){
                 $truck = new Truck();
                 $truck->pasture_name = $pasture_name;
+                $truck->level = 1;
+                $truck->price = 1000;
+                $truck->user_id = $user_id; 
+                $truck->save();
+                $data = $truck;
+
+                $truck_data = array();
+                $truck_data[0] = $data;
+                User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
+                return response()->json(['data' => $truck_data, 'user' => $user]);
+            }
+            else{
+                return response()->json(['message' => '馬主Lvが足りていない']);
+            }
+         }
+         return response()->json(['message' => 'success']);
+    }
+
+    public function levelUpS(Request $request){
+        $data = $request->input('data');
+        $truck_id = $data['truck_id'];
+        $price = $data['price'];
+        $user_id = $data['user_id'];
+        $level = $data['level'];
+        $stall_id = $data['stall_id'];
+        $user_level = $data['user_level'];
+         
+        $user = User::where('id', $data['user_id'])->get();
+        
+         if($truck_id != 0){
+            if($level == 2){
+                if($user_level >= 110){
+                    TruckStall::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
+                    $data = TruckStall::where('id', $truck_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                }
+                else{
+                    return response()->json(['message' => '馬主Lvが足りていない']);
+                }
+            }
+            else if($level == 3){
+                if($user_level >= 300){
+                    TruckStall::where('id', $truck_id)->update(['level' => \DB::raw('level + 1'), 'price' => $price]);
+                    $data = TruckStall::where('id', $truck_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -'.$price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                }
+                else{
+                    return response()->json(['message' => '馬主Lvが足りていない']);
+                }
+            }
+         }
+         else{
+            if($user_level >= 30){
+                $truck = new TruckStall();
+                $truck->stall_id = $stall_id;
                 $truck->level = 1;
                 $truck->price = 1000;
                 $truck->user_id = $user_id; 

@@ -57,6 +57,9 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/levelupslope', [SlopeController::class, 'levelUp']);
     Route::post('/leveluptruck', [TruckController::class, 'levelUp']);
 
+    //when level up buildings of stall
+    Route::post('/leveluppoolstall', [PoolController::class, 'levelUpS']);
+
     // get User every mounting
     Route::post('/getuser', [UserController::class, 'getUser']);
 
@@ -72,7 +75,10 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     // get stall's data
     Route::get('/getstalls', [StallController::class, 'show']);
-
+    Route::post('/getstallname', [StallController::class, 'showStallS']);
     // Jockey handling
     Route::post('/storejockey', [JockeyController::class, 'store']);
+    Route::post('/showjockey', [JockeyController::class, 'show']);
+    Route::post('/growjockey', [JockeyController::class, 'grow']);
+    Route::post('/improvejockey', [JockeyController::class, 'improve']);
  });

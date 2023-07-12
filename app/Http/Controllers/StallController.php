@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StallSp;
 use Illuminate\Http\Request;
 use App\Models\Stall;
 
@@ -47,6 +48,14 @@ class StallController extends Controller
     public function show()
     {
         $data = Stall::get();
+        return response()->json(['data' => $data]);
+    }
+
+    public function showStallS(Request $request)
+    {
+        $inputData = $request->input('data');
+        $data = StallSp::select('stall_s.id as sid', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
+        where('user_id', $inputData['user_id'])->get();
         return response()->json(['data' => $data]);
     }
 

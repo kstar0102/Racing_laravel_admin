@@ -57,6 +57,12 @@ class ReserveController extends Controller
         if(count($prices) !== $arraysLength || count($orders) !== $arraysLength) {
             return response()->json(['message' =>  'Invalid input data']);
         }
+
+        $existingReserves = ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->get();
+
+        if (!$existingReserves->isEmpty()) {
+            ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->delete();
+        }
     
         try {
             for ($i=0; $i < $arraysLength; $i++) { 
@@ -74,6 +80,7 @@ class ReserveController extends Controller
 
                 $model->save();
             }
+
         } catch (\Exception $e) {
             return response()->json(['message' =>  'Error occurred while saving data']);
         }

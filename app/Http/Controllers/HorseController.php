@@ -11,6 +11,7 @@ use App\Models\Lineage;
 use App\Models\User;
 use App\Models\Pasture;
 use App\Models\trainHistory;
+use App\Models\StallSp;
 
 class HorseController extends Controller
 {
@@ -177,6 +178,17 @@ class HorseController extends Controller
             'place' => 'stall',
         ]);
 
+        $checkStall = StallSp::where('stall_id', $stall_id)->where('user_id', $user_id)->get();
+
+        if ($checkStall->isEmpty()) {
+            $newStall = new StallSp();
+            $newStall->stall_id = $stall_id;
+            $newStall->level = 1;
+            $newStall->price = 1000;
+            $newStall->user_id = $user_id;
+
+            $newStall->save();
+        }
         User::where('id', $user_id)->update([
             'user_pt' => \DB::raw('user_pt - 1000')
         ]);
