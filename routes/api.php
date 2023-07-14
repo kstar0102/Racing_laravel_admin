@@ -13,6 +13,7 @@ use App\Http\Controllers\TruckController;
 use App\Http\Controllers\ReserveController;
 use App\Http\Controllers\StallController;
 use App\Http\Controllers\JockeyController;
+use App\Http\Controllers\PresetController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,13 +59,18 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/leveluptruck', [TruckController::class, 'levelUp']);
 
     //when level up buildings of stall
+    Route::post('/levelupstall', [StallController::class, 'levelUp']);
     Route::post('/leveluppoolstall', [PoolController::class, 'levelUpS']);
+    Route::post('/levelupranchstall', [RanchController::class, 'levelUpS']);
+    Route::post('/levelupslopestall', [SlopeController::class, 'levelUpS']);
+    Route::post('/leveluptruckstall', [TruckController::class, 'levelUpS']);
 
     // get User every mounting
     Route::post('/getuser', [UserController::class, 'getUser']);
 
     // get all building data
     Route::post('/getbuildingdata', [PastureController::class, 'getBuildingData']);
+    Route::post('/getbuildingdatastall', [StallController::class, 'getBuildingData']);
 
     // get all race's plan
     Route::post('/getraceplan', [RacePlanController::class, 'getAll']);
@@ -76,9 +82,14 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     // get stall's data
     Route::get('/getstalls', [StallController::class, 'show']);
     Route::post('/getstallname', [StallController::class, 'showStallS']);
+
     // Jockey handling
     Route::post('/storejockey', [JockeyController::class, 'store']);
     Route::post('/showjockey', [JockeyController::class, 'show']);
     Route::post('/growjockey', [JockeyController::class, 'grow']);
     Route::post('/improvejockey', [JockeyController::class, 'improve']);
+
+    //handle preset
+    Route::post('/storepreset', [PresetController::class, 'store']);
+    Route::post('/showpreset', [PresetController::class, 'show']);
  });

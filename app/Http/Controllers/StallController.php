@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PoolStall;
+use App\Models\RanchStall;
+use App\Models\SlopeStall;
 use App\Models\StallSp;
+use App\Models\TruckStall;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Stall;
 
@@ -54,7 +59,7 @@ class StallController extends Controller
     public function showStallS(Request $request)
     {
         $inputData = $request->input('data');
-        $data = StallSp::select('stall_s.id as sid', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
+        $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
         where('user_id', $inputData['user_id'])->get();
         return response()->json(['data' => $data]);
     }
@@ -92,4 +97,58 @@ class StallController extends Controller
     {
         //
     }
+
+    public function getBuildingData(Request $request)
+    {
+        $data = $request->input('data');
+        $user_id = $data['user_id'];
+        $stall_id = $data['stall_id'];
+
+        $pool = PoolStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+        $ranch = RanchStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+        $slope = SlopeStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+        $truck = TruckStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+
+        return response()->json(['pool' => $pool, 'ranch' => $ranch, 'slope' => $slope, 'truck' => $truck]);
+    }
+
+    public function levelUp(Request $request)
+    {
+        $data = $request->input('data');
+        $stall_id = $data['stall_id'];
+        $price = $data['price'];
+        $user_id = $data['user_id'];
+        $level = $data['level'];
+        $user_level = $data['user_level'];
+
+        $handle = StallSp::where('id', $stall_id)->get();
+        $user = User::where('id', $data['user_id'])->get();
+        if ($handle) {
+            if ($level == 2) {
+                if ($user_level >= "50") {
+                    StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
+
+                    $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->where('user_id', $user_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                } else {
+                    return response()->json(['message' => '馬主Lvが足りていない']);
+                }
+            } else if ($level == 3) {
+                if ($user_level >= "100") {
+                    StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
+                    $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->where('user_id', $user_id)->get();
+                    User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+                    return response()->json(['data' => $data, 'user' => $user]);
+                } else {
+                    return response()->json(['message' => '馬主Lvが足りていない']);
+                }
+            }
+        }
+
+        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
+
+        return response()->json(['data' => $data, 'user' => $user]);
+    }
+
 }
