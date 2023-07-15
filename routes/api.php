@@ -14,6 +14,7 @@ use App\Http\Controllers\ReserveController;
 use App\Http\Controllers\StallController;
 use App\Http\Controllers\JockeyController;
 use App\Http\Controllers\PresetController;
+use App\Http\Controllers\RaceRegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,6 +79,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     // post reserve food
     Route::post('/reservefood', [ReserveController::class, 'store']);
     Route::post('/getreservemenu', [ReserveController::class, 'show']);
+    Route::post('/getreservemenustall', [ReserveController::class, 'showstall']);
 
     // get stall's data
     Route::get('/getstalls', [StallController::class, 'show']);
@@ -91,5 +93,13 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     //handle preset
     Route::post('/storepreset', [PresetController::class, 'store']);
+    Route::post('/storepresetstall', [PresetController::class, 'storeStall']);
     Route::post('/showpreset', [PresetController::class, 'show']);
+    Route::post('/showpresetstall ', [PresetController::class, 'showStall']);
+
+    //race register handling
+    Route::post('/showraceplan', [RaceRegisterController::class, 'show']);
+    Route::post('/storeraceregister', [RaceRegisterController::class, 'store']);
+    Route::post('/backregister', [RaceRegisterController::class, 'backregister']);
+
  });

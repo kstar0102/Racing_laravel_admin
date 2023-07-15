@@ -95,6 +95,7 @@ class RacePlanController extends Controller
         $before_before_month_week = $inputData['before_before_month_week'];
         $next_month_week = $inputData['next_month_week'];
         $next_next_month_week = $inputData['next_next_month_week'];
+        $next_next_next_month_week = $inputData['next_next_next_month_week'];
 
         // Query race plans for the current month and week order
         $this_week_data = RacePlan::where('weeks', $this_month_week)->get();
@@ -112,13 +113,18 @@ class RacePlanController extends Controller
         // next next week
 
         $next_next_week_data = RacePlan::where('weeks', $next_next_month_week)->get();
+
+        // next next next week 
+
+        $next_next_next_week_data = RacePlan::where('weeks', $next_next_next_month_week)->get();
         
         return response()->json([
             'this_week_data' => $this_week_data,
             'last_week_data' => $last_week_data,
             'before_last_week_data' => $before_last_week_data,
             'next_week_data' => $next_week_data,
-            'next_next_week_data' => $next_next_week_data
+            'next_next_week_data' => $next_next_week_data,
+            'next_next_next_week_data' => $next_next_next_week_data
         ]);
     }
 }

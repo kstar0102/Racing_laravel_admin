@@ -44,6 +44,8 @@ class ReserveController extends Controller
         $prices = $inputData['price'];
         $orders = $inputData['order'];
         $place = $inputData['place'];
+        $stall_id = $inputData['stall_id'];
+
         if($place == 'pasture'){
             $stall_id = 'none';
         }
@@ -58,13 +60,13 @@ class ReserveController extends Controller
             return response()->json(['message' =>  'Invalid input data']);
         }
 
-        $existingReserves = ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->get();
+        $existingReserves = ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->where('pasture_id', $pasture_id)->get();
 
         if (!$existingReserves->isEmpty()) {
-            ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->delete();
+            ReserveFood::where('game_date', $game_date)->where('horse_id', $horse_id)->where('pasture_id', $pasture_id)->delete();
         }
     
-        try {
+        
             for ($i=0; $i < $arraysLength; $i++) { 
                 $model = new ReserveFood();
                 $model->horse_id = $horse_id;
@@ -81,11 +83,13 @@ class ReserveController extends Controller
                 $model->save();
             }
 
-        } catch (\Exception $e) {
-            return response()->json(['message' =>  'Error occurred while saving data']);
-        }
+        if($place == 'pasture'){
+            $reserves = ReserveFood::where('game_date', $game_date)->where('pasture_id', $pasture_id)->get();
 
-        $reserves = ReserveFood::where('game_date', $game_date)->where('pasture_id', $pasture_id)->get();
+        }
+        else if($place == 'stall'){
+            $reserves = ReserveFood::where('game_date', $game_date)->where('user_id', $user_id)->where('place','stall')->get();
+        }
     
         return response()->json(['message' =>  'success', 'data' => $reserves]);
     }
@@ -104,6 +108,16 @@ class ReserveController extends Controller
         $pasture_id = $inputData['pasture_id'];
 
         $reserves = ReserveFood::where('game_date', $game_date)->where('pasture_id', $pasture_id)->get();
+
+        return response()->json(['data' =>  $reserves]);
+    }
+
+    public function showStall(Request $request){
+        $inputData = $request->input('data');
+        $game_date = $inputData['game_date'];
+        $user_id = $inputData['user_id'];
+
+        $reserves = ReserveFood::where('game_date', $game_date)->where('user_id', $user_id)->where('place', 'stall')->get();
 
         return response()->json(['data' =>  $reserves]);
     }
