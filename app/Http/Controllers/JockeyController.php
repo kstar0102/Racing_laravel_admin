@@ -321,4 +321,20 @@ class JockeyController extends Controller
         $send_jockey = Jockey::where('user_id', $user_id)->get();
         return response()->json(['data' => $user, 'jockey' => $send_jockey]);
     }
+
+    public function nameCheck(Request $request)
+    {
+        $inputData = $request->input('data');
+        $name = $inputData['jockey_name'];
+
+        $jockey = Jockey::where('name', $name)->get();
+        if(!$jockey->isEmpty)
+        {
+            return response()->json(['message' => 'failed']);
+        }
+        else
+        {
+            return response()->json(['message' => 'success']);
+        }
+    }
 }

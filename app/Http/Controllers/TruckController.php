@@ -105,7 +105,7 @@ class TruckController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             }
             else if($level == 3){
@@ -116,7 +116,7 @@ class TruckController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             }
          }
@@ -136,7 +136,7 @@ class TruckController extends Controller
                 return response()->json(['data' => $truck_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => '馬主Lvが足りていない']);
+                return response()->json(['message' => '馬主Lvが足りていません。']);
             }
          }
          return response()->json(['message' => 'success']);
@@ -162,7 +162,7 @@ class TruckController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
             }
             else if($level == 3){
@@ -173,7 +173,7 @@ class TruckController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
             }
          }
@@ -193,7 +193,7 @@ class TruckController extends Controller
                 return response()->json(['data' => $truck_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => '馬主Lvが足りていない']);
+                return response()->json(['message' => '厩舎Lvが足りていません。']);
             }
          }
          return response()->json(['message' => 'success']);

@@ -90,6 +90,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/showjockey', [JockeyController::class, 'show']);
     Route::post('/growjockey', [JockeyController::class, 'grow']);
     Route::post('/improvejockey', [JockeyController::class, 'improve']);
+    Route::post('/namecheckjockey', [JockeyController::class, 'nameCheck']);
 
     //handle preset
     Route::post('/storepreset', [PresetController::class, 'store']);

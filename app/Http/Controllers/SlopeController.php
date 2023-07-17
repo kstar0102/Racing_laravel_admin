@@ -106,7 +106,7 @@ class SlopeController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             }
             else if($level == 350){
@@ -117,7 +117,7 @@ class SlopeController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             }
          }
@@ -137,7 +137,7 @@ class SlopeController extends Controller
                 return response()->json(['data' => $slope_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => '馬主Lvが足りていない']);
+                return response()->json(['message' => '馬主Lvが足りていません。']);
             }
          }
          return response()->json(['message' => 'success']);
@@ -163,7 +163,7 @@ class SlopeController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
             }
             else if($level == 350){
@@ -174,7 +174,7 @@ class SlopeController extends Controller
                     return response()->json(['data' => $data, 'user' => $user]);
                 }
                 else{
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
             }
          }
@@ -194,7 +194,7 @@ class SlopeController extends Controller
                 return response()->json(['data' => $slope_data, 'user' => $user]);
             }
             else{
-                return response()->json(['message' => '馬主Lvが足りていない']);
+                return response()->json(['message' => '厩舎Lvが足りていません。']);
             }
          }
          return response()->json(['message' => 'success']);

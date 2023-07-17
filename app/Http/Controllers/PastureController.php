@@ -157,7 +157,7 @@ class PastureController extends Controller
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 } else {
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             } else if ($level == 3) {
                 if ($user_level >= "100") {
@@ -166,7 +166,7 @@ class PastureController extends Controller
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
                     return response()->json(['data' => $data, 'user' => $user]);
                 } else {
-                    return response()->json(['message' => '馬主Lvが足りていない']);
+                    return response()->json(['message' => '馬主Lvが足りていません。']);
                 }
             }
         }
