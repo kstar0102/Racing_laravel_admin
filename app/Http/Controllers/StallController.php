@@ -60,7 +60,7 @@ class StallController extends Controller
     {
         $inputData = $request->input('data');
         $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
-        where('user_id', $inputData['user_id'])->get();
+            where('user_id', $inputData['user_id'])->get();
         return response()->json(['data' => $data]);
     }
 
@@ -123,23 +123,30 @@ class StallController extends Controller
 
         $handle = StallSp::where('id', $stall_id)->get();
         $user = User::where('id', $data['user_id'])->get();
+        
+        $outPutdata = [];
         if ($handle) {
             if ($level == 2) {
                 if ($user_level >= "50") {
                     StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
 
-                    $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->where('user_id', $user_id)->get();
+                    $outPutdata = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
+                        where('user_id', $user_id)->get();
+
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
-                    return response()->json(['data' => $data, 'user' => $user]);
+                    return response()->json(['data' => $outPutdata, 'user' => $user]);
                 } else {
                     return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
             } else if ($level == 3) {
                 if ($user_level >= "100") {
                     StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
-                    $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->where('user_id', $user_id)->get();
+
+                    $outPutdata = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
+                        where('user_id', $user_id)->get();
+
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
-                    return response()->json(['data' => $data, 'user' => $user]);
+                    return response()->json(['data' => $outPutdata, 'user' => $user]);
                 } else {
                     return response()->json(['message' => '厩舎Lvが足りていません。']);
                 }
@@ -148,7 +155,7 @@ class StallController extends Controller
 
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
 
-        return response()->json(['data' => $data, 'user' => $user]);
+        return response()->json(['data' => $outPutdata, 'user' => $user]);
     }
 
 }

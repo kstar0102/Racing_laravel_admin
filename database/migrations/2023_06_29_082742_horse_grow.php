@@ -24,6 +24,7 @@ class HorseGrow extends Migration
             $table->string('condition_b');
             $table->string('health_b');
             $table->string('etc');
+            $table->timestamps();
         });
     }
     /**

@@ -10,7 +10,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Pasture;
 use App\Http\Controllers\HorseController;
-use App\Models\StallSp;
 
 class PastureController extends Controller
 {

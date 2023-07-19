@@ -50,6 +50,9 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/feedtrain', [HorseController::class, 'grow']);
     Route::post('/improvetrain', [HorseController::class, 'improve']);
     Route::post('/gotostall', [HorseController::class, 'gotoStall']);
+    Route::post('/checkHorseName', [HorseController::class, 'checkName']);
+    Route::post('/checkIllegalHorseName', [HorseController::class, 'checkIllegalWord']);
+    Route::post('showHorseGrow', [HorseController::class, 'showGrowHorse']);
 
 
     // when level up buildings
