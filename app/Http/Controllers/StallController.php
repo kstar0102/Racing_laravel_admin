@@ -52,15 +52,33 @@ class StallController extends Controller
      */
     public function show()
     {
-        $data = Stall::get();
+        $data = Stall::all();
         return response()->json(['data' => $data]);
     }
 
     public function showStallS(Request $request)
     {
         $inputData = $request->input('data');
-        $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
-            where('user_id', $inputData['user_id'])->get();
+
+        if (isset($inputData['user_id'])) {
+            $data = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')
+                ->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')
+                ->where('user_id', $inputData['user_id'])
+                ->get();
+
+            return response()->json(['data' => $data]);
+        } else {
+            return response()->json(['error' => 'Invalid input data'], 400);
+        }
+    }
+
+    public function showStallState(Request $request)
+    {
+        $inputData = $request->input('data');
+        $user_id = $inputData['user_id'];
+        $stall_id = $inputData['stall_id'];
+
+        $data = StallSp::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
         return response()->json(['data' => $data]);
     }
 
@@ -123,15 +141,14 @@ class StallController extends Controller
 
         $handle = StallSp::where('id', $stall_id)->get();
         $user = User::where('id', $data['user_id'])->get();
-        
+
         $outPutdata = [];
         if ($handle) {
             if ($level == 2) {
                 if ($user_level >= "50") {
                     StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
 
-                    $outPutdata = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
-                        where('user_id', $user_id)->get();
+                    $outPutdata = StallSp::where('id', $stall_id)->get();
 
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
                     return response()->json(['data' => $outPutdata, 'user' => $user]);
@@ -142,8 +159,7 @@ class StallController extends Controller
                 if ($user_level >= "100") {
                     StallSp::where('id', $stall_id)->update(['level' => \DB::raw('level + 1')]);
 
-                    $outPutdata = StallSp::select('stall_s.id as sid', 'stall_s.level as slevel', 'stalls.*')->join('stalls', 'stall_s.stall_id', '=', 'stalls.id')->
-                        where('user_id', $user_id)->get();
+                    $outPutdata = StallSp::where('id', $stall_id)->get();
 
                     User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $price)]);
                     return response()->json(['data' => $outPutdata, 'user' => $user]);

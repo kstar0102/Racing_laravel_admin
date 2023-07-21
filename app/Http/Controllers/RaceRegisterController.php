@@ -58,6 +58,20 @@ class RaceRegisterController extends Controller
         $count_ = RaceRegister::where('race_id', $race_id)->count();
         $count_user = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->count();
 
+        $check_race_horse = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->where('horse_id', $horse_id);
+        
+        if(!$check_race_horse->isEmpty())
+        {
+            return response()->json(['message' => 'すでに登録されている馬です。']);
+        } 
+
+        $check_race_jockey = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->where('jockey_id', $jockey_id);
+
+        if(!$check_race_jockey->isEmpty)
+        {
+            return response()->json(['message' => 'すでに登録されている騎手です。']);
+        }
+
         if ($count_ < 10 && $count_user < 5) {
             $model = new RaceRegister();
             $model->race_id = $race_id;
@@ -92,23 +106,15 @@ class RaceRegisterController extends Controller
 {
     $inputData = $request->input('data');
     $race_id = $inputData['race_id'];
-    $user_id = $inputData['user_id'];
 
     $data = RaceRegister::where('race_id', $race_id)->firstOrFail();
-    
-    $back_money = $data->etc ?? 0;
 
     RaceRegister::where('race_id', $race_id)->delete();
 
-    User::where('id', $user_id)->update([
-        'user_pt' => \DB::raw('user_pt + ' . $back_money)
-    ]);
-
     $race_register_data = RaceRegister::where('race_id', $race_id)->get();
 
-    $user = User::find($user_id);
 
-    return response()->json(['user' => $user, 'race_register_data' => $race_register_data]);
+    return response()->json(['race_register_data' => $race_register_data]);
 }
 
 

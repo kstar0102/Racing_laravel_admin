@@ -87,6 +87,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     // get stall's data
     Route::get('/getstalls', [StallController::class, 'show']);
     Route::post('/getstallname', [StallController::class, 'showStallS']);
+    Route::post('/getstallstate', [StallController::class, 'showStallState']);
 
     // Jockey handling
     Route::post('/storejockey', [JockeyController::class, 'store']);

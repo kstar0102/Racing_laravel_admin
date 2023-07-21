@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ReserveFood;
 use Illuminate\Http\Request;
-
-class ReserveController extends Controller
+use app\Models\ReserveFoodJockey;
+class ReserveFoodController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -22,36 +21,16 @@ class ReserveController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $inputData = $request->input('data');
+        $jockey_id = $inputData['jockey_id'];
         $foodNames = $inputData['food_name'];
         $foodTypes = $inputData['food_type'];
-        $horse_id = $inputData['horse_id'];
-        $pasture_id = $inputData['pasture_id'];
         $user_id = $inputData['user_id'];
         $prices = $inputData['price'];
         $orders = $inputData['order'];
         $place = $inputData['place'];
-        $stall_id = $inputData['stall_id'];
-
-        if($place == 'pasture'){
-            $stall_id = 'none';
-        }
-        else if($place == 'stall'){
-            $pasture_id = 'none';
-        }
         $game_date = $inputData['game_date'];
     
         // Check if arrays have the same length
@@ -60,21 +39,19 @@ class ReserveController extends Controller
             return response()->json(['message' =>  'Invalid input data']);
         }
 
-        $existingReserves = ReserveFood::where('horse_id', $horse_id)->where('pasture_id', $pasture_id)->get();
+        $existingReserves = ReserveFoodJockey::where('jockey_id', $jockey_id)->get();
 
         if (!$existingReserves->isEmpty()) {
-            ReserveFood::where('horse_id', $horse_id)->where('pasture_id', $pasture_id)->delete();
+            ReserveFoodJockey::where('jockey_id', $jockey_id)->delete();
         }
     
         
             for ($i=0; $i < $arraysLength; $i++) { 
-                $model = new ReserveFood();
-                $model->horse_id = $horse_id;
-                $model->pasture_id = $pasture_id;
+                $model = new ReserveFoodJockey();
+                $model->jockey_id = $jockey_id;
                 $model->food_name = $foodNames[$i];
                 $model->user_id = $user_id;
                 $model->place = $place;
-                $model->stall_id = $stall_id;
                 $model->food_type = $foodTypes[$i];
                 $model->game_date = $game_date;
                 $model->price = $prices[$i];
@@ -83,17 +60,10 @@ class ReserveController extends Controller
                 $model->save();
             }
 
-        if($place == 'pasture'){
-            $reserves = ReserveFood::where('pasture_id', $pasture_id)->get();
-
-        }
-        else if($place == 'stall'){
-            $reserves = ReserveFood::where('user_id', $user_id)->where('place','stall')->get();
-        }
+        $reserves = ReserveFoodJockey::where('jockey_id', $jockey_id)->get();
     
         return response()->json(['message' =>  'success', 'data' => $reserves]);
     }
-    
 
     /**
      * Display the specified resource.
@@ -104,20 +74,9 @@ class ReserveController extends Controller
     public function show(Request $request)
     {
         $inputData = $request->input('data');
-        $game_date = $inputData['game_date'];
-        $pasture_id = $inputData['pasture_id'];
+        $jockey_id = $inputData['jockey_id'];
 
-        $reserves = ReserveFood::where('pasture_id', $pasture_id)->get();
-
-        return response()->json(['data' =>  $reserves]);
-    }
-
-    public function showStall(Request $request){
-        $inputData = $request->input('data');
-        $game_date = $inputData['game_date'];
-        $user_id = $inputData['user_id'];
-
-        $reserves = ReserveFood::where('user_id', $user_id)->where('place', 'stall')->get();
+        $reserves = ReserveFoodJockey::where('jockey_id', $jockey_id)->get();
 
         return response()->json(['data' =>  $reserves]);
     }

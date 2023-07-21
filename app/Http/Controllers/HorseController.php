@@ -14,6 +14,7 @@ use App\Models\Horse;
 use App\Models\Lineage;
 use App\Models\User;
 use App\Models\Pasture;
+use App\Models\ReserveFood;
 use App\Models\trainHistory;
 use App\Models\StallSp;
 use TruckS;
@@ -538,6 +539,14 @@ class HorseController extends Controller
         $user_id = $inputData['user_id'];
         $grow = $inputData['grow'];
         $age = $inputData['age'];
+        $game_date = $inputData['gameDate'];
+     
+        $reserve = ReserveFood::where('horse_id', $horse_id)->where('etc', 1)->where('food_type', 'grazing')->where('game_date', $game_date)->get();
+
+        if($reserve->count() >= 3)
+        {
+            return response()->json(['message' => $reserve->count()]);
+        }
 
         //check peak value
         switch ($grow) {
@@ -869,6 +878,14 @@ class HorseController extends Controller
         $pt = $inputData['pt'];
         $what = $inputData['what'];
         $user_id = $inputData['user_id'];
+        $game_date = $inputData['gameDate'];
+
+        $reserve = ReserveFood::where('horse_id', $horse_id)->where('etc', 1)->where('food_type', 'fodder')->where('game_date', $game_date)->get();
+
+        if($reserve->count() >= 2)
+        {
+            return response()->json(['message' => '予約側ですでに完了しています。']);
+        }
 
         $happy_value = Horse::select('happy')->where('id', $horse_id)->first();
         $tired_value = Horse::select('tired')->where('id', $horse_id)->first();
