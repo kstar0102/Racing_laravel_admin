@@ -178,16 +178,14 @@ class JockeyController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
-            }
-            else if ($what == "差し") {
+            } else if ($what == "差し") {
                 Jockey::where('id', $jockey_id)->update([
                     'p_difference' => \DB::raw('p_difference + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
-            }
-            else if ($what == "追い") {
+            } else if ($what == "追い") {
                 Jockey::where('id', $jockey_id)->update([
                     'p_add' => \DB::raw('p_add + ' . $element_1),
                     'happy' => \DB::raw('happy + ' . $element_2),
@@ -325,16 +323,20 @@ class JockeyController extends Controller
     public function nameCheck(Request $request)
     {
         $inputData = $request->input('data');
+
+        // Validate input data before accessing its values.
+        if (!is_array($inputData) || !isset($inputData['jockey_name'])) {
+            return response()->json(['message' => 'Invalid input data']);
+        }
+
         $name = $inputData['jockey_name'];
 
         $jockey = Jockey::where('name', $name)->get();
-        if(!$jockey->isEmpty)
-        {
-            return response()->json(['message' => 'failed']);
-        }
-        else
-        {
-            return response()->json(['message' => 'success']);
+        if ($jockey->isEmpty()) {
+            return response()->json(['message' => 'success', 'name' => $inputData['jockey_name']]);
+        } else {
+            return response()->json(['message' => '現在登録されている名前です。', 'name' => ' ']);
         }
     }
+
 }

@@ -55,24 +55,22 @@ class RaceRegisterController extends Controller
         $last_play = $inputData['last_play'];
         $price = $inputData['price'];
 
-        $count_ = RaceRegister::where('race_id', $race_id)->count();
+        $count = RaceRegister::where('race_id', $race_id)->count();
         $count_user = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->count();
 
         $check_race_horse = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->where('horse_id', $horse_id);
-        
-        if(!$check_race_horse->isEmpty())
-        {
+
+        if ($check_race_horse->count() > 0) {
             return response()->json(['message' => 'すでに登録されている馬です。']);
-        } 
+        }
 
         $check_race_jockey = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->where('jockey_id', $jockey_id);
 
-        if(!$check_race_jockey->isEmpty)
-        {
+        if ($check_race_jockey->count() > 0) {
             return response()->json(['message' => 'すでに登録されている騎手です。']);
         }
 
-        if ($count_ < 10 && $count_user < 5) {
+        if ($count < 10 && $count_user < 5) {
             $model = new RaceRegister();
             $model->race_id = $race_id;
             $model->user_name = $user_name;
@@ -102,20 +100,21 @@ class RaceRegisterController extends Controller
         }
     }
 
+
     public function backRegister(Request $request)
-{
-    $inputData = $request->input('data');
-    $race_id = $inputData['race_id'];
+    {
+        $inputData = $request->input('data');
+        $race_id = $inputData['race_id'];
 
-    $data = RaceRegister::where('race_id', $race_id)->firstOrFail();
+        $data = RaceRegister::where('race_id', $race_id)->firstOrFail();
 
-    RaceRegister::where('race_id', $race_id)->delete();
+        RaceRegister::where('race_id', $race_id)->delete();
 
-    $race_register_data = RaceRegister::where('race_id', $race_id)->get();
+        $race_register_data = RaceRegister::where('race_id', $race_id)->get();
 
 
-    return response()->json(['race_register_data' => $race_register_data]);
-}
+        return response()->json(['race_register_data' => $race_register_data]);
+    }
 
 
     /**

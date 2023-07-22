@@ -107,7 +107,7 @@ class ReserveController extends Controller
         $game_date = $inputData['game_date'];
         $pasture_id = $inputData['pasture_id'];
 
-        $reserves = ReserveFood::where('pasture_id', $pasture_id)->get();
+        $reserves = ReserveFood::where('pasture_id', $pasture_id)->where('etc', 0)->get();
 
         return response()->json(['data' =>  $reserves]);
     }
@@ -117,7 +117,7 @@ class ReserveController extends Controller
         $game_date = $inputData['game_date'];
         $user_id = $inputData['user_id'];
 
-        $reserves = ReserveFood::where('user_id', $user_id)->where('place', 'stall')->get();
+        $reserves = ReserveFood::where('user_id', $user_id)->where('place', 'stall')->where('etc', 0)->get();
 
         return response()->json(['data' =>  $reserves]);
     }

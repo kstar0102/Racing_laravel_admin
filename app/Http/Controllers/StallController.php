@@ -126,8 +126,9 @@ class StallController extends Controller
         $ranch = RanchStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
         $slope = SlopeStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
         $truck = TruckStall::where('user_id', $user_id)->where('stall_id', $stall_id)->get();
+        $stall = StallSp::where('id', $stall_id)->get();
 
-        return response()->json(['pool' => $pool, 'ranch' => $ranch, 'slope' => $slope, 'truck' => $truck]);
+        return response()->json(['pool' => $pool, 'ranch' => $ranch, 'slope' => $slope, 'truck' => $truck, 'stall' => $stall]);
     }
 
     public function levelUp(Request $request)
