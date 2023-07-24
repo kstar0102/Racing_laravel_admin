@@ -53,7 +53,7 @@ class PresetController extends Controller
         }
         $arraysLength = count($food_names);
 
-            Preset::where('user_id', $user_id)->where('preset_num', $preset_num)->where('place', $place)->delete();
+        Preset::where('user_id', $user_id)->where('preset_num', $preset_num)->where('place', $place)->delete();
 
         try {
             for ($i = 0; $i < $arraysLength; $i++) {
@@ -73,19 +73,47 @@ class PresetController extends Controller
         } catch (\Exception $e) {
             return response()->json(['message' => 'Error occurred while saving data']);
         }
+
         $name_array = [];
-        $data = Preset::where('user_id', $user_id)->where('pasture_id', $pasture_id)->get();
-        
-        foreach($data as $item){
+        $preset_name_array = [];
+        $preset_default = ["プリセット1", "プリセット2", "プリセット3", "プリセット4", "プリセット5"];
+
+        $data = Preset::where('user_id', $user_id)->where('pasture_id', $pasture_id)->orderBy("preset_num")->get();
+
+        foreach ($data as $item) {
+            array_push($preset_name_array, $item->preset_num);
             array_push($name_array, $item->name);
         }
-
         $unique_array = array_unique($name_array);
+        $unique_preset_array = array_unique($preset_name_array);
         $sequentialArray = array_values($unique_array);
-        return response()->json(['data' => $data, 'preset_names' => $sequentialArray]);
+        $setquential_preset_array = array_values($unique_preset_array);
+
+        $output = [];
+
+        if ($sequentialArray != []) {
+            $j = 0;
+            for ($i = 0; $i < count($preset_default); $i++) {
+                if (in_array($preset_default[$i], $setquential_preset_array)) {
+                    if (isset($sequentialArray[$j])) 
+                    {
+                        array_push($output, $sequentialArray[$j]);
+                    } else
+                        break;
+                    $j++;
+                } else {
+                    array_push($output, $preset_default[$i]);
+                }
+            }
+        } else {
+            $output = $preset_default;
+        }
+        
+        return response()->json(['data' => $data, 'preset_names' => $output]);
     }
 
-    public function storeStall(Request $request){
+    public function storeStall(Request $request)
+    {
         $inputData = $request->input('data');
         $food_names = $inputData['food_name'];
         $food_types = $inputData['food_type'];
@@ -104,7 +132,7 @@ class PresetController extends Controller
         }
         $arraysLength = count($food_names);
 
-            Preset::where('user_id', $user_id)->where('preset_num', $preset_num)->where('place', $place)->delete();
+        Preset::where('user_id', $user_id)->where('preset_num', $preset_num)->where('place', $place)->delete();
 
         try {
             for ($i = 0; $i < $arraysLength; $i++) {
@@ -126,8 +154,8 @@ class PresetController extends Controller
         }
         $name_array = [];
         $data = Preset::where('user_id', $user_id)->where('place', $place)->get();
-        
-        foreach($data as $item){
+
+        foreach ($data as $item) {
             array_push($name_array, $item->name);
         }
 
@@ -148,14 +176,40 @@ class PresetController extends Controller
         $user_id = $inputData['user_id'];
         $pasture_id = $inputData['pasture_id'];
         $name_array = [];
-        $data = Preset::where('user_id', $user_id)->where('pasture_id', $pasture_id)->get();
-        
-        foreach($data as $item){
+        $preset_name_array = [];
+        $preset_default = ["プリセット1", "プリセット2", "プリセット3", "プリセット4", "プリセット5"];
+
+        $data = Preset::where('user_id', $user_id)->where('pasture_id', $pasture_id)->orderBy("preset_num")->get();
+
+        foreach ($data as $item) {
+            array_push($preset_name_array, $item->preset_num);
             array_push($name_array, $item->name);
         }
         $unique_array = array_unique($name_array);
+        $unique_preset_array = array_unique($preset_name_array);
         $sequentialArray = array_values($unique_array);
-        return response()->json(['data' => $data, 'preset_names' => $sequentialArray]);
+        $setquential_preset_array = array_values($unique_preset_array);
+
+        $output = [];
+
+        if ($sequentialArray != []) {
+            $j = 0;
+            for ($i = 0; $i < count($preset_default); $i++) {
+                if (in_array($preset_default[$i], $setquential_preset_array)) {
+                    if (isset($sequentialArray[$j])) 
+                    {
+                        array_push($output, $sequentialArray[$j]);
+                    } else
+                        break;
+                    $j++;
+                } else {
+                    array_push($output, $preset_default[$i]);
+                }
+            }
+        } else {
+            $output = $preset_default;
+        }
+        return response()->json(['data' => $data, 'preset_names' => $output]);
     }
 
     public function showStall(Request $request)
@@ -165,8 +219,8 @@ class PresetController extends Controller
         $place = $inputData['place'];
         $name_array = [];
         $data = Preset::where('user_id', $user_id)->where('place', $place)->get();
-        
-        foreach($data as $item){
+
+        foreach ($data as $item) {
             array_push($name_array, $item->name);
         }
 

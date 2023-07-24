@@ -143,7 +143,67 @@ class HorseController extends Controller
             $stall_model->price = 1000;
             $stall_model->user_id = $user_id;
             $stall_model->save();
+
+            \Log::info("stall saving".$value['id']);
+
+            // stall building default start
+            switch ($value['id']) {
+                case '19':
+                    $truck = new TruckStall();
+                    $truck->stall_id = $value['id'];
+                    $truck->level = 1;
+                    $truck->price = 1000;
+                    $truck->user_id = $user_id;
+                    $truck->save();
+                    break;
+                case '20':
+                    $slope = new SlopeStall();
+                    $slope->stall_id = $value['id'];
+                    $slope->level = 1;
+                    $slope->price = 1000;
+                    $slope->user_id = $user_id;
+                    $slope->save();
+                    break;
+                case '21':
+                    $pool = new PoolStall();
+                    $pool->stall_id = $value['id'];
+                    $pool->level = 1;
+                    $pool->price = 1000;
+                    $pool->user_id = $user_id;
+                    $pool->save();
+                    break;
+                case '22':
+                    $truck = new TruckStall();
+                    $truck->stall_id = $value['id'];
+                    $truck->level = 1;
+                    $truck->price = 1000;
+                    $truck->user_id = $user_id;
+                    $truck->save();
+                    break;
+                case '23':
+                    $pool = new PoolStall();
+                    $pool->stall_id = $value['id'];
+                    $pool->level = 1;
+                    $pool->price = 1000;
+                    $pool->user_id = $user_id;
+                    $pool->save();
+                    break;
+                case '24':
+                    $truck = new SlopeStall();
+                    $truck->stall_id = $value['id'];
+                    $truck->level = 1;
+                    $truck->price = 1000;
+                    $truck->user_id = $user_id;
+                    $truck->save();
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+
+            // stall building default end
         }
+
 
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $total_price)]);
         Pasture::where('id', $pasture_id)->update(['horses' => $count]);
@@ -540,11 +600,10 @@ class HorseController extends Controller
         $grow = $inputData['grow'];
         $age = $inputData['age'];
         $game_date = $inputData['gameDate'];
-     
+
         $reserve = ReserveFood::where('horse_id', $horse_id)->where('etc', 1)->where('food_type', 'grazing')->where('game_date', $game_date)->get();
 
-        if($reserve->count() >= 3)
-        {
+        if ($reserve->count() >= 3) {
             return response()->json(['message' => $reserve->count()]);
         }
 
@@ -768,15 +827,12 @@ class HorseController extends Controller
                 ]);
 
             } else if ($what == "坂路") {
-                if($input_moment == 1)
-                {
+                if ($input_moment == 1) {
                     $element_1 == 0;
-                }
-                else
-                {
+                } else {
                     GrowHorse::where('id', $horse_id)->update([
-                            'moment_b' => \DB::raw('moment_b + ' . $element_1)
-                        ]);
+                        'moment_b' => \DB::raw('moment_b + ' . $element_1)
+                    ]);
                 }
                 Horse::where('id', $horse_id)->update([
                     'moment_b' => \DB::raw('moment_b + ' . $element_1),
@@ -791,15 +847,12 @@ class HorseController extends Controller
                 // ]);
 
             } else {
-                if($input_health == 1)
-                {
+                if ($input_health == 1) {
                     $element_1 = 0;
-                }
-                else
-                {
+                } else {
                     GrowHorse::where('horse_id', $horse_id)->update([
-                    'health_b' => \DB::raw('health_b + ' . $element_1)
-                ]);
+                        'health_b' => \DB::raw('health_b + ' . $element_1)
+                    ]);
                 }
                 Horse::where('id', $horse_id)->update([
                     'health_b' => \DB::raw('health_b + ' . $element_1),
@@ -882,8 +935,7 @@ class HorseController extends Controller
 
         $reserve = ReserveFood::where('horse_id', $horse_id)->where('etc', 1)->where('food_type', 'fodder')->where('game_date', $game_date)->get();
 
-        if($reserve->count() >= 2)
-        {
+        if ($reserve->count() >= 2) {
             return response()->json(['message' => '予約側ですでに完了しています。']);
         }
 
