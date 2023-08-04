@@ -15,6 +15,7 @@ use App\Http\Controllers\StallController;
 use App\Http\Controllers\JockeyController;
 use App\Http\Controllers\PresetController;
 use App\Http\Controllers\RaceRegisterController;
+use App\Http\Controllers\RaceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -107,4 +108,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/storeraceregister', [RaceRegisterController::class, 'store']);
     Route::post('/backregister', [RaceRegisterController::class, 'backregister']);
 
+    // racing handling
+    Route::post('/getdataracing', [RaceController::class, 'show']);
+    
  });

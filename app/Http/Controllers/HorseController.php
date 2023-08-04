@@ -144,13 +144,11 @@ class HorseController extends Controller
             $stall_model->user_id = $user_id;
             $stall_model->save();
 
-            \Log::info("stall saving".$value['id']);
-
             // stall building default start
             switch ($value['id']) {
                 case '19':
                     $truck = new TruckStall();
-                    $truck->stall_id = $value['id'];
+                    $truck->stall_id = $stall_model->id;
                     $truck->level = 1;
                     $truck->price = 1000;
                     $truck->user_id = $user_id;
@@ -158,7 +156,7 @@ class HorseController extends Controller
                     break;
                 case '20':
                     $slope = new SlopeStall();
-                    $slope->stall_id = $value['id'];
+                    $slope->stall_id = $stall_model->id;
                     $slope->level = 1;
                     $slope->price = 1000;
                     $slope->user_id = $user_id;
@@ -166,7 +164,7 @@ class HorseController extends Controller
                     break;
                 case '21':
                     $pool = new PoolStall();
-                    $pool->stall_id = $value['id'];
+                    $pool->stall_id = $stall_model->id;
                     $pool->level = 1;
                     $pool->price = 1000;
                     $pool->user_id = $user_id;
@@ -174,7 +172,7 @@ class HorseController extends Controller
                     break;
                 case '22':
                     $truck = new TruckStall();
-                    $truck->stall_id = $value['id'];
+                    $truck->stall_id = $stall_model->id;
                     $truck->level = 1;
                     $truck->price = 1000;
                     $truck->user_id = $user_id;
@@ -182,7 +180,7 @@ class HorseController extends Controller
                     break;
                 case '23':
                     $pool = new PoolStall();
-                    $pool->stall_id = $value['id'];
+                    $pool->stall_id = $stall_model->id;
                     $pool->level = 1;
                     $pool->price = 1000;
                     $pool->user_id = $user_id;
@@ -190,7 +188,7 @@ class HorseController extends Controller
                     break;
                 case '24':
                     $truck = new SlopeStall();
-                    $truck->stall_id = $value['id'];
+                    $truck->stall_id = $stall_model->id;
                     $truck->level = 1;
                     $truck->price = 1000;
                     $truck->user_id = $user_id;
