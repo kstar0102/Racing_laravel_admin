@@ -48,6 +48,7 @@ class RaceRegisterController extends Controller
         $horse_gender = $inputData['horse_gender'];
         $horse_age = $inputData['horse_age'];
         $mass = $inputData['mass'];
+        $stall_type = $inputData['stall_type'];
         $jockey_id = $inputData['jockey_id'];
         $jockey_name = $inputData['jockey_name'];
         $quality_leg = $inputData['quality_leg'];
@@ -83,6 +84,7 @@ class RaceRegisterController extends Controller
             $model->jockey_id = $jockey_id;
             $model->jockey_name = $jockey_name;
             $model->quality_leg = $quality_leg;
+            $model->stall_type = $stall_type;
             $model->prize_id = $prize_id;
             $model->last_play = $last_play;
             $model->etc = $price;

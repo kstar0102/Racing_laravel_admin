@@ -110,5 +110,5 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     // racing handling
     Route::post('/getdataracing', [RaceController::class, 'show']);
-    
+    Route::post('/raceresult', [RaceController::class, 'race_result']);
  });

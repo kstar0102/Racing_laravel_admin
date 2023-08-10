@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RaceRegister extends Migration
+class RaceResult extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class RaceRegister extends Migration
      */
     public function up()
     {
-        Schema::create('race_register', function(Blueprint $table){
+        Schema::create('race_result', function(Blueprint $table){
             $table->id();
             $table->string('race_id');
             $table->string('user_name');
@@ -26,8 +26,11 @@ class RaceRegister extends Migration
             $table->string('jockey_name');
             $table->string('jockey_id');
             $table->string('quality_leg');
+            $table->string('race_type');
             $table->string('stall_type');
-            $table->string('prize_id');
+            $table->string('prize');
+            $table->string('time');
+            $table->string('ranking');
             $table->string('last_play')->nullable();
             $table->string('etc')->nullable();
             $table->timestamps();
