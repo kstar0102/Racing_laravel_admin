@@ -107,8 +107,10 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/showraceplan', [RaceRegisterController::class, 'show']);
     Route::post('/storeraceregister', [RaceRegisterController::class, 'store']);
     Route::post('/backregister', [RaceRegisterController::class, 'backregister']);
+    Route::post('/getregisterstate', [RaceRegisterController::class, 'registerState']);
 
     // racing handling
     Route::post('/getdataracing', [RaceController::class, 'show']);
     Route::post('/raceresult', [RaceController::class, 'race_result']);
+    Route::post('/getraceresult', [RaceController::class, 'get_race_result']);
  });

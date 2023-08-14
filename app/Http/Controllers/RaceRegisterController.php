@@ -54,6 +54,7 @@ class RaceRegisterController extends Controller
         $quality_leg = $inputData['quality_leg'];
         $prize_id = $inputData['race_type'];
         $last_play = $inputData['last_play'];
+        $week = $inputData['week'];
         $price = $inputData['price'];
 
         $count = RaceRegister::where('race_id', $race_id)->count();
@@ -87,6 +88,7 @@ class RaceRegisterController extends Controller
             $model->stall_type = $stall_type;
             $model->prize_id = $prize_id;
             $model->last_play = $last_play;
+            $model->week = $week;
             $model->etc = $price;
             $model->save();
 
@@ -182,4 +184,59 @@ class RaceRegisterController extends Controller
     {
         //
     }
+
+    public function getRegisterValue(Request $request)
+{
+    $inputData = $request->input('data');
+    if (!is_array($inputData)) {
+        return response()->json(['message' => 'Invalid input data']);
+    }
+
+    $user_id = isset($inputData['user_id']) ? $inputData['user_id'] : null;
+    $next_week = isset($inputData['next_week']) ? $inputData['next_week'] : null;
+
+    if (!$user_id || !$next_week) {
+        return response()->json(['message' => 'Missing required parameters']);
+    }
+
+    $result = RaceRegister::where('user_id', $user_id)->where('week', $next_week)->get();
+    
+    return response()->json(['data' => $result]);
+}
+
+public function registerState(Request $request)
+{
+    // Step 1: Input validation
+    $inputData = $request->validate([
+        'data.next_week' => 'required',
+        'data.user_id' => 'required',
+        'data.next_next_week' => 'required',
+        'data.next_next_next_week' => 'required'
+    ]);
+
+    $nextWeek = $inputData['data']['next_week'];
+    $userId = $inputData['data']['user_id'];
+    $nextNextWeek = $inputData['data']['next_next_week'];
+    $nextNextNextWeek = $inputData['data']['next_next_next_week'];
+
+    // Step 2: Query execution and error handling
+    try {
+        $result = RaceRegister::whereIn('week', [$nextWeek, $nextNextWeek, $nextNextNextWeek])
+            ->where('user_id', $userId)
+            ->get();
+
+        // Step 3: Response format
+        return response()->json([
+            'status' => 'success',
+            'data' => $result,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+        ]);
+    }
+}
+
+
 }

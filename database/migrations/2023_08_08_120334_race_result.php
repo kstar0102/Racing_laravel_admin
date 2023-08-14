@@ -31,6 +31,7 @@ class RaceResult extends Migration
             $table->string('prize');
             $table->string('time');
             $table->string('ranking');
+            $table->string('week');
             $table->string('last_play')->nullable();
             $table->string('etc')->nullable();
             $table->timestamps();

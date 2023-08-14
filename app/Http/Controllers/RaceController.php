@@ -75,9 +75,12 @@ class RaceController extends Controller
         $this_month_week = $getData['this_month_week'];
         
          $month_week = RacePlan::where('id', $inputData[0]['race_id'])->first();
-         $check_repeat = RaceResult::where('race_id', $inputData[0])->first();
+         $check_repeat = RaceResult::where('race_id', $inputData[0]['race_id'])->first();
 
-        if($month_week == $this_month_week && !$check_repeat)
+         \Log::info($this_month_week);
+         \Log::info($month_week);
+
+        if($month_week->weeks == $this_month_week && !$check_repeat)
         {
             for ($i = 0; $i < count($inputData); $i++) {
 
@@ -97,7 +100,8 @@ class RaceController extends Controller
                 $prize = $inputData[$i]['prize'];
                 $time = $inputData[$i]['time'];
                 $ranking = $inputData[$i]['ranking'];
-    
+                $etc = $inputData[$i]['year'];
+                $week = $this_month_week;
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt +' . $prize)]);
 
                 // change horse status
@@ -161,7 +165,9 @@ class RaceController extends Controller
                 $model->stall_type = $stall_type;
                 $model->prize = $prize;
                 $model->time = $time;
+                $model->last_play = $week;
                 $model->ranking = $ranking;
+                $model->etc = $etc;
     
                 $model->save();
 
@@ -208,5 +214,14 @@ class RaceController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function get_race_result(Request $request)
+    {
+        $inputData = $request->input('data');
+        $week = $inputData['week'];
+
+        $result = RaceResult::where('week', $week)->get();
+        return response()->json(['message' => $result]);        
     }
 }
