@@ -66,7 +66,7 @@ class RaceRegisterController extends Controller
             return response()->json(['message' => 'すでに登録されている馬です。']);
         }
 
-        $check_race_jockey = RaceRegister::where('race_id', $race_id)->where('user_id', $user_id)->where('jockey_id', $jockey_id);
+        $check_race_jockey = RaceRegister::where('race_id', $race_id)->where('jockey_id', $jockey_id);
 
         if ($check_race_jockey->count() > 0) {
             return response()->json(['message' => 'すでに登録されている騎手です。']);

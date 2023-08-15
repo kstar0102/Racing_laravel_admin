@@ -76,10 +76,7 @@ class RaceController extends Controller
         
          $month_week = RacePlan::where('id', $inputData[0]['race_id'])->first();
          $check_repeat = RaceResult::where('race_id', $inputData[0]['race_id'])->first();
-
-         \Log::info($this_month_week);
-         \Log::info($month_week);
-
+         
         if($month_week->weeks == $this_month_week && !$check_repeat)
         {
             for ($i = 0; $i < count($inputData); $i++) {
@@ -102,6 +99,7 @@ class RaceController extends Controller
                 $ranking = $inputData[$i]['ranking'];
                 $etc = $inputData[$i]['year'];
                 $week = $this_month_week;
+
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt +' . $prize)]);
 
                 // change horse status
@@ -169,11 +167,11 @@ class RaceController extends Controller
                 $model->ranking = $ranking;
                 $model->etc = $etc;
     
-                $model->save();
-
-                $user = User::where('id', $user_id)->get();
-                return response()->json(['user' => $user]);
+                $model->save();              
             }
+
+            $user = User::where('id', $user_id)->get();
+            return response()->json(['user' => $user]);
         }
         else
         {
@@ -220,8 +218,9 @@ class RaceController extends Controller
     {
         $inputData = $request->input('data');
         $week = $inputData['week'];
+        $type = $inputData['type'];
 
-        $result = RaceResult::where('week', $week)->get();
-        return response()->json(['message' => $result]);        
+        $result = RaceResult::where('last_play', $week)->where('race_type', $type)->get();
+        return response()->json(['data' => $result]);        
     }
 }
