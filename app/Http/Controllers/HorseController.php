@@ -57,9 +57,12 @@ class HorseController extends Controller
         $cData = $inputData['data'];
         $count = 0;
         $total_price = 0;
+
+        \Log::info($cData);
         for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
+            
             $illegal_name = IllegalWord::where('name', $inputName[$i])->first();
 
             if ($illegal_name !== null) {
@@ -445,6 +448,38 @@ class HorseController extends Controller
         }
 
         $lineage = Lineage::inRandomOrder()->take(1)->get();
+
+        $randomValue = rand(0, 4);
+        $distance_array = ["短", "短中", "中", "中長", "長"];
+
+        $max_distance = 0;
+        $min_distance = 0;
+        switch ($distance_array[$randomValue]) {
+            case "短":
+                $max_distance = 1000;
+                $min_distance = 1600;
+                break;
+            case "短中":
+                $max_distance = 1400;
+                $min_distance = 2000;
+                break;
+            case "中":
+                $max_distance = 1800;
+                $min_distance = 2400;
+                break;
+            case "中長":
+                $max_distance = 2200;
+                $min_distance = 2800;
+                break;
+            case "長":
+                $max_distance = 3000;
+                $min_distance = 3600;
+                break;
+            default:
+                echo "Invalid pattern";
+                break;
+        }
+
         foreach ($lineage as $key => $value) {
             $result = array(
                 'id' => $id_key,
@@ -468,8 +503,8 @@ class HorseController extends Controller
                 'moment_w' => $moment_w,
                 'condition_w' => $condition_w,
                 'health_w' => $health_w,
-                'distance_min' => $value['distance_min'],
-                'distance_max' => $value['distance_max'],
+                'distance_min' => $max_distance,
+                'distance_max' => $min_distance,
                 'hidden' => $value['hidden'],
                 'triple_crown' => $value['triple_crown'],
                 'f_sys' => $value['f_sys'],

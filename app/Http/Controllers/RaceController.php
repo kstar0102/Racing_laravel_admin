@@ -77,6 +77,7 @@ class RaceController extends Controller
          $month_week = RacePlan::where('id', $inputData[0]['race_id'])->first();
          $check_repeat = RaceResult::where('race_id', $inputData[0]['race_id'])->first();
          
+         \Log::info($this_month_week);
         if($month_week->weeks == $this_month_week && !$check_repeat)
         {
             for ($i = 0; $i < count($inputData); $i++) {
