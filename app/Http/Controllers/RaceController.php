@@ -8,7 +8,7 @@ use App\Models\Horse;
 use App\Models\RacePlan;
 use App\Models\RaceResult;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Redis;
 use Symfony\Component\Console\Input\InputDefinition;
 
 class RaceController extends Controller

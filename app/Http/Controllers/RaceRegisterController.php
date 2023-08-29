@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CPU1;
 use App\Models\Jockey;
 use App\Models\RacePlan;
 use App\Models\User;
@@ -130,25 +131,35 @@ class RaceRegisterController extends Controller
     public function show(Request $request)
     {
         $inputData = $request->input('data');
+
         if (isset($inputData['race_id'])) {
             $race_id = $inputData['race_id'];
 
             $race_data = RacePlan::where('id', $race_id)->first();
             $race_register_data = RaceRegister::where('race_id', $race_id)->get();
             $jockeys = Jockey::get();
+
+            $cpu_horse_data = [];
+            $num_race_register_data = count($race_register_data);
+            if ($num_race_register_data < 10) {
+                $get_count = 10 - $num_race_register_data;
+                $randomData = CPU1::inRandomOrder()->limit($get_count)->get();
+
+                $cpu_horse_data = $randomData;
+            }
+
             if ($race_data) {
                 $race_type = $race_data->type;
                 $prize_data = PrizeMoney::where('race_type', $race_type)->get();
-                return response()->json(['race_data' => $race_data, 'race_register_data' => $race_register_data, 'prize_data' => $prize_data, 'jockeys' => $jockeys]);
+                return response()->json(['race_data' => $race_data, 'race_register_data' => $race_register_data, 'prize_data' => $prize_data, 'jockeys' => $jockeys, 'cpu_horse' => $cpu_horse_data]);
             } else {
                 // Handle the case where race_data does not exist
-                return response()->json(['error' => 'Race data does not exist']);
+                return response()->json(['cpu_horse' => $cpu_horse_data]);
             }
         } else {
             // Handle the case where race_id is missing from the input data
             return response()->json(['error' => 'Race ID is missing']);
         }
-
     }
 
     /**
@@ -186,57 +197,55 @@ class RaceRegisterController extends Controller
     }
 
     public function getRegisterValue(Request $request)
-{
-    $inputData = $request->input('data');
-    if (!is_array($inputData)) {
-        return response()->json(['message' => 'Invalid input data']);
+    {
+        $inputData = $request->input('data');
+        if (!is_array($inputData)) {
+            return response()->json(['message' => 'Invalid input data']);
+        }
+
+        $user_id = isset($inputData['user_id']) ? $inputData['user_id'] : null;
+        $next_week = isset($inputData['next_week']) ? $inputData['next_week'] : null;
+
+        if (!$user_id || !$next_week) {
+            return response()->json(['message' => 'Missing required parameters']);
+        }
+
+        $result = RaceRegister::where('user_id', $user_id)->where('week', $next_week)->get();
+
+        return response()->json(['data' => $result]);
     }
 
-    $user_id = isset($inputData['user_id']) ? $inputData['user_id'] : null;
-    $next_week = isset($inputData['next_week']) ? $inputData['next_week'] : null;
-
-    if (!$user_id || !$next_week) {
-        return response()->json(['message' => 'Missing required parameters']);
-    }
-
-    $result = RaceRegister::where('user_id', $user_id)->where('week', $next_week)->get();
-    
-    return response()->json(['data' => $result]);
-}
-
-public function registerState(Request $request)
-{
-    // Step 1: Input validation
-    $inputData = $request->validate([
-        'data.next_week' => 'required',
-        'data.user_id' => 'required',
-        'data.next_next_week' => 'required',
-        'data.next_next_next_week' => 'required'
-    ]);
-
-    $nextWeek = $inputData['data']['next_week'];
-    $userId = $inputData['data']['user_id'];
-    $nextNextWeek = $inputData['data']['next_next_week'];
-    $nextNextNextWeek = $inputData['data']['next_next_next_week'];
-
-    // Step 2: Query execution and error handling
-    try {
-        $result = RaceRegister::whereIn('week', [$nextWeek, $nextNextWeek, $nextNextNextWeek])
-            ->where('user_id', $userId)
-            ->get();
-
-        // Step 3: Response format
-        return response()->json([
-            'status' => 'success',
-            'data' => $result,
+    public function registerState(Request $request)
+    {
+        // Step 1: Input validation
+        $inputData = $request->validate([
+            'data.next_week' => 'required',
+            'data.user_id' => 'required',
+            'data.next_next_week' => 'required',
+            'data.next_next_next_week' => 'required'
         ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage(),
-        ]);
+
+        $nextWeek = $inputData['data']['next_week'];
+        $userId = $inputData['data']['user_id'];
+        $nextNextWeek = $inputData['data']['next_next_week'];
+        $nextNextNextWeek = $inputData['data']['next_next_next_week'];
+
+        // Step 2: Query execution and error handling
+        try {
+            $result = RaceRegister::whereIn('week', [$nextWeek, $nextNextWeek, $nextNextNextWeek])
+                ->where('user_id', $userId)
+                ->get();
+
+            // Step 3: Response format
+            return response()->json([
+                'status' => 'success',
+                'data' => $result,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
-}
-
-
 }
