@@ -73,13 +73,11 @@ class RaceController extends Controller
         $getData = $request->input('data');
         $inputData = $getData['data'];
         $this_month_week = $getData['this_month_week'];
-        
-         $month_week = RacePlan::where('id', $inputData[0]['race_id'])->first();
-         $check_repeat = RaceResult::where('race_id', $inputData[0]['race_id'])->first();
-         
-         \Log::info($this_month_week);
-        if($month_week->weeks == $this_month_week && !$check_repeat)
-        {
+
+        $month_week = RacePlan::where('id', $inputData[0]['race_id'])->first();
+        $check_repeat = RaceResult::where('race_id', $inputData[0]['race_id'])->first();
+
+        if ($month_week->weeks == $this_month_week && !$check_repeat) {
             for ($i = 0; $i < count($inputData); $i++) {
 
                 $race_id = $inputData[$i]['race_id'];
@@ -103,42 +101,66 @@ class RaceController extends Controller
 
                 User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt +' . $prize)]);
 
+                //valuation start
+                $valuation = 0;
+                if ($ranking == 1) {
+                    if ($horse_age <= 3) {
+                        if ($race_type == "GⅡ") {
+                            $valuation = 3000;
+                        } else if ($race_type == "GI") {
+                            $valuation = 5000;
+                        } else if ($race_type == "GIII") {
+                            $valuation = 1000;
+                        } else if ($race_type == "海外GI") {
+                            $valuation = 7000;
+                        } else if ($race_type == "隠しGI") {
+                            $valuation = 10000;
+                        } else {
+                            $valuation = 100;
+                        }
+
+                        Horse::where('id', $horse_id)->update([
+                            'etc' => \DB::raw('etc + ' . $valuation)
+                        ]);
+                    }
+                }
+                //valuation end
+
                 // change horse status
                 $tired = 0;
                 $happy = 0;
-                switch($race_type)
-                {
-                    case '新馬' :
+                switch ($race_type) {
+                    case '新馬':
                         $tired = 3;
                         $happy = -3;
-                    case '未勝利' :
+                    case '未勝利':
                         $tired = 1;
                         $happy = -1;
-                    case '1勝クラス' :
+                    case '1勝クラス':
                         $tired = 2;
                         $happy = -2;
-                    case '2勝クラス' :
+                    case '2勝クラス':
                         $tired = 3;
                         $happy = -3;
-                    case '3勝クラス' :
+                    case '3勝クラス':
                         $tired = 4;
                         $happy = -4;
-                    case 'OPEN' :
+                    case 'OPEN':
                         $tired = 5;
                         $happy = -5;
-                    case 'GIII' :
+                    case 'GIII':
                         $tired = 6;
                         $happy = -6;
-                    case 'GII' :
+                    case 'GII':
                         $tired = 7;
                         $happy = -7;
-                    case 'GI' :
+                    case 'GI':
                         $tired = 8;
                         $happy = -8;
-                    case '海外GI' :
+                    case '海外GI':
                         $tired = 9;
                         $happy = -9;
-                    case '海外GI' :
+                    case '海外GI':
                         $tired = 10;
                         $happy = -10;
                 }
@@ -167,15 +189,13 @@ class RaceController extends Controller
                 $model->last_play = $week;
                 $model->ranking = $ranking;
                 $model->etc = $etc;
-    
-                $model->save();              
+
+                $model->save();
             }
 
             $user = User::where('id', $user_id)->get();
             return response()->json(['user' => $user]);
-        }
-        else
-        {
+        } else {
             return response()->json(['message' => 'success']);
         }
 
@@ -222,6 +242,6 @@ class RaceController extends Controller
         $type = $inputData['type'];
 
         $result = RaceResult::where('last_play', $week)->where('race_type', $type)->get();
-        return response()->json(['data' => $result]);        
+        return response()->json(['data' => $result]);
     }
 }

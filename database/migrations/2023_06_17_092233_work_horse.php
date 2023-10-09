@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('work_horse', function(Blueprint $table){
+        Schema::create('work_horse', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('age');
@@ -44,26 +44,44 @@ return new class extends Migration
             $table->string('direction');
             $table->boolean('hidden')->comment('隠し');
             $table->boolean('triple_crown')->comment('三冠');
-            //parents
-            //1
-            $table->string('f_sys')->comment('1系統');
-            $table->string('f_name')->comment('①父');
-            $table->string('f_factor')->comment('因子');
-            $table->string('m_sys')->comment('1系統');
-            $table->string('m_name')->comment('母');
-            //2
-            $table->string('f_f_sys')->comment('2系統');
-            $table->string('f_f_name')->comment('②父父');
-            $table->string('f_f_factor')->comment('因子');
-            $table->string('f_m_sys')->comment('2系統');
-            $table->string('f_m_name')->comment('父母');
-
-            $table->string('m_f_sys')->comment('2系統');
-            $table->string('m_f_name')->comment('②母父');
-            $table->string('m_f_factor')->comment('因子');
-            $table->string('m_m_sys')->comment('2系統');
-            $table->string('m_m_name')->comment('母母');
-
+    
+            // Make changes to columns that caused the error
+            $table->text('f_sys')->comment('1系統');
+            $table->text('f_name')->comment('①父');
+            $table->text('f_factor')->comment('因子');
+            $table->text('m_sys')->comment('1系統');
+            $table->text('m_name')->comment('母');
+            $table->text('f_f_sys')->comment('2系統');
+            $table->text('f_f_name')->comment('②父父');
+            $table->text('f_f_factor')->comment('因子');
+            $table->text('f_m_sys')->comment('2系統');
+            $table->text('f_m_name')->comment('父母');
+            $table->text('m_f_sys')->comment('2系統');
+            $table->text('m_f_name')->comment('②母父');
+            $table->text('m_f_factor')->comment('因子');
+            $table->text('m_m_sys')->comment('2系統');
+            $table->text('m_m_name')->comment('母母');
+            $table->text('f_f_f_sys')->comment('3系統');
+            $table->text('f_f_f_name')->comment('父父父');
+            $table->text('f_f_f_factor')->comment('因子');
+            $table->text('f_f_m_sys')->comment('3系統');
+            $table->text('f_f_m_name')->comment('父父母');
+            $table->text('f_m_f_sys')->comment('3系統');
+            $table->text('f_m_f_name')->comment('父母父');
+            $table->text('f_m_f_factor')->comment('因子');
+            $table->text('f_m_m_sys')->comment('2系統');
+            $table->text('f_m_m_name')->comment('父母母');
+            $table->text('m_f_f_sys')->comment('3系統');
+            $table->text('m_f_f_name')->comment('母父父');
+            $table->text('m_f_f_factor')->comment('因子');
+            $table->text('m_f_m_sys')->comment('3系統');
+            $table->text('m_f_m_name')->comment('母父母');
+            $table->text('m_m_f_sys')->comment('3系統');
+            $table->text('m_m_f_name')->comment('母母父');
+            $table->text('m_m_f_factor')->comment('因子');
+            $table->text('m_m_m_sys')->comment('2系統');
+            $table->text('m_m_m_name')->comment('母母母');
+    
             $table->string('user_id');
             $table->string('pasture_id');
             $table->string('stall_id');
@@ -71,6 +89,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
+    
 
     /**
      * Reverse the migrations.

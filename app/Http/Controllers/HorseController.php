@@ -17,6 +17,7 @@ use App\Models\Pasture;
 use App\Models\ReserveFood;
 use App\Models\trainHistory;
 use App\Models\StallSp;
+use App\Models\Knick;
 use TruckS;
 
 class HorseController extends Controller
@@ -54,11 +55,11 @@ class HorseController extends Controller
         $inputName = $inputData['name'];
         $user_id = $inputData['user_id'];
         $pasture_id = $inputData['pasture_id'];
+        $age_array = $inputData['age'];
         $cData = $inputData['data'];
         $count = 0;
         $total_price = 0;
 
-        \Log::info($cData);
         for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
@@ -72,7 +73,14 @@ class HorseController extends Controller
             $horse = new Horse;
             $horse->name = $inputName[$i];
             $horse->age = $cData[$i]['age'];
-            $horse->type = "";
+            if($cData[$i]['age'] == "・繁殖馬"){
+                $horse->age = $age_array[$i];
+                $horse->type = "繁殖馬";
+            }
+            else{
+                $horse->age = $cData[$i]['age'];
+                $horse->type = "";
+            }
             $horse->class = "";
             $horse->place = "pasture";
             $horse->distance_max = $cData[$i]['distance_max'];
@@ -120,9 +128,37 @@ class HorseController extends Controller
             $horse->m_m_sys = $cData[$i]['m_m_sys'];
             $horse->m_m_name = $cData[$i]['m_m_name'];
 
+            ///
+
+            $horse->f_f_f_sys = $cData[$i]['f_f_f_sys'];
+            $horse->f_f_f_name = $cData[$i]['f_f_f_name'];
+            $horse->f_f_f_factor = $cData[$i]['f_f_f_factor'];
+            $horse->f_f_m_sys = $cData[$i]['f_f_m_sys'];
+            $horse->f_f_m_name = $cData[$i]['f_f_m_name'];
+
+            $horse->f_m_f_sys = $cData[$i]['f_m_f_sys'];
+            $horse->f_m_f_name = $cData[$i]['f_m_f_name'];
+            $horse->f_m_f_factor = $cData[$i]['f_m_f_factor'];
+            $horse->f_m_m_sys = $cData[$i]['f_m_m_sys'];
+            $horse->f_m_m_name = $cData[$i]['f_m_m_name'];
+
+            $horse->m_f_f_sys = $cData[$i]['m_f_f_sys'];
+            $horse->m_f_f_name = $cData[$i]['m_f_f_name'];
+            $horse->m_f_f_factor = $cData[$i]['m_f_f_factor'];
+            $horse->m_f_m_sys = $cData[$i]['m_f_m_sys'];
+            $horse->m_f_m_name = $cData[$i]['m_f_m_name'];
+
+            
+            $horse->m_m_f_sys = $cData[$i]['m_m_f_sys'];
+            $horse->m_m_f_name = $cData[$i]['m_m_f_name'];
+            $horse->m_m_f_factor = $cData[$i]['m_m_f_factor'];
+            $horse->m_m_m_sys = $cData[$i]['m_m_m_sys'];
+            $horse->m_m_m_name = $cData[$i]['m_m_m_name'];
+
             $horse->user_id = $user_id;
             $horse->pasture_id = $pasture_id;
             $horse->stall_id = 'none';
+            $horse->etc = 0;
             $horse->save();
 
             $growHorse = new GrowHorse();
@@ -521,7 +557,32 @@ class HorseController extends Controller
                 'm_f_name' => $value['m_f_name'],
                 'm_f_factor' => $value['m_f_factor'],
                 'm_m_sys' => $value['m_m_sys'],
-                'm_m_name' => $value['m_m_name']
+                'm_m_name' => $value['m_m_name'],
+                
+                'f_f_f_sys' => $value['f_f_f_sys'],
+                'f_f_f_name' => $value['f_f_f_name'],
+                'f_f_f_factor' => $value['f_f_f_factor'],
+                'f_f_m_sys' => $value['f_f_m_sys'],
+                'f_f_m_name' => $value['f_f_m_name'],
+                'f_m_f_sys' => $value['f_m_f_sys'],
+                'f_m_f_name' => $value['f_m_f_name'],
+                'f_m_f_factor' => $value['f_m_f_factor'],
+                'f_m_m_sys' => $value['f_m_m_sys'],
+                'f_m_m_name' => $value['f_m_m_name'],
+                
+                
+                'm_f_f_sys' => $value['m_f_f_sys'],
+                'm_f_f_name' => $value['m_f_f_name'],
+                'm_f_f_factor' => $value['m_f_f_factor'],
+                'm_f_m_sys' => $value['m_f_m_sys'],
+                'm_f_m_name' => $value['m_f_m_name'],
+                'm_m_f_sys' => $value['m_m_f_sys'],
+                'm_m_f_name' => $value['m_m_f_name'],
+                'm_m_f_factor' => $value['m_m_f_factor'],
+                'm_m_m_sys' => $value['m_m_m_sys'],
+                'm_m_m_name' => $value['m_m_m_name'],
+                'triple_crown'=>$value['triple_crown'],
+                'hidden'=>$value['hidden']
             );
         }
         return $result;
@@ -566,17 +627,6 @@ class HorseController extends Controller
                 return $option;
             }
         }
-    }
-    /**
-     * This is the test not real.
-     */
-    public function getRandHorse(Request $request)
-    {
-        $age = $request->input('age');
-        for ($i = 0; $i < 5; $i++) {
-            $final_result['data'][$i] = $this->randomShow($age);
-        }
-        return $final_result;
     }
     /**
      * this is the interface to communicate with frontend directly.
@@ -1128,6 +1178,11 @@ class HorseController extends Controller
         $horse_id = $inputData['horse_id'];
         $data = GrowHorse::where('horse_id', $horse_id)->get();
 
+        return response()->json(['data' => $data]);
+    }
+
+    public function getKnicks(Request $request){
+        $data = Knick::all();
         return response()->json(['data' => $data]);
     }
 }

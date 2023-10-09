@@ -113,4 +113,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/getdataracing', [RaceController::class, 'show']);
     Route::post('/raceresult', [RaceController::class, 'race_result']);
     Route::post('/getraceresult', [RaceController::class, 'get_race_result']);
+
+    // marry
+    Route::get('/getknicks', [HorseController::class, 'getKnicks']); //pasture    
  });
