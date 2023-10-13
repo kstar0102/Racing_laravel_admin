@@ -63,7 +63,7 @@ class HorseController extends Controller
         for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
-            
+
             $illegal_name = IllegalWord::where('name', $inputName[$i])->first();
 
             if ($illegal_name !== null) {
@@ -73,11 +73,10 @@ class HorseController extends Controller
             $horse = new Horse;
             $horse->name = $inputName[$i];
             $horse->age = $cData[$i]['age'];
-            if($cData[$i]['age'] == "・繁殖馬"){
+            if ($cData[$i]['age'] == "・繁殖馬") {
                 $horse->age = $age_array[$i];
                 $horse->type = "繁殖馬";
-            }
-            else{
+            } else {
                 $horse->age = $cData[$i]['age'];
                 $horse->type = "";
             }
@@ -148,7 +147,7 @@ class HorseController extends Controller
             $horse->m_f_m_sys = $cData[$i]['m_f_m_sys'];
             $horse->m_f_m_name = $cData[$i]['m_f_m_name'];
 
-            
+
             $horse->m_m_f_sys = $cData[$i]['m_m_f_sys'];
             $horse->m_m_f_name = $cData[$i]['m_m_f_name'];
             $horse->m_m_f_factor = $cData[$i]['m_m_f_factor'];
@@ -317,7 +316,6 @@ class HorseController extends Controller
             $truck->price = 1000;
             $truck->user_id = $user_id;
             $truck->save();
-
         }
         if ($stall_id == 21) {
             $pool = new PoolStall();
@@ -558,7 +556,7 @@ class HorseController extends Controller
                 'm_f_factor' => $value['m_f_factor'],
                 'm_m_sys' => $value['m_m_sys'],
                 'm_m_name' => $value['m_m_name'],
-                
+
                 'f_f_f_sys' => $value['f_f_f_sys'],
                 'f_f_f_name' => $value['f_f_f_name'],
                 'f_f_f_factor' => $value['f_f_f_factor'],
@@ -569,8 +567,8 @@ class HorseController extends Controller
                 'f_m_f_factor' => $value['f_m_f_factor'],
                 'f_m_m_sys' => $value['f_m_m_sys'],
                 'f_m_m_name' => $value['f_m_m_name'],
-                
-                
+
+
                 'm_f_f_sys' => $value['m_f_f_sys'],
                 'm_f_f_name' => $value['m_f_f_name'],
                 'm_f_f_factor' => $value['m_f_f_factor'],
@@ -581,8 +579,8 @@ class HorseController extends Controller
                 'm_m_f_factor' => $value['m_m_f_factor'],
                 'm_m_m_sys' => $value['m_m_m_sys'],
                 'm_m_m_name' => $value['m_m_m_name'],
-                'triple_crown'=>$value['triple_crown'],
-                'hidden'=>$value['hidden']
+                'triple_crown' => $value['triple_crown'],
+                'hidden' => $value['hidden']
             );
         }
         return $result;
@@ -842,8 +840,6 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
-
-
             } else if ($what == "ダート") {
                 if ($input_strength == 1) {
                     $element_1 = 0;
@@ -859,7 +855,6 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
-
             } else {
                 if ($input_condition == 1) {
                     $element_1 = 0;
@@ -908,7 +903,6 @@ class HorseController extends Controller
                     'tired' => \DB::raw('tired + ' . $element_3),
                     'direction' => $cal_direction
                 ]);
-
             } else if ($what == "坂路") {
                 if ($input_moment == 1) {
                     $element_1 == 0;
@@ -1181,8 +1175,186 @@ class HorseController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function getKnicks(Request $request){
+    public function getKnicks(Request $request)
+    {
         $data = Knick::all();
         return response()->json(['data' => $data]);
+    }
+
+    // creating child part
+
+    public function storeChild(Request $request)
+    {
+        $inputData = $request->input('data');
+
+        $marry_price = $inputData['marry_price']; // the price that marry
+        $per_mark = $inputData[''];
+        switch ($per_mark) {
+            case 'D':
+            case 'D+':
+                $factor_1_rand = [50, 135, 0, 50];
+                break;
+            case 'C':
+            case 'C+':
+                $factor_1_rand = [50, 135, 51, 100];
+                break;
+            case 'B':
+            case 'B+':
+                $factor_1_rand = [50, 135, 101, 150];
+                break;
+            case 'A':
+            case 'A+':
+                $factor_1_rand = [50, 135, 151, 200];
+                break;
+            case 'S':
+                $factor_1_rand = [50, 135, 201, 250];
+                break;
+        }
+
+        $name = $inputData['name'];
+        $age = '・0歳馬';
+        $type = '';
+        $class = '';
+        $place = 'pasture';
+        $distance_max = $inputData['distance_max'];
+        $distance_min = $inputData['distance_min'];
+        $color = $inputData['color'];
+        $gender = $inputData['gender'];
+        $ground = $inputData['ground'];
+        $quality_leg = $inputData['quality_leg'];
+        $speed_b = $inputData['speed_b'];
+        $strength_b = $inputData['strength_b'];
+        $moment_b = $inputData['moment_b'];
+        $stamina_b = $inputData['stamina_b'];
+        $condition_b = $inputData['condition_b'];
+        $health_b = $inputData['health_b'];
+        $speed_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $strength_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $stamina_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $moment_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $condition_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $health_w = rand($factor_1_rand[2], $factor_1_rand[3]);
+        $happy = 10;
+        $tired = 0;
+        $price = $inputData['price'];
+        $state = 1;
+        $direction = 1;
+        $hidden = 15;
+        $triple_crown = 20;
+        $f_sys = $inputData['f_sys'];
+        $f_name = $inputData['f_name'];
+        $f_factor = $inputData['f_factor'];
+        $m_sys = $inputData['m_sys'];
+        $m_name = $inputData['m_name'];
+        $f_f_sys = $inputData['f_f_sys'];
+        $f_f_name = $inputData['f_f_name'];
+        $f_f_factor = $inputData['f_f_factor'];
+        $f_m_sys = $inputData['f_m_sys'];
+        $f_m_name = $inputData['f_m_name'];
+        $m_f_sys = $inputData['m_f_sys'];
+        $m_f_name = $inputData['m_f_name'];
+        $m_f_factor = $inputData['m_f_factor'];
+        $m_m_sys = $inputData['m_m_sys'];
+        $m_m_name = $inputData['m_m_name'];
+        $f_f_f_sys = $inputData['f_f_f_sys'];
+        $f_f_f_name = $inputData['f_f_f_name'];
+        $f_f_f_factor = $inputData['f_f_f_factor'];
+        $f_f_m_sys = $inputData['f_f_m_sys'];
+        $f_f_m_name = $inputData['f_f_m_name'];
+        $f_m_f_sys = $inputData['f_m_f_sys'];
+        $f_m_f_name = $inputData['f_m_f_name'];
+        $f_m_f_factor = $inputData['f_m_f_factor'];
+        $f_m_m_sys = $inputData['f_m_m_sys'];
+        $f_m_m_name = $inputData['f_m_m_name'];
+        $m_f_f_sys = $inputData['m_f_f_sys'];
+        $m_f_f_name = $inputData['m_f_f_name'];
+        $m_f_f_factor = $inputData['m_f_f_factor'];
+        $m_f_m_sys = $inputData['m_f_m_sys'];
+        $m_f_m_name = $inputData['m_f_m_name'];
+        $m_m_f_sys = $inputData['m_m_f_sys'];
+        $m_m_f_name = $inputData['m_m_f_name'];
+        $m_m_f_factor = $inputData['m_m_f_factor'];
+        $m_m_m_sys = $inputData['m_m_m_sys'];
+        $m_m_m_name = $inputData['m_m_m_name'];
+        
+        $user_id = $inputData['user_id'];
+        $pasture_id = $inputData['pasture_id'];
+        $stall_id = $inputData['none'];
+
+        $child_horse = new Horse;
+        $child_horse->name = $name;
+        $child_horse->age = $age;
+        $child_horse->type = $type;
+        $child_horse->class = $class;
+        $child_horse->place = $place;
+        $child_horse->distance_max = $distance_max;
+        $child_horse->distance_min = $distance_min;
+        $child_horse->color = $color;
+        $child_horse->gender = $gender;
+        $child_horse->ground = $ground;
+        $child_horse->quality_leg = $quality_leg;
+        $child_horse->speed_b = $speed_b;
+        $child_horse->strength_b = $strength_b;
+        $child_horse->moment_b = $moment_b;
+        $child_horse->stamina_b = $stamina_b;
+        $child_horse->condition_b = $condition_b;
+        $child_horse->health_b = $health_b;
+        $child_horse->speed_w = $speed_w;
+        $child_horse->strength_w = $strength_w;
+        $child_horse->stamina_w = $stamina_w;
+        $child_horse->moment_w = $moment_w;
+        $child_horse->condition_w = $condition_w;
+        $child_horse->health_w = $health_w;
+        $child_horse->happy = $happy;
+        $child_horse->tired = $tired;
+        $child_horse->price = $price;
+        $child_horse->state = $state;
+        $child_horse->direction = $direction;
+        $child_horse->hidden = $hidden;
+        $child_horse->triple_crown = $triple_crown;
+        $child_horse->f_sys = $f_sys;
+        $child_horse->f_name = $f_name;
+        $child_horse->f_factor = $f_factor;
+        $child_horse->m_sys = $m_sys;
+        $child_horse->m_name = $m_name;
+        $child_horse->f_f_sys = $f_f_sys;
+        $child_horse->f_f_name = $f_f_name;
+        $child_horse->f_f_factor = $f_f_factor;
+        $child_horse->f_m_sys = $f_m_sys;
+        $child_horse->f_m_name = $f_m_name;
+        $child_horse->m_f_sys = $m_f_sys;
+        $child_horse->m_f_name = $m_f_name;
+        $child_horse->m_f_factor = $m_f_factor;
+        $child_horse->m_m_sys = $m_m_sys;
+        $child_horse->m_m_name = $m_m_name;
+        $child_horse->f_f_f_sys = $f_f_f_sys;
+        $child_horse->f_f_f_name = $f_f_f_name;
+        $child_horse->f_f_f_factor = $f_f_f_factor;
+        $child_horse->f_f_m_sys = $f_f_m_sys;
+        $child_horse->f_f_m_name = $f_f_m_name;
+        $child_horse->f_m_f_sys = $f_m_f_sys;
+        $child_horse->f_m_f_name = $f_m_f_name;
+        $child_horse->f_m_f_factor = $f_m_f_factor;
+        $child_horse->f_m_m_sys = $f_m_m_sys;
+        $child_horse->f_m_m_name = $f_m_m_name;
+        $child_horse->m_f_f_sys = $m_f_f_sys;
+        $child_horse->m_f_f_name = $m_f_f_name;
+        $child_horse->m_f_f_factor = $m_f_f_factor;
+        $child_horse->m_f_m_sys = $m_f_m_sys;
+        $child_horse->m_f_m_name = $m_f_m_name;
+        $child_horse->m_m_f_sys = $m_m_f_sys;
+        $child_horse->m_m_f_name = $m_m_f_name;
+        $child_horse->m_m_f_factor = $m_m_f_factor;
+        $child_horse->m_m_m_sys = $m_m_m_sys;
+        $child_horse->m_m_m_name = $m_m_m_name;
+
+        $child_horse->user_id = $user_id;
+        $child_horse->pasture_id = $pasture_id;
+        $child_horse->stall_id = $stall_id;
+        $child_horse->save();
+
+        User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $marry_price)]);
+        $user = User::where('id', $user_id)->get();
+        return response()->json(['user' => $user]);
     }
 }
