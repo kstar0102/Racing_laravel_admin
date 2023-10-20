@@ -1187,8 +1187,9 @@ class HorseController extends Controller
     {
         $inputData = $request->input('data');
 
-        $marry_price = $inputData['marry_price']; // the price that marry
-        $per_mark = $inputData[''];
+        $marry_price = 5000; // the price that marry
+        $age = '・0歳馬';
+        $per_mark = $this->setPattern($age);
         switch ($per_mark) {
             case 'D':
             case 'D+':
@@ -1211,16 +1212,44 @@ class HorseController extends Controller
                 break;
         }
 
-        $name = $inputData['name'];
-        $age = '・0歳馬';
+        $currentYear = date("Y");
+        $firstTwoDigits = substr($currentYear, 2, 4);
+        $name = $inputData['breedingHorseName'] . $firstTwoDigits;
         $type = '';
         $class = '';
         $place = 'pasture';
-        $distance_max = $inputData['distance_max'];
-        $distance_min = $inputData['distance_min'];
+
+        $distance_max = 0;
+        $distance_min = 0;
+        switch ($inputData['distance']) {
+            case "短":
+                $distance_max = 1000;
+                $distance_min = 1600;
+                break;
+            case "短中":
+                $distance_max = 1400;
+                $distance_min = 2000;
+                break;
+            case "中":
+                $distance_max = 1800;
+                $distance_min = 2400;
+                break;
+            case "中長":
+                $distance_max = 2200;
+                $distance_min = 2800;
+                break;
+            case "長":
+                $distance_max = 3000;
+                $distance_min = 3600;
+                break;
+            default:
+                echo "Invalid pattern";
+                break;
+        }
         $color = $inputData['color'];
         $gender = $inputData['gender'];
         $ground = $inputData['ground'];
+        $growth = "早熟";
         $quality_leg = $inputData['quality_leg'];
         $speed_b = $inputData['speed_b'];
         $strength_b = $inputData['strength_b'];
@@ -1228,6 +1257,27 @@ class HorseController extends Controller
         $stamina_b = $inputData['stamina_b'];
         $condition_b = $inputData['condition_b'];
         $health_b = $inputData['health_b'];
+
+        if ($age == "・0歳馬") {
+            switch ($per_mark) {
+                case 'D':
+                    $factor_1_rand = [50, 135, 0, 50];
+                    break;
+                case 'C':
+                    $factor_1_rand = [50, 135, 51, 100];
+                    break;
+                case 'B':
+                    $factor_1_rand = [50, 135, 101, 150];
+                    break;
+                case 'A':
+                    $factor_1_rand = [50, 135, 151, 200];
+                    break;
+                case 'S':
+                    $factor_1_rand = [50, 135, 201, 250];
+                    break;
+            }
+        }
+
         $speed_w = rand($factor_1_rand[2], $factor_1_rand[3]);
         $strength_w = rand($factor_1_rand[2], $factor_1_rand[3]);
         $stamina_w = rand($factor_1_rand[2], $factor_1_rand[3]);
@@ -1236,7 +1286,7 @@ class HorseController extends Controller
         $health_w = rand($factor_1_rand[2], $factor_1_rand[3]);
         $happy = 10;
         $tired = 0;
-        $price = $inputData['price'];
+        $price = 5000;
         $state = 1;
         $direction = 1;
         $hidden = 15;
@@ -1278,8 +1328,8 @@ class HorseController extends Controller
         $m_m_m_name = $inputData['m_m_m_name'];
         
         $user_id = $inputData['user_id'];
-        $pasture_id = $inputData['pasture_id'];
-        $stall_id = $inputData['none'];
+        $pasture_id = 140;
+        $stall_id = "none";
 
         $child_horse = new Horse;
         $child_horse->name = $name;
@@ -1292,6 +1342,7 @@ class HorseController extends Controller
         $child_horse->color = $color;
         $child_horse->gender = $gender;
         $child_horse->ground = $ground;
+        $child_horse->growth = $growth;
         $child_horse->quality_leg = $quality_leg;
         $child_horse->speed_b = $speed_b;
         $child_horse->strength_b = $strength_b;
@@ -1355,6 +1406,7 @@ class HorseController extends Controller
 
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $marry_price)]);
         $user = User::where('id', $user_id)->get();
+        \Log::info($user);
         return response()->json(['user' => $user]);
     }
 }

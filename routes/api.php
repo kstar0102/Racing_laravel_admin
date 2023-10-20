@@ -116,5 +116,5 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     // marry
     Route::get('/getknicks', [HorseController::class, 'getKnicks']); //pasture    
-    Route::post('storechild', [HorseController::class, 'storeChild']);
+    Route::post('/storechild', [HorseController::class, 'storeChild']);
  });
