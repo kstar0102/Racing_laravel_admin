@@ -681,7 +681,7 @@ class HorseController extends Controller
         $grow = $inputData['grow'];
         $age = $inputData['age'];
         $game_date = $inputData['gameDate'];
-
+        \Log::info($horse_id);
         $reserve = ReserveFood::where('horse_id', $horse_id)->where('etc', 1)->where('food_type', 'grazing')->where('game_date', $game_date)->get();
 
         if ($reserve->count() >= 3) {
@@ -769,6 +769,8 @@ class HorseController extends Controller
 
         if ($age <= $age_max) {
             $grow_horse = GrowHorse::where('horse_id', $horse_id)->first();
+            \Log::info("ddddddddddddddddddddddddddddddddddddddddd");
+            \Log::info($grow_horse);
             if ($grow_horse->speed_b >= $speed_max) {
                 $input_speed = 1;
             } elseif ($grow_horse->strength_b >= $strength_max) {
@@ -1328,7 +1330,7 @@ class HorseController extends Controller
         $m_m_m_name = $inputData['m_m_m_name'];
         
         $user_id = $inputData['user_id'];
-        $pasture_id = 140;
+        $pasture_id = $inputData['pasture_id'];
         $stall_id = "none";
 
         $child_horse = new Horse;
@@ -1404,9 +1406,22 @@ class HorseController extends Controller
         $child_horse->stall_id = $stall_id;
         $child_horse->save();
 
+        $growHorse = new GrowHorse();
+        $growHorse->horse_id = $child_horse->id;
+        $growHorse->type = $child_horse->growth;
+        $growHorse->speed_b = 0;
+        $growHorse->strength_b = 0;
+        $growHorse->stamina_b = 0;
+        $growHorse->moment_b = 0;
+        $growHorse->health_b = 0;
+        $growHorse->condition_b = 0;
+        $growHorse->etc = "0";
+        $growHorse->save();
+
         User::where('id', $user_id)->update(['user_pt' => \DB::raw('user_pt -' . $marry_price)]);
         $user = User::where('id', $user_id)->get();
         \Log::info($user);
-        return response()->json(['user' => $user]);
+        $horses = Horse::where('user_id', $user_id)->where('pasture_id', $pasture_id)->get();
+        return response()->json(['user' => $user, 'horses' => $horses]);
     }
 }
