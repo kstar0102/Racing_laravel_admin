@@ -59,7 +59,7 @@ class HorseController extends Controller
         $cData = $inputData['data'];
         $count = 0;
         $total_price = 0;
-
+        \Log::info($inputData);
         for ($i = 0; $i < count($cData); $i++) {
             $total_price += $cData[$i]['price'];
             $count++;
@@ -108,7 +108,8 @@ class HorseController extends Controller
             $horse->hidden = $cData[$i]['hidden'];
             $horse->state = 1;
             $horse->triple_crown = $cData[$i]['triple_crown'];
-
+            \Log::info($cData[$i]['sys']);
+            $horse->sys = $cData[$i]['sys'];
             $horse->f_sys = $cData[$i]['f_sys'];
             $horse->f_name = $cData[$i]['f_name'];
             $horse->f_factor = $cData[$i]['f_factor'];
@@ -541,6 +542,7 @@ class HorseController extends Controller
                 'distance_max' => $min_distance,
                 'hidden' => $value['hidden'],
                 'triple_crown' => $value['triple_crown'],
+                'sys' => $value['sys'],
                 'f_sys' => $value['f_sys'],
                 'f_name' => $value['f_name'],
                 'f_factor' => $value['f_factor'],

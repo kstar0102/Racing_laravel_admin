@@ -46,6 +46,7 @@ return new class extends Migration
             $table->boolean('triple_crown')->comment('三冠');
     
             // Make changes to columns that caused the error
+            $table->text('sys')->comment('系統');
             $table->text('f_sys')->comment('1系統');
             $table->text('f_name')->comment('①父');
             $table->text('f_factor')->comment('因子');

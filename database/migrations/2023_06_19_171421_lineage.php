@@ -31,6 +31,7 @@ class Lineage extends Migration
             $table->string('distance_max')->comment('距離(上限)');
             $table->boolean('hidden')->comment('隠し');
             $table->boolean('triple_crown')->comment('三冠');
+            $table->string('sys')->comment('系統');
             // start 
             //1
             $table->string('f_sys')->comment('1系統');
