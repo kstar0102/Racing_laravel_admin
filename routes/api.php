@@ -17,6 +17,9 @@ use App\Http\Controllers\PresetController;
 use App\Http\Controllers\RaceRegisterController;
 use App\Http\Controllers\RaceController;
 
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\AuctionController;
+use Carbon\Carbon;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +31,7 @@ use App\Http\Controllers\RaceController;
 |
 */
 // user handling
+
 Route::post('/user', [UserController::class, 'login']);
 
 Route::get('/randomTest', [HorseController::class, 'percentage']);
@@ -117,4 +121,20 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     // marry
     Route::get('/getknicks', [HorseController::class, 'getKnicks']); //pasture    
     Route::post('/storechild', [HorseController::class, 'storeChild']);
- });
+    
+    //auction
+    // Route::apiResource('auction', AuctionController::class);
+    // Route::get('/auction/saleHorse/{id}', [AuctionController::class, 'getSaleHorse']);
+});
+
+Route::get('/test', function(){
+    $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
+
+    $endTime = $startTime->copy()->addRealHours(7.1);
+
+    return $endTime->diffInSeconds("2023-11-15 18:59:00");
+    // return $startTime->copy()->addHours(6)->format('Y-m-d H:i:s');
+});
+Route::post('/send', [MessageController::class, 'send']);
+Route::apiResource('auction', AuctionController::class);
+Route::get('/auction/saleHorse/{id}', [AuctionController::class, 'getSaleHorse']);

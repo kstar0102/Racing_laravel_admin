@@ -10,7 +10,9 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\reserveFood::class,
         Commands\food::class,
-        Commands\initfoodlist::class
+        Commands\initfoodlist::class,
+        Commands\CheckAuctionState::class,
+        Commands\ManageAuctionState::class
     ];
     /**
      * Define the application's command schedule.
@@ -21,10 +23,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        \Log::info("Cron is working fine!");
-        $schedule->command('reserve:food')->everyMinute();
+        
+        // $schedule->command('reserve:food')->everyMinute();
         //$schedule->command('deadline:food')->everyMinute();
         //$schedule->command('init:foodlist')->everyMinute();
+        $schedule->command('check_auction_state')->everyMinute();
+        $schedule->command('manage_auction_state')->dailyAt('12:00');
     }
 
     /**

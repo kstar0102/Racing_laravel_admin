@@ -23,10 +23,19 @@ use App\Http\Controllers\IlleWordController;
 |
 | Admin Router
 */
-// first login page
-Route::get('/', function () {
-    return view('login');
+
+Route::get('/welcome', function () {
+    return view('welcome');
 });
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+// // first login page
+// Route::get('/', function () {
+//     return view('login');
+// });
 
 // dashboard page
 Route::get('/dashboard', function () {

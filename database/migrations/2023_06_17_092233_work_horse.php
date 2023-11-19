@@ -87,6 +87,7 @@ return new class extends Migration
             $table->string('pasture_id');
             $table->string('stall_id');
             $table->string('etc')->nullable();
+            $table->boolean('sale_state')->default(0);
             $table->timestamps();
         });
     }

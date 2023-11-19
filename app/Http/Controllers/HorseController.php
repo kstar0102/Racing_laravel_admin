@@ -108,7 +108,7 @@ class HorseController extends Controller
             $horse->hidden = $cData[$i]['hidden'];
             $horse->state = 1;
             $horse->triple_crown = $cData[$i]['triple_crown'];
-            \Log::info($cData[$i]['sys']);
+
             $horse->sys = $cData[$i]['sys'];
             $horse->f_sys = $cData[$i]['f_sys'];
             $horse->f_name = $cData[$i]['f_name'];
@@ -1227,24 +1227,24 @@ class HorseController extends Controller
         $distance_min = 0;
         switch ($inputData['distance']) {
             case "短":
-                $distance_max = 1000;
-                $distance_min = 1600;
+                $distance_max = 1600;
+                $distance_min = 1000;
                 break;
             case "短中":
-                $distance_max = 1400;
-                $distance_min = 2000;
+                $distance_max = 2000;
+                $distance_min = 1400;
                 break;
             case "中":
-                $distance_max = 1800;
-                $distance_min = 2400;
+                $distance_max = 2400;
+                $distance_min = 1800;
                 break;
             case "中長":
-                $distance_max = 2200;
-                $distance_min = 2800;
+                $distance_max = 2800;
+                $distance_min = 2200;
                 break;
             case "長":
-                $distance_max = 3000;
-                $distance_min = 3600;
+                $distance_max = 3600;
+                $distance_min = 3000;
                 break;
             default:
                 echo "Invalid pattern";
@@ -1295,6 +1295,7 @@ class HorseController extends Controller
         $direction = 1;
         $hidden = 15;
         $triple_crown = 20;
+        $sys = $inputData['sys'];
         $f_sys = $inputData['f_sys'];
         $f_name = $inputData['f_name'];
         $f_factor = $inputData['f_factor'];
@@ -1367,6 +1368,7 @@ class HorseController extends Controller
         $child_horse->direction = $direction;
         $child_horse->hidden = $hidden;
         $child_horse->triple_crown = $triple_crown;
+        $child_horse->sys = $sys;
         $child_horse->f_sys = $f_sys;
         $child_horse->f_name = $f_name;
         $child_horse->f_factor = $f_factor;

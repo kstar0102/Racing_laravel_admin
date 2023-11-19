@@ -6,12 +6,15 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "beyondcode/laravel-websockets": "^2.0@beta",
         "firebase/php-jwt": "^6.7",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "nesbot/carbon": "^2.71",
+        "pusher/pusher-php-server": "~3.0",
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {

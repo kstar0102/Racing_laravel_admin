@@ -56,6 +56,7 @@ class UserController extends Controller
     public function login()
     {
         $data = request()->input('data');
+        \Log::info($data);
         $login_id = $data['login_id'];
         $password = $data['password'];
         $credentials = [

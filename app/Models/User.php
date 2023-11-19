@@ -52,4 +52,12 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
     ];
+
+    public function work_horses(){
+        return $this->hasOne(Horse::class, 'user_id');
+    }
+
+    public function sale_horses(){
+        return $this->hasOne(SaleHorse::class, 'highest_bidder');
+    }
 }

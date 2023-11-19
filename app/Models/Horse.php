@@ -11,5 +11,11 @@ class Horse extends Model
 
     protected $table = "work_horse";
 
-    
+    public function sale_horses(){
+        return $this->hasOne(SaleHorse::class, 'horse_id');
+    }
+
+    public function users(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
