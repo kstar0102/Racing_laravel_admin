@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Horse;
 use App\Models\User;
 use App\Models\SaleHorse;
-use App\Events\MessageEvent;
+use App\Events\SaleHorseEvent;
 use Carbon\Carbon;
 
 class AuctionController extends Controller
@@ -19,7 +19,30 @@ class AuctionController extends Controller
     public function index()
     {
         //
-        \Log::info("test mode");
+        $current_time = Carbon::now();
+
+        if ($current_time->hour >= 12) {
+            # code...
+            $previous_day_start = Carbon::yesterday()->setTime(12, 0, 0);
+            $previous_day_end = Carbon::now()->setTime(12, 0, 0);
+            $sale_horses = SaleHorse::with('work_horses.users')
+                            ->with('highest_bidders')
+                            ->whereBetween('created_at', [$previous_day_start, $previous_day_end])
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+            return response()->json(['sale_horse' => $sale_horses]);
+        }else {
+            $previous_day_end = Carbon::yesterday()->setTime(12, 0, 0);
+            $previous_day_start = Carbon::now()->subDays(2)->setTime(12, 0, 0);
+            $sale_horses = SaleHorse::with('work_horses.users')
+                            ->with('highest_bidders')
+                            ->whereBetween('created_at', [$previous_day_start, $previous_day_end])
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+            return response()->json(['sale_horse' => $sale_horses]);
+        }
     }
 
     public function getSaleHorse($id){
@@ -112,26 +135,35 @@ class AuctionController extends Controller
         $sale_horse->save();
 
         $current_time = Carbon::now();
-        if ($current_time->hour >= 12) {
-            $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
-            \Log::info($sale_horse->remain_bidding_time);
-            $endTime = $startTime->copy()->addRealHours($sale_horse->remain_bidding_time);
-            
-            \Log::info($sale_horse->updated_at);
-            $remainTime = $endTime->diffInSeconds($sale_horse->updated_at) / 60 / 60;
-            \Log::info($remainTime);
-            if ($remainTime < 1) {
-                # code...
-                $addTime = 1 - $remainTime;
-                \Log::info($addTime);
-                $sale_horse->remain_bidding_time += $addTime;
-                \Log::info($sale_horse->remain_bidding_time);
-            }
 
-            $sale_horse->save();
+        $startTime = null;
+
+        if ($current_time->hour >= 12) {
+
+            $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for today's 12 o'clock
+            
+        }else{
+
+            $startTime = Carbon::createFromTime(12, 0, 0)->subHours(24); // Create a Carbon instance for yesterday 12 o'clock
+            
         }
 
-        broadcast(new MessageEvent($sale_horse->highest_bidders()->getResults()->name, $request->input('bid_amount'), $id, $sale_horse->remain_bidding_time));
+        $endTime = $startTime->copy()->addRealHours($sale_horse->remain_bidding_time);
+        
+        $remainTime = $endTime->diffInSeconds($sale_horse->updated_at) / 60 / 60;
+
+        if ($remainTime < 1) {
+
+            $addTime = 1 - $remainTime;
+
+            $sale_horse->remain_bidding_time += $addTime;
+
+        }
+
+        $sale_horse->save();
+
+
+        broadcast(new SaleHorseEvent($sale_horse->highest_bidders()->getResults()->name, $request->input('bid_amount'), $id, $sale_horse->remain_bidding_time));
         return response()->json(['result'], 200);
     }
 

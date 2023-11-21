@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MessageEvent implements ShouldBroadcast
+class SaleHorseEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -40,6 +40,6 @@ class MessageEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('channel-name');
+        return new Channel('sale-horse-data');
     }
 }

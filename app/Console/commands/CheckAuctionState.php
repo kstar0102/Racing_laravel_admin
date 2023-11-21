@@ -73,6 +73,7 @@ class CheckAuctionState extends Command
                             $horse->sale_state = 0;
                             $horse->user_id = $sale_horse->highest_bidder;
                             $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
+                            \log::info($pastureData[0]->id);
                             $horse->pasture_id = $pastureData[0]->id;
                             $horse->save();
                             // $sale_horse->delete();

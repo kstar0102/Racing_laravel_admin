@@ -137,4 +137,3 @@ Route::get('/test', function(){
 });
 Route::post('/send', [MessageController::class, 'send']);
 Route::apiResource('auction', AuctionController::class);
-Route::get('/auction/saleHorse/{id}', [AuctionController::class, 'getSaleHorse']);
