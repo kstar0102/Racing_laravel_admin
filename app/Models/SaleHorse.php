@@ -39,5 +39,5 @@ class SaleHorse extends Model
     public function highest_bidders(){
         return $this->belongsTo(User::class, 'highest_bidder');
     }
-
+    
 }

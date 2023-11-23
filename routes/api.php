@@ -16,7 +16,7 @@ use App\Http\Controllers\JockeyController;
 use App\Http\Controllers\PresetController;
 use App\Http\Controllers\RaceRegisterController;
 use App\Http\Controllers\RaceController;
-
+use App\Events\UserPointEvent;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AuctionController;
 use Carbon\Carbon;

@@ -653,7 +653,7 @@ class HorseController extends Controller
     {
         $color_option = [
             '鹿毛' => 35,
-            '黑鹿毛' => 30,
+            '黒鹿毛' => 30,
             '栗毛' => 20,
             '青鹿毛' => 5,
             '白毛' => 5,

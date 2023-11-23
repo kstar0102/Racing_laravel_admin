@@ -282,6 +282,7 @@ class ManageAuctionState extends Command
             $horseData->m_m_m_sys = $value['m_m_m_sys'];
             $horseData->m_m_m_name = $value['m_m_m_name'];
             $horseData->triple_crown = $value['triple_crown'];
+            $horseData->sale_state = 1;
         }
         $horseData->save();
 
@@ -296,7 +297,7 @@ class ManageAuctionState extends Command
     {
         $color_option = [
             '鹿毛' => 35,
-            '黑鹿毛' => 30,
+            '黒鹿毛' => 30,
             '栗毛' => 20,
             '青鹿毛' => 5,
             '白毛' => 5,

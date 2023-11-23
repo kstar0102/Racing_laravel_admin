@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\SaleHorse;
 use App\Events\SaleHorseEvent;
 use Carbon\Carbon;
+use App\Events\UserPointEvent;
 
 class AuctionController extends Controller
 {

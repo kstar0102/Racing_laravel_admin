@@ -62,22 +62,42 @@ class CheckAuctionState extends Command
                     if ($endTime->isPast()) {
                         
                         if (!$value->highest_bidder) {
+
                             $sale_horse = SaleHorse::find($value->id);
                             $horse = $sale_horse->work_horses()->getResults(); 
                             $horse->sale_state = 0;
                             $horse->save();
-                            // $sale_horse->delete();
+
                         }else {
+
                             $sale_horse = SaleHorse::find($value->id);
+
                             $horse = $sale_horse->work_horses()->getResults(); 
-                            $horse->sale_state = 0;
-                            $horse->user_id = $sale_horse->highest_bidder;
-                            $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
-                            \log::info($pastureData[0]->id);
-                            $horse->pasture_id = $pastureData[0]->id;
-                            $horse->save();
-                            // $sale_horse->delete();
+
+                            if ($horse->sale_state == 1) {
+
+                                if ($horse->user_id) {
+                                    # code...
+                                    $user = $sale_horse->highest_bidders;
+                                    $user->user_pt += $sale_horse->highest_bid_amount * 0.8;
+                                    $user->save();
+                                }
+
+                                $horse->sale_state = 0;
+                                $horse->user_id = $sale_horse->highest_bidder;
+                                $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
+                                $horse->pasture_id = $pastureData[0]->id;
+                                $horse->etc = $sale_horse->highest_bid_amount;
+                                $horse->save();
+    
+                                $user = $sale_horse->highest_bidders;
+                                $user->user_pt -= $sale_horse->highest_bid_amount;
+                                $user->save();
+
+                            }
+
                         }
+
                     }
                 }
             }else {
@@ -89,29 +109,51 @@ class CheckAuctionState extends Command
                 $endTime = $yesterdayEnd->copy()->addRealHours($value->remain_bidding_time);
                 
                 if ($dateTime->between($yesterdayStart, $yesterdayEnd) || $dateTime->between($twoDaysAgoStart, $twoDaysAgoEnd)) {
+                    //$endTime->isPast()
 
                     if ($endTime->isPast()) {
 
                         if (!$value->highest_bidder) {
+
                             $sale_horse = SaleHorse::find($value->id);
                             $horse = $sale_horse->work_horses()->getResults(); 
                             $horse->sale_state = 0;
                             $horse->save();
-                            // $sale_horse->delete();
+
                         }else {
+
                             $sale_horse = SaleHorse::find($value->id);
-                            // \Log::info($sale_horse->highest_bidders->name);
-                            $sale_horse = SaleHorse::find($value->id);
+
                             $horse = $sale_horse->work_horses()->getResults(); 
-                            $horse->sale_state = 0;
-                            $horse->user_id = $sale_horse->highest_bidder;
-                            $horse->save();
-                            // $sale_horse->delete();
+
+                            if ($horse->sale_state == 1) {
+
+                                if ($horse->user_id) {
+                                    # code...
+                                    $user = $sale_horse->highest_bidders;
+                                    $user->user_pt += $sale_horse->highest_bid_amount * 0.8;
+                                    $user->save();
+                                }
+
+                                $horse->sale_state = 0;
+                                $horse->user_id = $sale_horse->highest_bidder;
+                                $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
+                                $horse->pasture_id = $pastureData[0]->id;
+                                $horse->etc = $sale_horse->highest_bid_amount;
+                                $horse->save();
+    
+                                $user = $sale_horse->highest_bidders;
+                                $user->user_pt -= $sale_horse->highest_bid_amount;
+                                $user->save();
+
+                                // broadcast(new MessageEvent('kh', 8000, 2, 7));
+                            }
+
                         }
                     }
                 }
             }
-            // broadcast(new MessageEvent('kh', 8000, 2, 7));
+
         }
     }
 }
