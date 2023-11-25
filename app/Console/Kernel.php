@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         //$schedule->command('init:foodlist')->everyMinute();
         $schedule->command('check_auction_state')->everyMinute();
         $schedule->command('manage_auction_state')->dailyAt('12:00');
+        // $schedule->command('manage_auction_state')->everyMinute();
     }
 
     /**

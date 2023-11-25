@@ -163,7 +163,7 @@ class AuctionController extends Controller
 
         $sale_horse->save();
 
-
+        // broadcast(new UserPointEvent(8000));
         broadcast(new SaleHorseEvent($sale_horse->highest_bidders()->getResults()->name, $request->input('bid_amount'), $id, $sale_horse->remain_bidding_time));
         return response()->json(['result'], 200);
     }

@@ -10,23 +10,21 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserPointEvent implements ShouldBroadcast
+class SaleHorsesEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $amount;
-    public $user_id;
+    public $sale_horses;
+
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($amount, $user_id)
+    public function __construct($sale_horses)
     {
         //
-        \Log::info($amount);
-        $this->amount = $amount;
-        $this->user_id = $user_id;
+        $this->sale_horses = $sale_horses;
     }
 
     /**
@@ -36,6 +34,6 @@ class UserPointEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('user-point-data');
+        return new Channel('sale-horses-data');
     }
 }

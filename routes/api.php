@@ -131,7 +131,7 @@ Route::get('/test', function(){
     $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
 
     $endTime = $startTime->copy()->addRealHours(7.1);
-
+    broadcast(new UserPointEvent(8000));
     return $endTime->diffInSeconds("2023-11-15 18:59:00");
     // return $startTime->copy()->addHours(6)->format('Y-m-d H:i:s');
 });

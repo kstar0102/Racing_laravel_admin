@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\SaleHorse;
 use App\Models\Horse;
 use App\Models\Pasture;
+use App\Events\UserPointEvent;
 
 class CheckAuctionState extends Command
 {
@@ -78,9 +79,11 @@ class CheckAuctionState extends Command
 
                                 if ($horse->user_id) {
                                     # code...
-                                    $user = $sale_horse->highest_bidders;
-                                    $user->user_pt += $sale_horse->highest_bid_amount * 0.8;
+                                    $user = $horse->users;
+                                    $user->user_pt += ($sale_horse->highest_bid_amount * 0.8);
                                     $user->save();
+                                    
+                                    broadcast(new UserPointEvent($user->user_pt, $user->id));
                                 }
 
                                 $horse->sale_state = 0;
@@ -94,6 +97,7 @@ class CheckAuctionState extends Command
                                 $user->user_pt -= $sale_horse->highest_bid_amount;
                                 $user->save();
 
+                                broadcast(new UserPointEvent($user->user_pt, $user->id));
                             }
 
                         }
@@ -119,7 +123,7 @@ class CheckAuctionState extends Command
                             $horse = $sale_horse->work_horses()->getResults(); 
                             $horse->sale_state = 0;
                             $horse->save();
-
+                            
                         }else {
 
                             $sale_horse = SaleHorse::find($value->id);
@@ -130,9 +134,11 @@ class CheckAuctionState extends Command
 
                                 if ($horse->user_id) {
                                     # code...
-                                    $user = $sale_horse->highest_bidders;
-                                    $user->user_pt += $sale_horse->highest_bid_amount * 0.8;
+                                    $user = $horse->users;
+                                    $user->user_pt += ($sale_horse->highest_bid_amount * 0.8);
                                     $user->save();
+  
+                                    broadcast(new UserPointEvent($user->user_pt, $user->id));
                                 }
 
                                 $horse->sale_state = 0;
@@ -146,7 +152,8 @@ class CheckAuctionState extends Command
                                 $user->user_pt -= $sale_horse->highest_bid_amount;
                                 $user->save();
 
-                                // broadcast(new MessageEvent('kh', 8000, 2, 7));
+                                broadcast(new UserPointEvent($user->user_pt, $user->id));
+                                //  
                             }
 
                         }

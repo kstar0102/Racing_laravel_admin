@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\SaleHorse;
 use App\Models\Horse;
 use App\Models\Lineage;
+use App\Events\SaleHorsesEvent;
 
 class ManageAuctionState extends Command
 {
@@ -430,5 +431,12 @@ class ManageAuctionState extends Command
             }
         }
 
+        $current_time = Carbon::now();
+
+        $sale_horses = SaleHorse::with('highest_bidders')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+        broadcast(new SaleHorsesEvent($sale_horses));
     }
 }
