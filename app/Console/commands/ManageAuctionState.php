@@ -221,7 +221,7 @@ class ManageAuctionState extends Command
             $horseData->user_id = 0;
             $horseData->pasture_id = 0;
             $horseData->stall_id = 'none';
-            $horseData->etc = $price;
+            $horseData->price = $price;
             $horseData->color = $color;
             $horseData->growth = $growth;
             $horseData->ground = $ground;

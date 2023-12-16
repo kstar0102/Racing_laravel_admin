@@ -90,7 +90,7 @@ class CheckAuctionState extends Command
                                 $horse->user_id = $sale_horse->highest_bidder;
                                 $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
                                 $horse->pasture_id = $pastureData[0]->id;
-                                $horse->etc = $sale_horse->highest_bid_amount;
+                                $horse->price = $sale_horse->highest_bid_amount;
                                 $horse->save();
     
                                 $user = $sale_horse->highest_bidders;
@@ -145,7 +145,7 @@ class CheckAuctionState extends Command
                                 $horse->user_id = $sale_horse->highest_bidder;
                                 $pastureData = Pasture::where('user_id', $sale_horse->highest_bidder)->get();
                                 $horse->pasture_id = $pastureData[0]->id;
-                                $horse->etc = $sale_horse->highest_bid_amount;
+                                $horse->price = $sale_horse->highest_bid_amount;
                                 $horse->save();
     
                                 $user = $sale_horse->highest_bidders;

@@ -16,10 +16,16 @@ use App\Http\Controllers\JockeyController;
 use App\Http\Controllers\PresetController;
 use App\Http\Controllers\RaceRegisterController;
 use App\Http\Controllers\RaceController;
+
+use App\Http\Controllers\Web\RaceManagementController;
+use App\Http\Controllers\Web\ExpectedBattleController;
+use App\Http\Controllers\Web\RankingController;
+
 use App\Events\UserPointEvent;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\AuctionController;
 use Carbon\Carbon;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -33,6 +39,10 @@ use Carbon\Carbon;
 // user handling
 
 Route::post('/user', [UserController::class, 'login']);
+
+Route::post('/user-register', [UserController::class, 'register']);
+
+Route::get('/user/{id}', [UserController::class, 'show']);
 
 Route::get('/randomTest', [HorseController::class, 'percentage']);
 
@@ -123,17 +133,38 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/storechild', [HorseController::class, 'storeChild']);
     
     //auction
-    // Route::apiResource('auction', AuctionController::class);
-    // Route::get('/auction/saleHorse/{id}', [AuctionController::class, 'getSaleHorse']);
-});
+    Route::post('/send', [MessageController::class, 'send']);
+    Route::apiResource('auction', AuctionController::class);
 
+    // ==================================================================================================
+
+        // * ** *** race management *** *** *
+    Route::get('/racemanagement', [RaceManagementController::class, 'index']);
+    Route::post('/racemanagement/get-specific-race-data', [RaceManagementController::class, 'get_specific_race_data']);
+    Route::post('/racemanagement', [RaceManagementController::class, 'store']);
+    Route::delete('/racemanagement/{id}', [RaceManagementController::class, 'destroy']);
+    Route::post('/racemanagement/create-race-result', [RaceManagementController::class, 'create_race_result']);
+    Route::get('/racemanagement/get-places', [RaceManagementController::class, 'get_places']);
+        
+        // * ** *** expected battle *** *** *
+    Route::apiResource('expectedbattle', ExpectedBattleController::class);
+
+        // * ** *** ranking *** *** *
+    // Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
+    // Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
+    // Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
+    // Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
+   // ===================================================================================================
+});
+Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
+Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
+Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
+Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
 Route::get('/test', function(){
     $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
 
     $endTime = $startTime->copy()->addRealHours(7.1);
-    broadcast(new UserPointEvent(8000));
+    // broadcast(new UserPointEvent(8000));
     return $endTime->diffInSeconds("2023-11-15 18:59:00");
     // return $startTime->copy()->addHours(6)->format('Y-m-d H:i:s');
 });
-Route::post('/send', [MessageController::class, 'send']);
-Route::apiResource('auction', AuctionController::class);

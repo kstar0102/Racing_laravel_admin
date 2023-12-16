@@ -101,7 +101,7 @@ class AuctionController extends Controller
         $horses = Horse::where('user_id', $user_id)->where('pasture_id', $pasture_id)->get();
 
         $user = User::find($user_id);
-        $user->user_pt -= $horse->etc / 10;
+        $user->user_pt -= $horse->price / 10;
         $user->save();
         $newUser = User::where('id', $user_id)->get();
 

@@ -60,4 +60,8 @@ class User extends Authenticatable implements JWTSubject
     public function sale_horses(){
         return $this->hasOne(SaleHorse::class, 'highest_bidder');
     }
+
+    public function player_rankings(){
+        return $this->hasOne(PlayerRanking::class, 'user_id');
+    }
 }

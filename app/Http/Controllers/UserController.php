@@ -56,9 +56,53 @@ class UserController extends Controller
     public function login()
     {
         $data = request()->input('data');
+
+        $login_id = $data['login_id'];
+        $password = $data['password'];
+        $credentials = [
+            'login_id' => $login_id,
+            'password' => $password
+        ];
+
+        $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+
+        if (Auth::attempt($credentials)) {
+            // Authentication passed...
+            $user = User::where('login_id', $credentials['login_id'])->first();
+            $pasture = Pasture::where('user_id', $user['id'])->first();
+            return response()->json([
+                'token' => $token,
+                'user' => Auth::user(),
+                'pasture' => $pasture,
+            ]);
+        }
+
+        else{
+            return response()->json(['token' => null]);
+        }
+    }
+
+    public function register()
+    {
+        $data = request()->input('data');
         \Log::info($data);
         $login_id = $data['login_id'];
         $password = $data['password'];
+        $email = $data['user_email'];
+        $name = $data['user_name'];
+
+        $user = new User();
+
+        $user->name = $name;
+        $user->email = $email;
+        $user->login_id = $login_id;
+        $user->password = bcrypt($password);
+        $user->user_pt = 5000;
+        $user->level = 0;
+        $user->role = 0;
+        
+        $user->save();
+
         $credentials = [
             'login_id' => $login_id,
             'password' => $password
@@ -88,6 +132,9 @@ class UserController extends Controller
     public function show(string $id)
     {
         //
+        \Log::info($id);
+        $userData = User::find($id);
+        return response()->json(['user' => $userData]);
     }
 
     /**
