@@ -131,9 +131,7 @@ class RaceManagementController extends Controller
         $id = $request->id;
         $race_result = $request->race_result;
         $delete_horses_data = $request->delete_horses_data;
-        \Log::info("*************************************");
-        \Log::info($delete_horses_data);
-        \Log::info("*************************************");
+
         $web_race_result_data = WebRaceResult::where('race_management_id', $id)->get();
 
         if (!count($web_race_result_data)) {
@@ -325,38 +323,26 @@ class RaceManagementController extends Controller
                 $purchase_money = 100;
 
                 $single_win_probability = 0;
-                if (in_array($mainArray[0], $first_race_result)) {
-                    # code...
-                    $single_win_probability += $race_result[0]['single'] * $purchase_money / 100;
+                foreach ($race_result as $key => $data) {
+                    if ($data['rank'] == '1着') {
+                        if ($data['horse'] == $mainArray[0]) {
+                            $single_win_probability += $data['single'] * $purchase_money / 100;
+                        }
+                    }
                 }
                 \Log::info($single_win_probability);
 
                 $double_win_probability = 0;
-                foreach ($first_race_result as $key => $data) {
-
-                    if (in_array($data, $mainArray)) {
-                        $double_win_probability += $race_result[0]['double'] * $purchase_money / 100;
-                    }
-                }
-                foreach ($second_race_result as $key => $data) {
-                    if (in_array($data, $mainArray)) {
-                        $double_win_probability += $race_result[1]['double'] * $purchase_money / 100;
-                    }
-                }
-                foreach ($three_race_restult as $key => $data) {
-                    if (in_array($data, $mainArray)) {
-                        $double_win_probability += $race_result[2]['double'] * $purchase_money / 100;
+                foreach ($race_result as $key => $data) {
+                    if (in_array($data['horse'], $mainArray)) {
+                        $double_win_probability += $data['double'] * $purchase_money / 100;
                     }
                 }
                 \Log::info($double_win_probability);
 
                 # Individual player score calculation logic End #
                 $getPlayerRanking = PlayerRanking::where('user_id', $value->user_id)->where('race_management_id',$id)->get();
-                \Log::info("======================================================");
-                \Log::info($delete_horses_data);
-                \Log::info(in_array($value->disappear, $delete_horses_data));
-                \Log::info(!in_array($value->disappear, $double_win_award_array));
-                \Log::info("======================================================");
+
                 if (count($getPlayerRanking)) {
                     PlayerRanking::where('user_id', $value->user_id)->where('race_management_id', $id)
                         ->update([
