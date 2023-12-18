@@ -23,6 +23,8 @@ class CreatePlayerRankingTable extends Migration
             $table->boolean('hole');
             $table->boolean('disappear');
             $table->double('user_pt');
+            $table->double('single_win_probability');
+            $table->double('double_win_probability');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('race_management_id')->constrained('race_management')->onDelete('cascade');
         });

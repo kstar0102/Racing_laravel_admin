@@ -22,7 +22,7 @@ class RaceManagementController extends Controller
     public function index()
     {
         //
-        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
+        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->orderby('created_at')->get();
         return response()->json(['races_data' => $response_data]);
         
     }
@@ -34,8 +34,6 @@ class RaceManagementController extends Controller
      * @return \Illuminate\Http\Response
      */
      public function store(Request $request) {
-
-        $data = $request;
         $race_management = new RaceManagement();
         $race_management->event_date = $request->event_date;
         $race_management->event_place = $request->event_place;
@@ -83,6 +81,30 @@ class RaceManagementController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $race_management = RaceManagement::find($id);
+        $race_management->event_date = $request->event_date;
+        $race_management->event_place = $request->event_place;
+        $race_management->race_number = $request->race_number;
+        $race_management->hour_data = $request->hour_data;
+        $race_management->minute_data = $request->minute_data;
+        $race_management->race_name = $request->race_name;
+        $race_management->month_data = $request->month_data;
+        $race_management->save();
+       
+        $horse_data = $request->horse_data;
+        $first_running_horse =  RunningHorse::where('race_management_id', $id)->first();
+        $horse_id = $first_running_horse->id;
+        foreach ($horse_data as $key => $value) {
+            # code...
+            $running_horse = RunningHorse::find($horse_id)->update([
+                'name' => ($key+1).':'.$value, 
+                'race_management_id' => $race_management->id,
+            ]);
+            $horse_id++;
+        }
+
+        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
+        return response()->json(['races_data' => $response_data]);
     }
 
     /**
@@ -127,14 +149,14 @@ class RaceManagementController extends Controller
             }
         }else{
             WebRaceResult::where('race_management_id', $id)->delete();
-
+            
             foreach ($race_result as $key => $value) {
                 # code...      'rank' => '1着',
                 $web_race_result = new WebRaceResult();
                 $web_race_result->rank = $value['rank'];
                 $web_race_result->horse = $value['horse'];
                 $web_race_result->odds = $value['odds'];
-                $web_race_result->single = $value['single'];
+                $web_race_result->single = $value['single'] ? $value['single'] : '';
                 $web_race_result->double = $value['double'];
                 $web_race_result->race_management_id = $id;
                 $web_race_result->save();
@@ -143,7 +165,7 @@ class RaceManagementController extends Controller
 
         # Score calculation logic Begin #
         $getExpectedBattle = ExpectedBattle::where('race_management_id', $id)->get();
-        \Log::info(count($getExpectedBattle));
+  
         if (count($getExpectedBattle)) {
 
             foreach ($getExpectedBattle as $key => $value) {
@@ -163,20 +185,6 @@ class RaceManagementController extends Controller
                 if (in_array($prize_horse_award_array[2], $mainArray)) {
                     # code...
                     $single_win_odd_award += $race_result[2]['odds'];
-                }
-
-                $single_win_award = 0;
-                if (in_array($race_result[0]['horse'],$mainArray)) {
-                    # code...
-                    $single_win_award += $race_result[0]['single'];
-                }
-                if (in_array($race_result[1]['horse'],$mainArray)) {
-                    # code...
-                    $single_win_award += $race_result[1]['single'];
-                }
-                if (in_array($race_result[2]['horse'],$mainArray)) {
-                    # code...
-                    $single_win_award += $race_result[2]['single'];
                 }
 
                 $single_win_award_bonus = 0;
@@ -253,7 +261,6 @@ class RaceManagementController extends Controller
                     # code...
                     $triplicate_award_bonus += 50;
                 }
-                \Log::info($triplicate_award_bonus);
 
                 $delete_horse_award_bonus = 0;
                 if (!in_array($value->disappear, $prize_horse_award_array)) {
@@ -279,7 +286,21 @@ class RaceManagementController extends Controller
                     }
                 }
 
-                $total_award_bonus = $single_win_odd_award + $single_win_award + $single_win_award_bonus + $double_win_award_bonus + $horse_racing_award_bonus + $triplicate_award_bonus + $delete_horse_award_bonus;
+                $total_award_bonus = $single_win_odd_award + $single_win_award_bonus + $double_win_award_bonus + $horse_racing_award_bonus + $triplicate_award_bonus + $delete_horse_award_bonus;
+
+                $purchase_money = 100;
+
+                $single_win_probability = 0;
+                if ($mainArray[0] == $race_result[0]['horse']) {
+                    # code...
+                    $single_win_probability = $race_result[0]['single'] * $purchase_money / 100;
+                }
+                
+                $double_win_probability = 0;
+                if (in_array($prize_horse_award_array[0], $mainArray) && in_array($prize_horse_award_array[1], $mainArray) && in_array($prize_horse_award_array[2], $mainArray)) {
+                    # code...
+                    $double_win_probability = ($race_result[0]['double'] + $race_result[1]['double'] + $race_result[2]['double']) * $purchase_money / 100;
+                }
 
                 # Individual player score calculation logic End #
                 $getPlayerRanking = PlayerRanking::where('user_id', $value->user_id)->where('race_management_id',$id)->get();
@@ -293,6 +314,8 @@ class RaceManagementController extends Controller
                             'hole' => !in_array($value->hole, $prize_horse_award_array),
                             'disappear' => !in_array($value->disappear, $prize_horse_award_array),
                             'user_pt' => $total_award_bonus,
+                            'single_win_probability' => $single_win_probability,
+                            'double_win_probability' => $double_win_probability,
                     ]);
                 }else{
                     $player_ranking = new PlayerRanking();
@@ -303,6 +326,8 @@ class RaceManagementController extends Controller
                     $player_ranking->hole = !in_array($value->hole, $prize_horse_award_array);
                     $player_ranking->disappear = !in_array($value->disappear, $prize_horse_award_array);
                     $player_ranking->user_pt = $total_award_bonus;
+                    $player_ranking->single_win_probability = $single_win_probability;
+                    $player_ranking->double_win_probability = $double_win_probability;
                     $player_ranking->user_id = $value->user_id;
                     $player_ranking->race_management_id = $id;
                     $player_ranking->save();

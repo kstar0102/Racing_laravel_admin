@@ -62,9 +62,7 @@ class RankingController extends Controller
             }
             
             $ranking_number = count($data);
-            \Log::info("======================================");
-            \Log::info($data);
-            \Log::info("======================================");
+
             if ($ranking_number) {
                 $double_circle_percent = 0;
                 $single_circle_percent = 0;
@@ -73,6 +71,8 @@ class RankingController extends Controller
                 $hole_percent = 0;
                 $disappear_percent = 0;
                 $point = 0;
+                $single_win_probability = 0;
+                $double_win_probability = 0;
                 foreach ($data as $key => $item) {
                     # code...
                     if ($item->double_circle) {
@@ -100,6 +100,8 @@ class RankingController extends Controller
                         $disappear_percent++;
                     }
                     $point += $item->user_pt;
+                    $single_win_probability += $item->single_win_probability;
+                    $double_win_probability += $item->double_win_probability;
                 }
 
                 $old_ranking_data = array(
@@ -112,8 +114,8 @@ class RankingController extends Controller
                     'five_star' => $this->getDecimal(100 * $five_star_percent / count($data)),
                     'hole' => $this->getDecimal(100 * $hole_percent / count($data)),
                     'disappear' => $this->getDecimal(100 * $disappear_percent / count($data)),
-                    'single' => 0,
-                    'multiple' => 0,
+                    'single' => $single_win_probability / count($data),
+                    'multiple' => $double_win_probability / count($data),
                 );
 
                 array_push($ranking_data, $old_ranking_data);

@@ -35,7 +35,7 @@ class ExpectedBattleController extends Controller
         $race_management_id = $request->race_management_id;
 
         $getExpected = ExpectedBattle::where('user_id', $user_id)->where('race_management_id',$race_management_id)->get();
-        \Log::info( $getExpected);
+
         if (count($getExpected)) {
             # code...
             ExpectedBattle::where('user_id', $user_id)->where('race_management_id', $race_management_id)

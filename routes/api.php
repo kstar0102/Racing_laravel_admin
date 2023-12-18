@@ -143,6 +143,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/racemanagement/get-specific-race-data', [RaceManagementController::class, 'get_specific_race_data']);
     Route::post('/racemanagement', [RaceManagementController::class, 'store']);
     Route::delete('/racemanagement/{id}', [RaceManagementController::class, 'destroy']);
+    Route::put('/racemanagement/{id}', [RaceManagementController::class, 'update']);
     Route::post('/racemanagement/create-race-result', [RaceManagementController::class, 'create_race_result']);
     Route::get('/racemanagement/get-places', [RaceManagementController::class, 'get_places']);
         

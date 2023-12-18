@@ -11,6 +11,8 @@ class RunningHorse extends Model
 
     protected $table = "running_horse";
 
+    protected $fillable = [ 'name', 'race_management_id' ];
+
     public function delete_horses(){
         return $this->belongsTo(DeleteHorse::class, 'name');
     }
