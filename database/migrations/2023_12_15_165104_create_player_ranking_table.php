@@ -16,12 +16,16 @@ class CreatePlayerRankingTable extends Migration
         Schema::create('player_ranking', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->boolean('double_circle');
-            $table->boolean('single_circle');
-            $table->boolean('triangle');
-            $table->boolean('five_star');
-            $table->boolean('hole');
-            $table->boolean('disappear');
+            $table->Integer('double_circle')->default(0);
+            $table->Integer('single_circle')->default(0);
+            $table->Integer('triangle')->default(0);
+            $table->Integer('five_star')->default(0);
+            $table->Integer('hole')->default(0);
+            $table->Integer('disappear')->default(0);
+            $table->Integer('single_win')->default(0);
+            $table->Integer('double_win')->default(0);
+            $table->Integer('horse_racing_win')->default(0);
+            $table->Integer('triple_racing_win')->default(0);
             $table->double('user_pt');
             $table->double('single_win_probability');
             $table->double('double_win_probability');

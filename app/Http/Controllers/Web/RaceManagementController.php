@@ -95,11 +95,19 @@ class RaceManagementController extends Controller
         $first_running_horse =  RunningHorse::where('race_management_id', $id)->first();
         $horse_id = $first_running_horse->id;
         foreach ($horse_data as $key => $value) {
-            # code...
-            $running_horse = RunningHorse::find($horse_id)->update([
-                'name' => ($key+1).':'.$value, 
-                'race_management_id' => $race_management->id,
-            ]);
+            $running_horse = RunningHorse::where('id', $horse_id)->exists();
+            if ($running_horse) {
+                RunningHorse::find($horse_id)->update([
+                    'name' => ($key+1).':'.$value, 
+                    'race_management_id' => $race_management->id,
+                ]);
+            }else{
+                $new_running_horse = new RunningHorse();
+                $new_running_horse->name = ($key+1).':'.$value;
+                $new_running_horse->race_management_id = $race_management->id;
+                $new_running_horse->save();
+            }
+            
             $horse_id++;
         }
 
@@ -187,6 +195,7 @@ class RaceManagementController extends Controller
                 }
 
                 $single_win_odd_award = 0;
+                $single_win = 
                 $prize_horse_award_array = [$first_race_result, $second_race_result, $three_race_restult];
                 $mainArray = [$value->double_circle, $value->single_circle, $value->triangle, $value->five_star, $value->hole];
                 foreach ($prize_horse_award_array[0] as $key => $data) {
@@ -229,6 +238,7 @@ class RaceManagementController extends Controller
                 \Log::info($double_win_award_bonus);
 
                 $horse_racing_award_bonus = 0;
+                $horse_racing_win = 0;
                 $horse_racing_award_array = [];
                 foreach ($first_race_result as $key => $item) {
                     array_push($horse_racing_award_array, $item);
@@ -239,58 +249,63 @@ class RaceManagementController extends Controller
 
                 if (in_array($mainArray[0], $horse_racing_award_array) && in_array($mainArray[1], $horse_racing_award_array)) {
                     $horse_racing_award_bonus += 200;
+                    $horse_racing_win++;
                 }
                 if (in_array($mainArray[0], $horse_racing_award_array) && in_array($mainArray[2], $horse_racing_award_array)) {
                     $horse_racing_award_bonus += 150;
+                    $horse_racing_win++;
                 }
                 if (in_array($mainArray[0], $horse_racing_award_array) && in_array($mainArray[3], $horse_racing_award_array)) {
                     $horse_racing_award_bonus += 100;
+                    $horse_racing_win++;
                 }
                 if (in_array($mainArray[0], $horse_racing_award_array) && in_array($mainArray[4], $horse_racing_award_array)) {
                     $horse_racing_award_bonus += 50;
+                    $horse_racing_win++;
                 }
                 \Log::info($horse_racing_award_bonus);
 
                 $triplicate_award_bonus = 0;
+                $triplicate_win = 0;
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[2], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 500;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 450;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 400;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[2], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 350;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[2], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 300;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[0], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 250;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[2], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 200;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[2], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 150;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[1], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 100;
+                    $triplicate_win++;
                 }
                 if (in_array($mainArray[2], $double_win_award_array) && in_array($mainArray[3], $double_win_award_array) && in_array($mainArray[4], $double_win_award_array)) {
-                    # code...
                     $triplicate_award_bonus += 50;
+                    $triplicate_win++;
                 }
                 \Log::info($triplicate_award_bonus);
 
@@ -323,19 +338,24 @@ class RaceManagementController extends Controller
                 $purchase_money = 100;
 
                 $single_win_probability = 0;
+                $single_win = 0;
+
                 foreach ($race_result as $key => $data) {
                     if ($data['rank'] == '1着') {
                         if ($data['horse'] == $mainArray[0]) {
                             $single_win_probability += $data['single'] * $purchase_money / 100;
+                            $single_win++;
                         }
                     }
                 }
                 \Log::info($single_win_probability);
 
                 $double_win_probability = 0;
+                $double_win = 0;
                 foreach ($race_result as $key => $data) {
                     if (in_array($data['horse'], $mainArray)) {
                         $double_win_probability += $data['double'] * $purchase_money / 100;
+                        $double_win++;
                     }
                 }
                 \Log::info($double_win_probability);
@@ -355,6 +375,10 @@ class RaceManagementController extends Controller
                             'user_pt' => $total_award_bonus,
                             'single_win_probability' => $single_win_probability,
                             'double_win_probability' => $double_win_probability,
+                            'single_win' => $single_win,
+                            'double_win' => $double_win,
+                            'horse_racing_win' => $horse_racing_win,
+                            'triple_racing_win' => $triplicate_win,
                     ]);
                 }else{
                     $player_ranking = new PlayerRanking();
@@ -369,6 +393,10 @@ class RaceManagementController extends Controller
                     $player_ranking->double_win_probability = $double_win_probability;
                     $player_ranking->user_id = $value->user_id;
                     $player_ranking->race_management_id = $id;
+                    $player_ranking->single_win = $single_win;
+                    $player_ranking->double_win = $double_win;
+                    $player_ranking->horse_racing_win = $horse_racing_win;
+                    $player_ranking->triple_racing_win = $triplicate_win;
                     $player_ranking->save();
                 }
                 // # Individual player score calculation logic Begin #

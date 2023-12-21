@@ -16,4 +16,28 @@ class RunningHorse extends Model
     public function delete_horses(){
         return $this->belongsTo(DeleteHorse::class, 'name');
     }
+
+    public function double_circles(){
+        return $this->hasOne(ExpectedBattle::class, 'double_circle');
+    }
+
+    public function single_circles(){
+        return $this->hasOne(ExpectedBattle::class, 'single_circle');
+    }
+
+    public function triangles(){
+        return $this->hasOne(ExpectedBattle::class, 'triangle');
+    }
+
+    public function five_stars(){
+        return $this->hasOne(ExpectedBattle::class, 'five_star');
+    }
+
+    public function holes(){
+        return $this->hasOne(ExpectedBattle::class, 'hole');
+    }
+
+    public function disappears(){
+        return $this->hasOne(ExpectedBattle::class, 'disappear');
+    }
 }

@@ -24,4 +24,8 @@ class RaceManagement extends Model
     public function delete_horses(){
         return $this->hasMany(DeleteHorse::class);
     }
+
+    public function player_rankings(){
+        return $this->hasOne(PlayerRanking::class, 'race_management_id');
+    }
 }

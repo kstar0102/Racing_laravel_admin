@@ -40,6 +40,8 @@ use Carbon\Carbon;
 
 Route::post('/user', [UserController::class, 'login']);
 
+Route::post('/user/{id}', [UserController::class, 'update']);
+
 Route::post('/user-register', [UserController::class, 'register']);
 
 Route::get('/user/{id}', [UserController::class, 'show']);
@@ -150,17 +152,18 @@ Route::group(['middleware' => ['verifyJwt']], function () {
         // * ** *** expected battle *** *** *
     Route::apiResource('expectedbattle', ExpectedBattleController::class);
 
+    
         // * ** *** ranking *** *** *
-    // Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
-    // Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
-    // Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
-    // Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
+    Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
+    Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
+    Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
+    Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
+
+        // * ** *** mypage *** *** *
+    Route::get('/mypage/{id}', [RankingController::class, 'getMyPageUserData']);
    // ===================================================================================================
 });
-Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
-Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
-Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
-Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
+
 Route::get('/test', function(){
     $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
 

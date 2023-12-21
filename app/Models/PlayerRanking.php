@@ -14,4 +14,8 @@ class PlayerRanking extends Model
     public function users(){
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function race_managements(){
+        return $this->belongsTo(RaceManagement::class, 'race_management_id');
+    }
 }

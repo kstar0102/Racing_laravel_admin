@@ -7,6 +7,7 @@ use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Pasture;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -150,7 +151,60 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'login_id' => 'required',
+            'old_password' => 'required',
+            'new_password' => 'required',
+            // 'imageUrl' => 'required|image|mimes:jpeg,png,jpg,gif', // Adjust the validation rules as per your requirements
+        ]);
+        
+        $userData = [
+            'login_id' => $request->input('login_id'),
+            'password' => bcrypt($request->input('new_password')),
+        ];
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['maessage' => 'User not found'], 404);
+        }else if (!Hash::check($request->input('old_password'), $user->password)) {
+            return response()->json(['maessage' => 'Incorrect old password'], 400);
+        }
+        
+        if ($request->hasFile('imageUrl')) {
+            $image = $request->file('imageUrl');
+            $imageName = time().'.'.$image->getClientOriginalExtension();
+            $image->move(public_path('img/user_images'), $imageName);
+            $userData['image_url'] = $imageName;
+        }
+        
+        $user->update($userData);
+        
+        $credentials = [
+            'login_id' => $request->input('login_id'),
+            'password' => $request->input('new_password')
+        ];
+
+        $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+
+        if (Auth::attempt($credentials)) {
+            // Authentication passed...
+            $user = User::where('login_id', $credentials['login_id'])->first();
+            $pasture = Pasture::where('user_id', $user['id'])->first();
+            \Log::info("====================");
+            \Log::info($token);
+            \Log::info(Auth::user());
+            \Log::info("====================");
+            return response()->json([
+                'token' => $token,
+                'user' => Auth::user(),
+                'pasture' => $pasture
+            ]);
+        }
+
+        else{
+            return response()->json(['token' => null]);
+        }
     }
 
     /**
@@ -168,4 +222,5 @@ class UserController extends Controller
         dd("hh");
         return response()->json(['data' => $data]);
     }
+
 }
