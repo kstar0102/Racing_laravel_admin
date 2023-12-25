@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\PlayerRanking;
 use App\Models\ExpectedBattle;
+use App\Models\User;
 
 class RankingController extends Controller
 {
@@ -37,7 +38,7 @@ class RankingController extends Controller
     }
 
 
-    public function getMyPageUserData($id){
+    public function get_mypage_userdata($id){
         $month = Carbon::today()->format('m');
         $currentMonth = Carbon::now()->month;
         $month_data = PlayerRanking::whereMonth('created_at', $currentMonth)->where('user_id', $id)->with('users')->get();
@@ -85,7 +86,9 @@ class RankingController extends Controller
         }
 
         $badge_grade;
-        if (($first_hit_rate / $times) >= 90) {
+        if ($times ==0 || 10 > ($first_hit_rate / $times)) {
+            $badge_grade = 9;
+        }else if (($first_hit_rate / $times) >= 90) {
             $badge_grade = 0;
         } else if (90 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 80) {
             $badge_grade = 1;
@@ -103,8 +106,6 @@ class RankingController extends Controller
             $badge_grade = 7;
         } else if (20 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 10) {
             $badge_grade = 8;
-        } else if (10 > ($first_hit_rate / $times)) {
-            $badge_grade = 9;
         }
          
         $total_ranking_data = [
@@ -121,6 +122,112 @@ class RankingController extends Controller
             'second_half_year_ranking_data' => $second_half_year_ranking_data
         ];
         return response()->json(['my_ranking_data' => $total_ranking_data]);
+    }
+
+    public function get_grade_management_userdata(){
+        $all_user_data = User::all();
+        
+        $total_user_data = array();
+        foreach ($all_user_data as $person_key => $person_data) {
+            $month = Carbon::today()->format('m');
+            $currentMonth = Carbon::now()->month;
+            $month_data = PlayerRanking::whereMonth('created_at', $currentMonth)->where('user_id', $person_data->id)->with('users')->get();
+            $month_ranking_data = $this->get_my_rank_data($month_data);
+
+            $currentYear = Carbon::now()->year;
+            $year_data = PlayerRanking::whereYear('created_at', $currentYear)->where('user_id', $person_data->id)->with('users')->get();
+            $year_ranking_data = $this->get_my_rank_data($year_data);
+
+            $first_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 1)
+                ->whereMonth('created_at', '<=', 6)
+                ->where('user_id', $person_data->id)->with('users')
+                ->get();
+            $first_half_year_ranking_data = $this->get_my_rank_data($first_half_year_data);
+
+            $second_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 7)
+                ->whereMonth('created_at', '<=', 12)
+                ->where('user_id', $person_data->id)->with('users')
+                ->get();
+            $second_half_year_ranking_data = $this->get_my_rank_data($second_half_year_data);
+
+            $total_player_ranking_data = PlayerRanking::where('user_id', $person_data->id)->with('race_managements')->get();
+            $new_total_player_ranking_data = array();
+
+            $times = count($total_player_ranking_data);
+            $first_hit_rate = 0;
+
+            $single_win = 0;
+            $double_win = 0;
+            $horse_racing_win = 0;
+            $triple_racing_win = 0;
+            $win_award = 0;
+            
+            foreach ($total_player_ranking_data as $key => $value) {
+                # code...
+                $addValue = ExpectedBattle::where('user_id', $person_data->id)->where('race_management_id', $value->race_managements->id)->with('double_circles')->with('single_circles')->with('triangles')->with('five_stars')->with('holes')->with('disappears')->first();
+                $array1 = json_decode($addValue, true);
+                $array2 = json_decode($value, true);
+                $newArray = array_merge($array1, $array2);
+                array_push($new_total_player_ranking_data, $newArray);
+                $first_hit_rate += $value['double_circle'] * 100;
+                $single_win += $value['single_win'];
+                $double_win += $value['double_win'];
+                $horse_racing_win += $value['horse_racing_win'];
+                $triple_racing_win += $value['triple_racing_win'];
+                $win_award += $value['user_pt'];
+            }
+
+            $badge_grade;
+            if ($times ==0 || 10 > ($first_hit_rate / $times)) {
+                $badge_grade = 9;
+            }else if (($first_hit_rate / $times) >= 90) {
+                $badge_grade = 0;
+            } else if (90 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 80) {
+                $badge_grade = 1;
+            } else if(80 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 70) {
+                $badge_grade = 2;
+            } else if (70 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 60) {
+                $badge_grade = 3;
+            } else if (60 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 50) {
+                $badge_grade = 4;
+            } else if (50 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 40) {
+                $badge_grade = 5;
+            } else if (40 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 30) {
+                $badge_grade = 6;
+            } else if (30 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 20) {
+                $badge_grade = 7;
+            } else if (20 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 10) {
+                $badge_grade = 8;
+            }
+
+            $user_data = [
+                'id' => $person_key,
+                'times' => $times,
+                'win_award' => $win_award,
+                'user_name' => $person_data->name,
+                'user_image_url' => $person_data->image_url,
+                'badge_grade' => $badge_grade,
+                'single_win' => $single_win,
+                'double_win' => $double_win,
+                'horse_racing_win' => $horse_racing_win,
+                'triple_racing_win' => $triple_racing_win,
+                'total_ranking_data' => $new_total_player_ranking_data,
+                'month_ranking_data' => $month_ranking_data,
+                'year_ranking_data' => $year_ranking_data,
+                'first_half_year_ranking_data' => $first_half_year_ranking_data,
+                'second_half_year_ranking_data' => $second_half_year_ranking_data
+            ];
+
+            array_push($total_user_data, $user_data);
+
+        }
+        // Extract the 'single_win' column for sorting
+        $win_award = array_column($total_user_data, 'win_award');
+
+        // Sort the $total_user_data array based on the 'single_win' column
+        array_multisort($win_award, SORT_DESC, $total_user_data);
+
+        return response()->json(['grade_management_data' => $total_user_data]);
     }
 
     public function get_ranking_data($check_value, $id){
@@ -235,29 +342,22 @@ class RankingController extends Controller
         $single_win_probability = 0;
         $double_win_probability = 0;
         foreach ($data as $key => $item) {
-            # code...
             if ($item->double_circle) {
-                # code...
                 $double_circle_percent++;
             }
             if ($item->single_circle) {
-                # code...
                 $single_circle_percent++;
             }
             if ($item->triangle) {
-                # code...
                 $triangle_percent++;
             }
             if ($item->five_star_percent) {
-                # code...
                 $five_star_percent++;
             }
             if ($item->hole) {
-                # code...
                 $hole_percent++;
             }
             if ($item->disappear) {
-                # code...
                 $disappear_percent++;
             }
             $point += $item->user_pt;

@@ -11,6 +11,7 @@ use App\Models\WebRaceResult;
 use App\Models\DeleteHorse;
 use App\Models\ExpectedBattle;
 use App\Models\PlayerRanking;
+use App\Models\User;
 
 class RaceManagementController extends Controller
 {
@@ -364,6 +365,13 @@ class RaceManagementController extends Controller
                 $getPlayerRanking = PlayerRanking::where('user_id', $value->user_id)->where('race_management_id',$id)->get();
 
                 if (count($getPlayerRanking)) {
+                    $oldPlayerRanking = PlayerRanking::where('user_id', $value->user_id)->where('race_management_id', $id)->first();
+                    $oldUser = User::find($value->user_id);
+
+                    User::where('id', $value->user_id)->update([
+                        'user_pt' => ($oldUser->user_pt - $oldPlayerRanking->user_pt + $total_award_bonus)
+                    ]);
+
                     PlayerRanking::where('user_id', $value->user_id)->where('race_management_id', $id)
                         ->update([
                             'double_circle' => in_array($value->double_circle, $double_win_award_array), 
@@ -381,6 +389,12 @@ class RaceManagementController extends Controller
                             'triple_racing_win' => $triplicate_win,
                     ]);
                 }else{
+                    $oldUser = User::find($value->user_id);
+
+                    User::where('id', $value->user_id)->update([
+                        'user_pt' => ($oldUser->user_pt + $total_award_bonus)
+                    ]);
+
                     $player_ranking = new PlayerRanking();
                     $player_ranking->double_circle = in_array($value->double_circle, $double_win_award_array);
                     $player_ranking->single_circle = in_array($value->single_circle, $double_win_award_array);
