@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RaceManagement;
 use App\Models\ExpectedBattle;
+use Carbon\Carbon;
 
 class ExpectedBattleController extends Controller
 {
@@ -18,7 +19,21 @@ class ExpectedBattleController extends Controller
     {
         //
         $expected_race_data = RaceManagement::where('race_state', 0)->with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
-        return response()->json(['expected_race_data' => $expected_race_data]);
+
+        $new_expected_race_data = array();
+        foreach ($expected_race_data as $key => $value) {
+            $datetimeString = $value->event_date . ' ' . $value->hour_data . ':' . $value->minute_data;
+
+            $givenDateTime = Carbon::parse($datetimeString);
+            $adjustedGivenDateTime = $givenDateTime->subMinutes(2); // Subtract 2 minutes from the given time
+            $currentDateTime = Carbon::now();
+
+            if ($adjustedGivenDateTime->gt($currentDateTime)) {
+                array_push($new_expected_race_data, $value);
+            }
+        }
+        
+        return response()->json(['expected_race_data' => $new_expected_race_data]);
     }
 
     /**

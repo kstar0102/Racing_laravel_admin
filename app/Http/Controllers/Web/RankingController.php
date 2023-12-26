@@ -230,6 +230,126 @@ class RankingController extends Controller
         return response()->json(['grade_management_data' => $total_user_data]);
     }
 
+    public function get_user_management_userdata(){
+        $all_user_data = User::all();
+        
+        $total_user_data = array();
+        foreach ($all_user_data as $person_key => $person_data) {
+            $total_player_ranking_data = PlayerRanking::where('user_id', $person_data->id)->with('race_managements')->get();
+
+            $times = count($total_player_ranking_data);
+            $first_hit_rate = 0;
+            $win_award = 0;
+            
+            foreach ($total_player_ranking_data as $key => $value) {
+                # code...
+                $first_hit_rate += $value['double_circle'] * 100;
+                $win_award += $value['user_pt'];
+            }
+
+            $badge_grade;
+            if ($times ==0 || 10 > ($first_hit_rate / $times)) {
+                $badge_grade = 9;
+            }else if (($first_hit_rate / $times) >= 90) {
+                $badge_grade = 0;
+            } else if (90 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 80) {
+                $badge_grade = 1;
+            } else if(80 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 70) {
+                $badge_grade = 2;
+            } else if (70 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 60) {
+                $badge_grade = 3;
+            } else if (60 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 50) {
+                $badge_grade = 4;
+            } else if (50 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 40) {
+                $badge_grade = 5;
+            } else if (40 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 30) {
+                $badge_grade = 6;
+            } else if (30 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 20) {
+                $badge_grade = 7;
+            } else if (20 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 10) {
+                $badge_grade = 8;
+            }
+
+            $user_data = [
+                'id' => $person_key + 1,
+                'user_name' => $person_data->name,
+                'user_role' => $person_data->role,
+                'user_image_url' => $person_data->image_url,
+                'badge_grade' => $badge_grade,
+                'win_award' => $win_award,
+                'real_id' => $person_data->id,
+            ];
+
+            array_push($total_user_data, $user_data);
+
+        }
+
+        return response()->json(['user_management_data' => $total_user_data]);
+    }
+
+    
+    public function update_user_management_userdata(Request $request, string $id){
+        User::where('id', $id)->update([
+            'name' => $request['user_name'],
+            'role' => $request['user_role']
+        ]);
+        
+        $all_user_data = User::all();
+        
+        $total_user_data = array();
+        foreach ($all_user_data as $person_key => $person_data) {
+            $total_player_ranking_data = PlayerRanking::where('user_id', $person_data->id)->with('race_managements')->get();
+
+            $times = count($total_player_ranking_data);
+            $first_hit_rate = 0;
+            $win_award = 0;
+            
+            foreach ($total_player_ranking_data as $key => $value) {
+                # code...
+                $first_hit_rate += $value['double_circle'] * 100;
+                $win_award += $value['user_pt'];
+            }
+
+            $badge_grade;
+            if ($times ==0 || 10 > ($first_hit_rate / $times)) {
+                $badge_grade = 9;
+            }else if (($first_hit_rate / $times) >= 90) {
+                $badge_grade = 0;
+            } else if (90 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 80) {
+                $badge_grade = 1;
+            } else if(80 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 70) {
+                $badge_grade = 2;
+            } else if (70 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 60) {
+                $badge_grade = 3;
+            } else if (60 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 50) {
+                $badge_grade = 4;
+            } else if (50 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 40) {
+                $badge_grade = 5;
+            } else if (40 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 30) {
+                $badge_grade = 6;
+            } else if (30 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 20) {
+                $badge_grade = 7;
+            } else if (20 > ($first_hit_rate / $times) && ($first_hit_rate / $times) >= 10) {
+                $badge_grade = 8;
+            }
+
+            $user_data = [
+                'id' => $person_key + 1,
+                'user_name' => $person_data->name,
+                'user_role' => $person_data->role,
+                'user_image_url' => $person_data->image_url,
+                'badge_grade' => $badge_grade,
+                'win_award' => $win_award,
+                'real_id' => $person_data->id,
+            ];
+
+            array_push($total_user_data, $user_data);
+
+        }
+
+        return response()->json(['user_management_data' => $total_user_data]);
+    }
+
     public function get_ranking_data($check_value, $id){
 
         $uniqueUserData = PlayerRanking::all()->pluck('user_id')->unique();

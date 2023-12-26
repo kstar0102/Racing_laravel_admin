@@ -191,10 +191,6 @@ class UserController extends Controller
             // Authentication passed...
             $user = User::where('login_id', $credentials['login_id'])->first();
             $pasture = Pasture::where('user_id', $user['id'])->first();
-            \Log::info("====================");
-            \Log::info($token);
-            \Log::info(Auth::user());
-            \Log::info("====================");
             return response()->json([
                 'token' => $token,
                 'user' => Auth::user(),
@@ -219,8 +215,14 @@ class UserController extends Controller
     public function getUser(Request $request){
         $data = $request->input('data');
         $data = User::where('id', $data['user_id'])->get();
-        dd("hh");
+
         return response()->json(['data' => $data]);
     }
 
+    public function format_password(Request $request){
+        User::where('id', $request['id'])->update([
+            'password' => bcrypt('12345')
+        ]);
+        return response()->json('success');
+    }
 }

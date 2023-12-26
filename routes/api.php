@@ -164,10 +164,15 @@ Route::group(['middleware' => ['verifyJwt']], function () {
 
     
         // * ** *** mypage *** *** *
-    // Route::get('/grade_management', [RankingController::class, 'get_grade_management_userdata']);
+    Route::get('/grade_management', [RankingController::class, 'get_grade_management_userdata']);
+
+    // * ** *** mypage *** *** *
+    Route::get('/user_management', [RankingController::class, 'get_user_management_userdata']);
+    Route::put('/user_management/{id}', [RankingController::class, 'update_user_management_userdata']);
+    Route::post('/user_management/format', [UserController::class, 'format_password']);
    // ===================================================================================================
 });
-Route::get('/grade_management', [RankingController::class, 'get_grade_management_userdata']);
+
 Route::get('/test', function(){
     $startTime = Carbon::createFromTime(12, 0, 0); // Create a Carbon instance for 12 o'clock
 
