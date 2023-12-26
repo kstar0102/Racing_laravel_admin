@@ -24,58 +24,64 @@ use App\Http\Controllers\IlleWordController;
 | Admin Router
 */
 
-// first login page
-Route::get('/', function () {
-    return view('login');
+Route::get('/{path}', function(){
+    return file_get_contents(public_path('index.html'));
+})->where('path','.*');
+
+Route::prefix('admin')->group(function(){
+    // first login page
+    Route::get('/', function () {
+        return view('login');
+    });
+
+    // dashboard page
+    Route::get('/dashboard', function () {
+        return view('admin/content/dashboard');
+    })->name('dashboard');
+
+    // user page
+    Route::resource('resources', UserController::class)->names([
+        'index' => 'user_index',
+        'store' => 'login_action'
+    ]);
+    Route::get('delete_user/{id}', [UserController::class, 'destroy']);
+
+    //pasture page
+    Route::resource('pasture', PastureController::class)->names([
+        'index' => 'pasture_index',
+    ]);
+    // lineage page
+    Route::resource('lineage', LineageController::class)->names([
+        'index' => 'lineage_index',
+    ]);
+    // horse page
+    Route::resource('horse', HorseController::class)->names([
+        'index' =>'horse_index',
+    ]);
+    // pool page
+    Route::resource('pool', PoolController::class)->names([
+        'index' => 'pool_index',
+    ]);
+    //slope page
+    Route::resource('slope', SlopeController::class)->names([
+        'index' => 'slope_index',
+    ]);
+    //truck page
+    Route::resource('truck', TruckController::class)->names([
+        'index' => 'truck_index',
+    ]);
+    //ranch page
+    Route::resource('ranch', RanchController::class)->names([
+        'index' => 'ranch_index',
+    ]);
+    // rece plan page
+    Route::resource('raceplan', RacePlanController::class)->names([
+        'index' => 'racePlan_index',
+    ]);
+    // illegalwords page
+    Route::resource('illeword', IlleWordController::class)->names([
+        'index' => 'illeword_index',
+        'store' => 'illeword_save'
+    ]);
+    Route::get('delete_illegal_word/{id}', [IlleWordController::class, 'destroy']);
 });
-
-// dashboard page
-Route::get('/dashboard', function () {
-    return view('admin/content/dashboard');
-})->name('dashboard');
-
-// user page
-Route::resource('resources', UserController::class)->names([
-    'index' => 'user_index',
-    'store' => 'login_action'
-]);
-Route::get('delete_user/{id}', [UserController::class, 'destroy']);
-
-//pasture page
-Route::resource('pasture', PastureController::class)->names([
-    'index' => 'pasture_index',
-]);
-// lineage page
-Route::resource('lineage', LineageController::class)->names([
-    'index' => 'lineage_index',
-]);
-// horse page
-Route::resource('horse', HorseController::class)->names([
-    'index' =>'horse_index',
-]);
-// pool page
-Route::resource('pool', PoolController::class)->names([
-    'index' => 'pool_index',
-]);
-//slope page
-Route::resource('slope', SlopeController::class)->names([
-    'index' => 'slope_index',
-]);
-//truck page
-Route::resource('truck', TruckController::class)->names([
-    'index' => 'truck_index',
-]);
-//ranch page
-Route::resource('ranch', RanchController::class)->names([
-    'index' => 'ranch_index',
-]);
-// rece plan page
-Route::resource('raceplan', RacePlanController::class)->names([
-    'index' => 'racePlan_index',
-]);
-// illegalwords page
-Route::resource('illeword', IlleWordController::class)->names([
-    'index' => 'illeword_index',
-    'store' => 'illeword_save'
-]);
-Route::get('delete_illegal_word/{id}', [IlleWordController::class, 'destroy']);
