@@ -83,5 +83,5 @@ Route::prefix('admin')->group(function(){
 });
 
 Route::get('/{path}', function(){
-    return file_get_contents(public_path('index.html'));
+    return file_get_contents('index.html');
 })->where('path','.*');
