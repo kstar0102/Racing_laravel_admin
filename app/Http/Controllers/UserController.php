@@ -90,18 +90,19 @@ class UserController extends Controller
         $login_id = $data['login_id'];
         $password = $data['password'];
         $email = $data['user_email'];
-        $name = $data['user_name'];
+        // $name = $data['user_name'];
 
         $user = new User();
 
-        $user->name = $name;
+        $user->name = $login_id;
         $user->email = $email;
         $user->login_id = $login_id;
         $user->password = bcrypt($password);
         $user->user_pt = 5000;
         $user->level = 0;
         $user->role = 0;
-        
+        $user->image_url = "default.jpg";
+
         $user->save();
 
         $credentials = [
