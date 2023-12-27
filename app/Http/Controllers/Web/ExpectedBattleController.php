@@ -18,6 +18,7 @@ class ExpectedBattleController extends Controller
     public function index()
     {
         //
+        \Log::info("======================");
         $expected_race_data = RaceManagement::where('race_state', 0)->with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
 
         $new_expected_race_data = array();
