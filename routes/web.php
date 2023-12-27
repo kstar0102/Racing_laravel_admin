@@ -24,10 +24,6 @@ use App\Http\Controllers\IlleWordController;
 | Admin Router
 */
 
-Route::get('/{path}', function(){
-    return file_get_contents(public_path('index.html'));
-})->where('path','.*');
-
 Route::prefix('admin')->group(function(){
     // first login page
     Route::get('/', function () {
@@ -85,3 +81,7 @@ Route::prefix('admin')->group(function(){
     ]);
     Route::get('delete_illegal_word/{id}', [IlleWordController::class, 'destroy']);
 });
+
+Route::get('/{path}', function(){
+    return file_get_contents(public_path('index.html'));
+})->where('path','.*');

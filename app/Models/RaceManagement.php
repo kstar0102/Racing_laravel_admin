@@ -10,7 +10,7 @@ class RaceManagement extends Model
     use HasFactory;
 
     public function places(){
-        return $this->belongsTo(places::class, 'event_place');
+        return $this->belongsTo(Places::class, 'event_place');
     }
 
     public function running_horses(){
