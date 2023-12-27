@@ -80,7 +80,7 @@ class RankingController extends Controller
             array_push($new_total_player_ranking_data, $newArray);
             $first_hit_rate += $value['double_circle'] * 100;
             $single_win += $value['single_win'];
-            $double_win += $value['double_win'];
+            $double_win += $value['double_win_bonus'];
             $horse_racing_win += $value['horse_racing_win'];
             $triple_racing_win += $value['triple_racing_win'];
         }
@@ -171,7 +171,7 @@ class RankingController extends Controller
                 array_push($new_total_player_ranking_data, $newArray);
                 $first_hit_rate += $value['double_circle'] * 100;
                 $single_win += $value['single_win'];
-                $double_win += $value['double_win'];
+                $double_win += $value['double_win_bonus'];
                 $horse_racing_win += $value['horse_racing_win'];
                 $triple_racing_win += $value['triple_racing_win'];
                 $win_award += $value['user_pt'];

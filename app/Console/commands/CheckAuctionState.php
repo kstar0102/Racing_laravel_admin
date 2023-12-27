@@ -17,6 +17,7 @@ class CheckAuctionState extends Command
      *
      * @var string
      */
+    
     protected $signature = 'check_auction_state';
 
     /**

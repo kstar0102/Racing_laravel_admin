@@ -23,6 +23,7 @@ class CreatePlayerRankingTable extends Migration
             $table->Integer('hole')->default(0);
             $table->Integer('disappear')->default(0);
             $table->Integer('single_win')->default(0);
+            $table->Integer('double_win_bonus')->default(0);
             $table->Integer('double_win')->default(0);
             $table->Integer('horse_racing_win')->default(0);
             $table->Integer('triple_racing_win')->default(0);

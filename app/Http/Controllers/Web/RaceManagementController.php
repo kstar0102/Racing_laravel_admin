@@ -196,7 +196,6 @@ class RaceManagementController extends Controller
                 }
 
                 $single_win_odd_award = 0;
-                $single_win = 
                 $prize_horse_award_array = [$first_race_result, $second_race_result, $three_race_restult];
                 $mainArray = [$value->double_circle, $value->single_circle, $value->triangle, $value->five_star, $value->hole];
                 foreach ($prize_horse_award_array[0] as $key => $data) {
@@ -223,6 +222,7 @@ class RaceManagementController extends Controller
                 \Log::info($single_win_award_bonus);
 
                 $double_win_award_bonus = 0;
+                $double_win_bonus = 0;
                 $double_win_award_array = [];
                 foreach ($first_race_result as $key => $item) {
                     array_push($double_win_award_array, $item);
@@ -235,6 +235,7 @@ class RaceManagementController extends Controller
                 }
                 if (in_array($mainArray[0], $double_win_award_array)) {
                     $double_win_award_bonus += 100;
+                    $double_win_bonus++;
                 }
                 \Log::info($double_win_award_bonus);
 
@@ -384,6 +385,7 @@ class RaceManagementController extends Controller
                             'single_win_probability' => $single_win_probability,
                             'double_win_probability' => $double_win_probability,
                             'single_win' => $single_win,
+                            'double_win_bonus' => $double_win_bonus,
                             'double_win' => $double_win,
                             'horse_racing_win' => $horse_racing_win,
                             'triple_racing_win' => $triplicate_win,
@@ -408,6 +410,7 @@ class RaceManagementController extends Controller
                     $player_ranking->user_id = $value->user_id;
                     $player_ranking->race_management_id = $id;
                     $player_ranking->single_win = $single_win;
+                    $player_ranking->double_win_bonus = $double_win_bonus;
                     $player_ranking->double_win = $double_win;
                     $player_ranking->horse_racing_win = $horse_racing_win;
                     $player_ranking->triple_racing_win = $triplicate_win;
