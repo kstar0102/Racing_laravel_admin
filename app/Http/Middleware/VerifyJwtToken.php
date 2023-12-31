@@ -24,7 +24,7 @@ class VerifyJwtToken
             if ($key !== null) {
                 $decoded = JWT::decode($jwt, new key ($key,'HS256'));
                 $credentials = [
-                    'login_id' => $decoded->login_id,
+                    'email' => $decoded->email,
                     'password' => $decoded->password
                 ];
                 if(!Auth::attempt($credentials)){

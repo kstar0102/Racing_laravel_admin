@@ -58,10 +58,10 @@ class UserController extends Controller
     {
         $data = request()->input('data');
 
-        $login_id = $data['login_id'];
+        $email = $data['user_email'];
         $password = $data['password'];
         $credentials = [
-            'login_id' => $login_id,
+            'email' => $email,
             'password' => $password
         ];
 
@@ -69,7 +69,7 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
-            $user = User::where('login_id', $credentials['login_id'])->first();
+            $user = User::where('email', $credentials['email'])->first();
             $pasture = Pasture::where('user_id', $user['id'])->first();
             return response()->json([
                 'token' => $token,
@@ -106,7 +106,7 @@ class UserController extends Controller
         $user->save();
 
         $credentials = [
-            'login_id' => $login_id,
+            'email' => $email,
             'password' => $password
         ];
 
@@ -114,7 +114,7 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
-            $user = User::where('login_id', $credentials['login_id'])->first();
+            $user = User::where('email', $credentials['email'])->first();
             $pasture = Pasture::where('user_id', $user['id'])->first();
             return response()->json([
                 'token' => $token,
@@ -182,7 +182,7 @@ class UserController extends Controller
         $user->update($userData);
         
         $credentials = [
-            'login_id' => $request->input('login_id'),
+            'email' => $user->email,
             'password' => $request->input('new_password')
         ];
 
@@ -190,7 +190,7 @@ class UserController extends Controller
 
         if (Auth::attempt($credentials)) {
             // Authentication passed...
-            $user = User::where('login_id', $credentials['login_id'])->first();
+            $user = User::where('email', $credentials['email'])->first();
             $pasture = Pasture::where('user_id', $user['id'])->first();
             return response()->json([
                 'token' => $token,
