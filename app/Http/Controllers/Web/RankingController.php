@@ -28,12 +28,16 @@ class RankingController extends Controller
     }
 
     public function first_half_year(){
-        $ranking_data = $this->get_ranking_data('', 2);
+        $currentYear = Carbon::now()->year;
+
+        $ranking_data = $this->get_ranking_data($currentYear, 2);
         return response()->json(['ranking_data' => $ranking_data]);
     }
 
     public function second_half_year(){
-        $ranking_data = $this->get_ranking_data('', 3);
+        $currentYear = Carbon::now()->year;
+
+        $ranking_data = $this->get_ranking_data($currentYear, 3);
         return response()->json(['ranking_data' => $ranking_data]);
     }
 
@@ -48,13 +52,15 @@ class RankingController extends Controller
         $year_data = PlayerRanking::whereYear('created_at', $currentYear)->where('user_id', $id)->with('users')->get();
         $year_ranking_data = $this->get_my_rank_data($year_data);
 
-        $first_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 1)
+        $first_half_year_data = PlayerRanking::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', '>=', 1)
             ->whereMonth('created_at', '<=', 6)
             ->where('user_id', $id)->with('users')
             ->get();
         $first_half_year_ranking_data = $this->get_my_rank_data($first_half_year_data);
 
-        $second_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 7)
+        $second_half_year_data = PlayerRanking::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', '>=', 7)
             ->whereMonth('created_at', '<=', 12)
             ->where('user_id', $id)->with('users')
             ->get();
@@ -138,13 +144,15 @@ class RankingController extends Controller
             $year_data = PlayerRanking::whereYear('created_at', $currentYear)->where('user_id', $person_data->id)->with('users')->get();
             $year_ranking_data = $this->get_my_rank_data($year_data);
 
-            $first_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 1)
+            $first_half_year_data = PlayerRanking::whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', '>=', 1)
                 ->whereMonth('created_at', '<=', 6)
                 ->where('user_id', $person_data->id)->with('users')
                 ->get();
             $first_half_year_ranking_data = $this->get_my_rank_data($first_half_year_data);
 
-            $second_half_year_data = PlayerRanking::whereMonth('created_at', '>=', 7)
+            $second_half_year_data = PlayerRanking::whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', '>=', 7)
                 ->whereMonth('created_at', '<=', 12)
                 ->where('user_id', $person_data->id)->with('users')
                 ->get();
@@ -355,7 +363,7 @@ class RankingController extends Controller
         $uniqueUserData = PlayerRanking::all()->pluck('user_id')->unique();
 
         $ranking_data = [];
-        
+
         foreach ($uniqueUserData as $key => $value) {
             # code...
             $data = [];
@@ -365,12 +373,14 @@ class RankingController extends Controller
             }else if($id == 1){
                 $data = PlayerRanking::whereYear('created_at', $check_value)->where('user_id', $value)->with('users')->get();
             }else if($id == 2){
-                $data = PlayerRanking::whereMonth('created_at', '>=', 1)
+                $data = PlayerRanking::whereYear('created_at', $check_value)
+                    ->whereMonth('created_at', '>=', 1)
                     ->whereMonth('created_at', '<=', 6)
                     ->where('user_id', $value)->with('users')
                     ->get();
             }else if($id == 3){
-                $data = PlayerRanking::whereMonth('created_at', '>=', 7)
+                $data = PlayerRanking::whereYear('created_at', $check_value)
+                    ->whereMonth('created_at', '>=', 7)
                     ->whereMonth('created_at', '<=', 12)
                     ->where('user_id', $value)->with('users')
                     ->get();
