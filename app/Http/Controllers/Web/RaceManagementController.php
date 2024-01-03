@@ -313,27 +313,26 @@ class RaceManagementController extends Controller
 
                 $delete_horse_award_bonus = 0;
                 if (!in_array($value->disappear, $double_win_award_array)) {
-                    switch ($value->disappear % 20) {
-                        case 1:
-                            $delete_horse_award_bonus += 50;
-                            break;
-                        case 2:
-                            $delete_horse_award_bonus += 40;
-                            break;
-                        case 3:
-                            $delete_horse_award_bonus += 30;
-                            break;
-                        case 4:
-                            $delete_horse_award_bonus += 20;
-                            break;
-                        case 5:
-                            $delete_horse_award_bonus += 10;
-                            break;
-                        default:
-                            # code...
-                            break;
+                    \Log::info("*****************************");
+                    \Log::info($value->disappear);
+                    \Log::info($delete_horses_data);
+                    \Log::info("*****************************");
+                    if ($value->disappear == $delete_horses_data[0]) {
+                        $delete_horse_award_bonus += 50;
+                    }elseif ($value->disappear == $delete_horses_data[1]) {
+                        $delete_horse_award_bonus += 40;
+                    }elseif ($value->disappear == $delete_horses_data[2]) {
+                        $delete_horse_award_bonus += 30;
+                    }elseif ($value->disappear == $delete_horses_data[3]) {
+                        $delete_horse_award_bonus += 20;
+                    }elseif ($value->disappear == $delete_horses_data[4]) {
+                        $delete_horse_award_bonus += 10;
                     }
+
                 }
+                \Log::info("============================");
+                \Log::info($delete_horse_award_bonus);
+                \Log::info("============================");
 
                 $total_award_bonus = $single_win_odd_award + $single_win_award_bonus + $double_win_award_bonus + $horse_racing_award_bonus + $triplicate_award_bonus + $delete_horse_award_bonus;
 
