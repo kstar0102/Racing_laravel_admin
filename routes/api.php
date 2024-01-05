@@ -163,10 +163,13 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::get('/mypage/{id}', [RankingController::class, 'get_mypage_userdata']);
 
     
-        // * ** *** mypage *** *** *
+        // * ** *** grade_management *** *** *
     Route::get('/grade_management', [RankingController::class, 'get_grade_management_userdata']);
 
-    // * ** *** mypage *** *** *
+    // * ** *** home *** *** *
+    Route::get('/home_data', [RankingController::class, 'get_home_data']);
+
+        // * ** *** user_management *** *** *
     Route::get('/user_management', [RankingController::class, 'get_user_management_userdata']);
     Route::put('/user_management/{id}', [RankingController::class, 'update_user_management_userdata']);
     Route::post('/user_management/format', [UserController::class, 'format_password']);

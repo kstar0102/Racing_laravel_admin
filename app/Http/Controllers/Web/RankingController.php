@@ -43,12 +43,16 @@ class RankingController extends Controller
 
 
     public function get_mypage_userdata($id){
+        $currentYear = Carbon::now()->year;
+
         $month = Carbon::today()->format('m');
         $currentMonth = Carbon::now()->month;
-        $month_data = PlayerRanking::whereMonth('created_at', $currentMonth)->where('user_id', $id)->with('users')->get();
+        $month_data = PlayerRanking::whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->where('user_id', $id)->with('users')
+            ->get();
         $month_ranking_data = $this->get_my_rank_data($month_data);
 
-        $currentYear = Carbon::now()->year;
         $year_data = PlayerRanking::whereYear('created_at', $currentYear)->where('user_id', $id)->with('users')->get();
         $year_ranking_data = $this->get_my_rank_data($year_data);
 
@@ -135,12 +139,16 @@ class RankingController extends Controller
         
         $total_user_data = array();
         foreach ($all_user_data as $person_key => $person_data) {
+            $currentYear = Carbon::now()->year;
+
             $month = Carbon::today()->format('m');
             $currentMonth = Carbon::now()->month;
-            $month_data = PlayerRanking::whereMonth('created_at', $currentMonth)->where('user_id', $person_data->id)->with('users')->get();
+            $month_data = PlayerRanking::whereYear('created_at', $currentYear)
+                ->whereMonth('created_at', $currentMonth)
+                ->where('user_id', $person_data->id)->with('users')
+                ->get();
             $month_ranking_data = $this->get_my_rank_data($month_data);
 
-            $currentYear = Carbon::now()->year;
             $year_data = PlayerRanking::whereYear('created_at', $currentYear)->where('user_id', $person_data->id)->with('users')->get();
             $year_ranking_data = $this->get_my_rank_data($year_data);
 
@@ -212,7 +220,7 @@ class RankingController extends Controller
                 'id' => $person_key,
                 'times' => $times,
                 'win_award' => $win_award,
-                'user_name' => $person_data->name,
+                'user_name' => $person_data->login_id,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
                 'single_win' => $single_win,
@@ -236,6 +244,214 @@ class RankingController extends Controller
         array_multisort($win_award, SORT_DESC, $total_user_data);
 
         return response()->json(['grade_management_data' => $total_user_data]);
+    }
+
+    public function get_home_data(){
+        $currentYear = Carbon::now()->year;
+
+        // 毎月のデータ統計 //
+        $month_data = $this->get_ranking_data(1, 0);
+        $point_month_data = [];
+        $double_circle_month_data = [];
+        $single_month_data = [];
+        $multiple_month_data = [];
+
+        if (count($month_data)) {
+            usort($month_data, function ($a, $b) {
+                return $b['point'] <=> $a['point'];
+            });
+            $filtered_point_month_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'point' => $item['point']
+                ];
+            }, $month_data);
+            $point_month_data = $filtered_point_month_data;
+        }
+
+        if (count($month_data)) {
+            usort($month_data, function ($a, $b) {
+                return $b['double_circle'] <=> $a['double_circle'];
+            });
+            $filtered_double_circle_month_data  = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'double_circle' => $item['double_circle']
+                ];
+            }, $month_data);
+            $double_circle_month_data = $filtered_double_circle_month_data;
+        }
+
+        if (count($month_data)) {
+            usort($month_data, function ($a, $b) {
+                return $b['single'] <=> $a['single'];
+            });
+            $filtered_single_month_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'single' => $item['single']
+                ];
+            }, $month_data);
+            $single_month_data = $filtered_single_month_data;
+        }
+
+        if (count($month_data)) {
+            usort($month_data, function ($a, $b) {
+                return $b['multiple'] <=> $a['multiple'];
+            });
+            $filtered_multiple_month_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'multiple' => $item['multiple']
+                ];
+            }, $month_data);
+            $multiple_month_data = $filtered_multiple_month_data;
+        }
+
+        // 上半年のデータ統計 //
+        $first_half_year_data = $this->get_ranking_data($currentYear, 2);
+        $point_first_half_year_data = [];
+        $double_circle_first_half_year_data = [];
+        $single_first_half_year_data = [];
+        $multiple_first_half_year_data = [];
+
+        if (count($first_half_year_data)) {
+            usort($first_half_year_data, function ($a, $b) {
+                return $b['point'] <=> $a['point'];
+            });
+            $filtered_point_first_half_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'point' => $item['point']
+                ];
+            }, $first_half_year_data);
+            $point_first_half_year_data = $filtered_point_first_half_year_data;
+        }
+
+        if (count($first_half_year_data)) {
+            usort($first_half_year_data, function ($a, $b) {
+                return $b['double_circle'] <=> $a['double_circle'];
+            });
+            $filtered_double_circle_first_half_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'double_circle' => $item['double_circle']
+                ];
+            }, $first_half_year_data);
+            $double_circle_first_half_year_data = $filtered_double_circle_first_half_year_data;
+        }
+
+        if (count($first_half_year_data)) {
+            usort($first_half_year_data, function ($a, $b) {
+                return $b['single'] <=> $a['single'];
+            });
+            $filtered_single_first_half_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'single' => $item['single']
+                ];
+            }, $first_half_year_data);
+            $single_first_half_year_data = $filtered_single_first_half_year_data;
+        }
+
+        if (count($first_half_year_data)) {
+            usort($first_half_year_data, function ($a, $b) {
+                return $b['multiple'] <=> $a['multiple'];
+            });
+            $filtered_multiple_first_half_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'multiple' => $item['multiple']
+                ];
+            }, $first_half_year_data);
+            $multiple_first_half_year_data = $filtered_multiple_first_half_year_data;
+        }
+
+        // 毎年のデータ統計 //
+        $year_data = $this->get_ranking_data($currentYear, 1);
+        $point_year_data = [];
+        $double_circle_year_data = [];
+        $single_year_data = [];
+        $multiple_year_data = [];
+
+        if (count($year_data)) {
+            usort($year_data, function ($a, $b) {
+                return $b['point'] <=> $a['point'];
+            });
+            $filtered_point_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'point' => $item['point']
+                ];
+            }, $year_data);
+            $point_year_data = $filtered_point_year_data;
+        }
+
+        if (count($year_data)) {
+            usort($year_data, function ($a, $b) {
+                return $b['double_circle'] <=> $a['double_circle'];
+            });
+            $filtered_double_circle_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'double_circle' => $item['double_circle']
+                ];
+            }, $year_data);
+            $double_circle_year_data = $filtered_double_circle_year_data;
+        }
+
+        if (count($year_data)) {
+            usort($year_data, function ($a, $b) {
+                return $b['single'] <=> $a['single'];
+            });
+            $filtered_single_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'single' => $item['single']
+                ];
+            }, $year_data);
+            $single_year_data = $filtered_single_year_data;
+        }
+
+        if (count($year_data)) {
+            usort($year_data, function ($a, $b) {
+                return $b['multiple'] <=> $a['multiple'];
+            });
+            $filtered_multiple_year_data = array_map(function ($item) {
+                return [
+                    'name' => $item['name'],
+                    'number_times' => $item['number_times'],
+                    'multiple' => $item['multiple']
+                ];
+            }, $year_data);
+            $multiple_year_data = $filtered_multiple_year_data;
+        }
+
+        return response()->json([
+            'point_month_data' => $point_month_data,
+            'double_circle_month_data' => $double_circle_month_data,
+            'single_month_data' => $single_month_data,
+            'multiple_month_data' => $multiple_month_data,
+            'point_first_half_year_data' => $point_first_half_year_data,
+            'double_circle_first_half_year_data' => $double_circle_first_half_year_data,
+            'single_first_half_year_data' => $single_first_half_year_data,
+            'multiple_first_half_year_data' => $multiple_first_half_year_data,
+            'point_year_data' => $point_year_data,
+            'double_circle_year_data' => $double_circle_year_data,
+            'single_year_data' => $single_year_data,
+            'multiple_year_data' => $multiple_year_data,
+        ]);
     }
 
     public function get_user_management_userdata(){
@@ -280,7 +496,7 @@ class RankingController extends Controller
 
             $user_data = [
                 'id' => $person_key + 1,
-                'user_name' => $person_data->name,
+                'user_name' => $person_data->login_id,
                 'user_role' => $person_data->role,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
@@ -298,7 +514,7 @@ class RankingController extends Controller
     
     public function update_user_management_userdata(Request $request, string $id){
         User::where('id', $id)->update([
-            'name' => $request['user_name'],
+            'login_id' => $request['user_name'],
             'role' => $request['user_role']
         ]);
         
@@ -343,7 +559,7 @@ class RankingController extends Controller
 
             $user_data = [
                 'id' => $person_key + 1,
-                'user_name' => $person_data->name,
+                'user_name' => $person_data->login_id,
                 'user_role' => $person_data->role,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
@@ -359,6 +575,7 @@ class RankingController extends Controller
     }
 
     public function get_ranking_data($check_value, $id){
+        $currentYear = Carbon::now()->year;
 
         $uniqueUserData = PlayerRanking::all()->pluck('user_id')->unique();
 
@@ -369,9 +586,13 @@ class RankingController extends Controller
             $data = [];
             if ($id == 0) {
                 # code...
-                $data = PlayerRanking::whereMonth('created_at', $check_value)->where('user_id', $value)->with('users')->get();
+                $data = PlayerRanking::whereYear('created_at', $currentYear)
+                    ->whereMonth('created_at', $check_value)
+                    ->where('user_id', $value)->with('users')->get();
             }else if($id == 1){
-                $data = PlayerRanking::whereYear('created_at', $check_value)->where('user_id', $value)->with('users')->get();
+                $data = PlayerRanking::whereYear('created_at', $check_value)
+                    ->where('user_id', $value)->with('users')
+                    ->get();
             }else if($id == 2){
                 $data = PlayerRanking::whereYear('created_at', $check_value)
                     ->whereMonth('created_at', '>=', 1)
@@ -430,7 +651,7 @@ class RankingController extends Controller
                 }
 
                 $old_ranking_data = array(
-                    'name' => $data[0]->users->name,
+                    'name' => $data[0]->users->login_id,
                     'number_times' => count($data),
                     'point' => $point,
                     'double_circle' => count($data) ? $this->getDecimal(100 * $double_circle_percent / count($data)) : 0,
@@ -439,8 +660,8 @@ class RankingController extends Controller
                     'five_star' => count($data) ? $this->getDecimal(100 * $five_star_percent / count($data)) : 0,
                     'hole' => count($data) ? $this->getDecimal(100 * $hole_percent / count($data)) : 0,
                     'disappear' => count($data) ? $this->getDecimal(100 * $disappear_percent / count($data)) : 0,
-                    'single' => count($data) ? $single_win_probability / count($data) : 0,
-                    'multiple' => count($data) ? $double_win_probability / count($data) : 0,
+                    'single' => count($data) ? $this->getDecimal($single_win_probability / count($data)) : 0,
+                    'multiple' => count($data) ? $this->getDecimal($double_win_probability / count($data)) : 0,
                 );
 
                 array_push($ranking_data, $old_ranking_data);
@@ -503,8 +724,8 @@ class RankingController extends Controller
             'five_star' => count($data) ? $this->getDecimal(100 * $five_star_percent / count($data)) : 0,
             'hole' => count($data) ? $this->getDecimal(100 * $hole_percent / count($data)) : 0,
             'disappear' => count($data) ? $this->getDecimal(100 * $disappear_percent / count($data)) : 0,
-            'single' => count($data) ? $single_win_probability / count($data) : 0,
-            'multiple' => count($data) ? $double_win_probability / count($data) : 0,
+            'single' => count($data) ? $this->getDecimal($single_win_probability / count($data)) : 0,
+            'multiple' => count($data) ? $this->getDecimal($double_win_probability / count($data)) : 0,
         );
     }
 
