@@ -213,7 +213,9 @@ class RaceManagementController extends Controller
                         $single_win_odd_award += $race_result[2]['odds'];
                     }
                 }
+                \Log::info("single_win_odd_award");
                 \Log::info($single_win_odd_award);
+                \Log::info("single_win_odd_award");
                 
                 $single_win_award_bonus = 0;
                 if (in_array($mainArray[0], $first_race_result)) {

@@ -633,7 +633,7 @@ class RankingController extends Controller
                         # code...
                         $triangle_percent++;
                     }
-                    if ($item->five_star_percent) {
+                    if ($item->five_star) {
                         # code...
                         $five_star_percent++;
                     }
@@ -651,6 +651,7 @@ class RankingController extends Controller
                 }
 
                 $old_ranking_data = array(
+                    'id' => $data[0]->users->id,
                     'name' => $data[0]->users->login_id,
                     'number_times' => count($data),
                     'point' => $point,
@@ -683,6 +684,7 @@ class RankingController extends Controller
     }
 
     public function get_my_rank_data($data){
+        \Log::info($data);
         $double_circle_percent = 0;
         $single_circle_percent = 0;
         $triangle_percent = 0;
@@ -702,7 +704,7 @@ class RankingController extends Controller
             if ($item->triangle) {
                 $triangle_percent++;
             }
-            if ($item->five_star_percent) {
+            if ($item->five_star) {
                 $five_star_percent++;
             }
             if ($item->hole) {
