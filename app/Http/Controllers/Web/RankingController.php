@@ -654,7 +654,7 @@ class RankingController extends Controller
                     'id' => $data[0]->users->id,
                     'name' => $data[0]->users->login_id,
                     'number_times' => count($data),
-                    'point' => $point,
+                    'point' => $this->getDecimal($point),
                     'double_circle' => count($data) ? $this->getDecimal(100 * $double_circle_percent / count($data)) : 0,
                     'single_circle' => count($data) ? $this->getDecimal(100 * $single_circle_percent / count($data)) : 0,
                     'triangle' => count($data) ? $this->getDecimal(100 * $triangle_percent / count($data)) : 0,
@@ -674,7 +674,10 @@ class RankingController extends Controller
 
         // Adding index and sorting based on number_times
         usort($ranking_data, function($a, $b) {
-            return $b['point'] - $a['point'];
+            $pointA = is_numeric($a['point']) ? $a['point'] : 0; // Convert non-numeric values to 0
+            $pointB = is_numeric($b['point']) ? $b['point'] : 0; // Convert non-numeric values to 0
+
+            return $pointA - $pointB;
         });
         foreach ($ranking_data as $key => $value) {
             $ranking_data[$key]['rank'] = $key + 1;
@@ -719,7 +722,7 @@ class RankingController extends Controller
         }
 
         return array(
-            'point' => $point,
+            'point' => $this->getDecimal($point),
             'double_circle' => count($data) ? $this->getDecimal(100 * $double_circle_percent / count($data)) : 0,
             'single_circle' => count($data) ? $this->getDecimal(100 * $single_circle_percent / count($data)) : 0,
             'triangle' => count($data) ? $this->getDecimal(100 * $triangle_percent / count($data)) : 0,
