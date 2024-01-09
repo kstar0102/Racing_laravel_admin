@@ -258,8 +258,8 @@ class RankingController extends Controller
 
         if (count($month_data)) {
             usort($month_data, function ($a, $b) {
-                $pointA = (int) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
-                $pointB = (int) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
+                $pointA = (float) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
+                $pointB = (float) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
                 return $pointB <=> $pointA;
             });
             $filtered_point_month_data = array_map(function ($item) {
@@ -323,8 +323,8 @@ class RankingController extends Controller
 
         if (count($first_half_year_data)) {
             usort($first_half_year_data, function ($a, $b) {
-                $pointA = (int) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
-                $pointB = (int) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
+                $pointA = (float) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
+                $pointB = (float) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
                 return $pointB <=> $pointA;
             });
             $filtered_point_first_half_year_data = array_map(function ($item) {
@@ -388,8 +388,8 @@ class RankingController extends Controller
 
         if (count($year_data)) {
             usort($year_data, function ($a, $b) {
-                $pointA = (int) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
-                $pointB = (int) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
+                $pointA = (float) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
+                $pointB = (float) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
                 return $pointB <=> $pointA;
             });
             $filtered_point_year_data = array_map(function ($item) {
@@ -680,8 +680,8 @@ class RankingController extends Controller
 
         // Adding index and sorting based on number_times
         usort($ranking_data, function($a, $b) {
-            $pointA = (int) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
-            $pointB = (int) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
+            $pointA = (float) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
+            $pointB = (float) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
             return $pointB - $pointA;
         });
 
