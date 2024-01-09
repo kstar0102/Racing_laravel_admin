@@ -682,7 +682,7 @@ class RankingController extends Controller
         usort($ranking_data, function($a, $b) {
             $pointA = (float) str_replace(",", "", $a['point']); // Convert non-numeric values to the minimum integer value
             $pointB = (float) str_replace(",", "", $b['point']); // Convert non-numeric values to the minimum integer value
-            return $pointB - $pointA;
+            return ($pointA < $pointB) ? 1 : -1;
         });
 
         foreach ($ranking_data as $key => $value) {
