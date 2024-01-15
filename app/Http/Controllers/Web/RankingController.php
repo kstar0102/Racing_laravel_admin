@@ -70,7 +70,7 @@ class RankingController extends Controller
             ->get();
         $second_half_year_ranking_data = $this->get_my_rank_data($second_half_year_data);
 
-        $total_player_ranking_data = PlayerRanking::where('user_id', $id)->with('race_managements')->get();
+        $total_player_ranking_data = PlayerRanking::where('user_id', $id)->with('race_managements')->orderByDesc('updated_at')->get();
         $new_total_player_ranking_data = array();
 
         $times = count($total_player_ranking_data);
@@ -166,7 +166,7 @@ class RankingController extends Controller
                 ->get();
             $second_half_year_ranking_data = $this->get_my_rank_data($second_half_year_data);
 
-            $total_player_ranking_data = PlayerRanking::where('user_id', $person_data->id)->with('race_managements')->get();
+            $total_player_ranking_data = PlayerRanking::where('user_id', $person_data->id)->with('race_managements')->orderByDesc('updated_at')->get();
             $new_total_player_ranking_data = array();
 
             $times = count($total_player_ranking_data);
@@ -220,7 +220,7 @@ class RankingController extends Controller
                 'id' => $person_key,
                 'times' => $times,
                 'win_award' => $win_award,
-                'user_name' => $person_data->login_id,
+                'user_name' => $person_data->name,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
                 'single_win' => $single_win,
@@ -502,7 +502,7 @@ class RankingController extends Controller
 
             $user_data = [
                 'id' => $person_key + 1,
-                'user_name' => $person_data->login_id,
+                'user_name' => $person_data->name,
                 'user_role' => $person_data->role,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
@@ -520,7 +520,7 @@ class RankingController extends Controller
     
     public function update_user_management_userdata(Request $request, string $id){
         User::where('id', $id)->update([
-            'login_id' => $request['user_name'],
+            'name' => $request['user_name'],
             'role' => $request['user_role']
         ]);
         
@@ -565,7 +565,7 @@ class RankingController extends Controller
 
             $user_data = [
                 'id' => $person_key + 1,
-                'user_name' => $person_data->login_id,
+                'user_name' => $person_data->name,
                 'user_role' => $person_data->role,
                 'user_image_url' => $person_data->image_url,
                 'badge_grade' => $badge_grade,
@@ -658,17 +658,17 @@ class RankingController extends Controller
 
                 $old_ranking_data = array(
                     'id' => $data[0]->users->id,
-                    'name' => $data[0]->users->login_id,
+                    'name' => $data[0]->users->name,
                     'number_times' => count($data),
-                    'point' => $this->getDecimal($point),
-                    'double_circle' => count($data) ? $this->getDecimal(100 * $double_circle_percent / count($data)) : 0,
-                    'single_circle' => count($data) ? $this->getDecimal(100 * $single_circle_percent / count($data)) : 0,
-                    'triangle' => count($data) ? $this->getDecimal(100 * $triangle_percent / count($data)) : 0,
-                    'five_star' => count($data) ? $this->getDecimal(100 * $five_star_percent / count($data)) : 0,
-                    'hole' => count($data) ? $this->getDecimal(100 * $hole_percent / count($data)) : 0,
-                    'disappear' => count($data) ? $this->getDecimal(100 * $disappear_percent / count($data)) : 0,
-                    'single' => count($data) ? $this->getDecimal($single_win_probability / count($data)) : 0,
-                    'multiple' => count($data) ? $this->getDecimal($double_win_probability / count($data)) : 0,
+                    'point' => $this->getDecimal(round($point)),
+                    'double_circle' => count($data) ? $this->getDecimal(round(100 * $double_circle_percent / count($data))) : 0,
+                    'single_circle' => count($data) ? $this->getDecimal(round(100 * $single_circle_percent / count($data))) : 0,
+                    'triangle' => count($data) ? $this->getDecimal(round(100 * $triangle_percent / count($data))) : 0,
+                    'five_star' => count($data) ? $this->getDecimal(round(100 * $five_star_percent / count($data))) : 0,
+                    'hole' => count($data) ? $this->getDecimal(round(100 * $hole_percent / count($data))) : 0,
+                    'disappear' => count($data) ? $this->getDecimal(round(100 * $disappear_percent / count($data))) : 0,
+                    'single' => count($data) ? $this->getDecimal(round($single_win_probability / count($data))) : 0,
+                    'multiple' => count($data) ? $this->getDecimal(round($double_win_probability / count($data))) : 0,
                 );
 
                 array_push($ranking_data, $old_ranking_data);
@@ -728,15 +728,15 @@ class RankingController extends Controller
         }
 
         return array(
-            'point' => $this->getDecimal($point),
-            'double_circle' => count($data) ? $this->getDecimal(100 * $double_circle_percent / count($data)) : 0,
-            'single_circle' => count($data) ? $this->getDecimal(100 * $single_circle_percent / count($data)) : 0,
-            'triangle' => count($data) ? $this->getDecimal(100 * $triangle_percent / count($data)) : 0,
-            'five_star' => count($data) ? $this->getDecimal(100 * $five_star_percent / count($data)) : 0,
-            'hole' => count($data) ? $this->getDecimal(100 * $hole_percent / count($data)) : 0,
-            'disappear' => count($data) ? $this->getDecimal(100 * $disappear_percent / count($data)) : 0,
-            'single' => count($data) ? $this->getDecimal($single_win_probability / count($data)) : 0,
-            'multiple' => count($data) ? $this->getDecimal($double_win_probability / count($data)) : 0,
+            'point' => $this->getDecimal(round($point)),
+            'double_circle' => count($data) ? $this->getDecimal(round(100 * $double_circle_percent / count($data))) : 0,
+            'single_circle' => count($data) ? $this->getDecimal(round(100 * $single_circle_percent / count($data))) : 0,
+            'triangle' => count($data) ? $this->getDecimal(round(100 * $triangle_percent / count($data))) : 0,
+            'five_star' => count($data) ? $this->getDecimal(round(100 * $five_star_percent / count($data))) : 0,
+            'hole' => count($data) ? $this->getDecimal(round(100 * $hole_percent / count($data))) : 0,
+            'disappear' => count($data) ? $this->getDecimal(round(100 * $disappear_percent / count($data))) : 0,
+            'single' => count($data) ? $this->getDecimal(round($single_win_probability / count($data))) : 0,
+            'multiple' => count($data) ? $this->getDecimal(round($double_win_probability / count($data))) : 0,
         );
     }
 
@@ -744,7 +744,7 @@ class RankingController extends Controller
         if ($value == (int)$value) {
             return number_format($value, 0); // Display as integer
         } else {
-            return number_format($value, 1); // Display with 1 decimal place
+            return number_format($value, 0); // Display with 1 decimal place
         }
         return $value;
     }

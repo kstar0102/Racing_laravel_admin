@@ -23,7 +23,9 @@ class RaceManagementController extends Controller
     public function index()
     {
         //
-        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->orderby('created_at')->get();
+        $response_data = RaceManagement::with('places')
+            ->with('running_horses')->with('web_race_results')
+            ->with('delete_horses')->orderByDesc('event_date')->get();
         return response()->json(['races_data' => $response_data]);
         
     }

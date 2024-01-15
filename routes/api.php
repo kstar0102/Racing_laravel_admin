@@ -38,18 +38,24 @@ use Carbon\Carbon;
 */
 // user handling
 
-Route::post('/user', [UserController::class, 'login']);
+Route::post('/mobile-user', [UserController::class, 'loginMobile']);
+
+Route::post('/hp-user', [UserController::class, 'loginHp']);
+
+Route::post('/mobile-user-register', [UserController::class, 'registerMobile']);
+
+Route::post('/hp-user-register', [UserController::class, 'registerHp']);
+
+Route::post('/union-user-register', [UserController::class, 'unionUserRegister']);
 
 Route::post('/user/{id}', [UserController::class, 'update']);
-
-Route::post('/user-register', [UserController::class, 'register']);
 
 Route::get('/user/{id}', [UserController::class, 'show']);
 
 Route::get('/randomTest', [HorseController::class, 'percentage']);
 
 // after login in mobile app
-Route::group(['middleware' => ['verifyJwt']], function () {
+Route::group(['middleware' => ['verifyMobileJwt']], function () {
     // pasture handling
     Route::post('/pasture', [PastureController::class, 'store']);
     Route::post('/checkPastureName', [PastureController::class, 'checkName']);
@@ -137,10 +143,12 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     //auction
     Route::post('/send', [MessageController::class, 'send']);
     Route::apiResource('auction', AuctionController::class);
+});
 
-    // ==================================================================================================
+// after login in hp website
+Route::group(['middleware' => ['verifyHpJwt']], function () {
 
-        // * ** *** race management *** *** *
+    // * ** *** race management *** *** *
     Route::get('/racemanagement', [RaceManagementController::class, 'index']);
     Route::post('/racemanagement/get-specific-race-data', [RaceManagementController::class, 'get_specific_race_data']);
     Route::post('/racemanagement', [RaceManagementController::class, 'store']);
@@ -149,21 +157,21 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::post('/racemanagement/create-race-result', [RaceManagementController::class, 'create_race_result']);
     Route::get('/racemanagement/get-places', [RaceManagementController::class, 'get_places']);
         
-        // * ** *** expected battle *** *** *
+    // * ** *** expected battle *** *** *
     Route::apiResource('expectedbattle', ExpectedBattleController::class);
 
     
-        // * ** *** ranking *** *** *
+    // * ** *** ranking *** *** *
     Route::get('/ranking/get_month', [RankingController::class, 'get_month']);
     Route::get('/ranking/get_year', [RankingController::class, 'get_year']);
     Route::get('/ranking/first_half_year', [RankingController::class, 'first_half_year']);
     Route::get('/ranking/second_half_year', [RankingController::class, 'second_half_year']);
 
-        // * ** *** mypage *** *** *
+    // * ** *** mypage *** *** *
     Route::get('/mypage/{id}', [RankingController::class, 'get_mypage_userdata']);
 
     
-        // * ** *** grade_management *** *** *
+    // * ** *** grade_management *** *** *
     Route::get('/grade_management', [RankingController::class, 'get_grade_management_userdata']);
 
     // * ** *** home *** *** *
@@ -173,7 +181,7 @@ Route::group(['middleware' => ['verifyJwt']], function () {
     Route::get('/user_management', [RankingController::class, 'get_user_management_userdata']);
     Route::put('/user_management/{id}', [RankingController::class, 'update_user_management_userdata']);
     Route::post('/user_management/format', [UserController::class, 'format_password']);
-   // ===================================================================================================
+    // ===================================================================================================
 });
 
 Route::get('/test', function(){

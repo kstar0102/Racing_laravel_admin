@@ -53,29 +53,33 @@ class UserController extends Controller
     /**
      * login for mobile
      */
-
-    public function login()
+    public function loginMobile()
     {
         $data = request()->input('data');
 
-        $email = $data['user_email'];
+        $login_id = $data['login_id'];
         $password = $data['password'];
         $credentials = [
-            'email' => $email,
+            'login_id' => $login_id,
             'password' => $password
         ];
 
         $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            $user = User::where('email', $credentials['email'])->first();
-            $pasture = Pasture::where('user_id', $user['id'])->first();
-            return response()->json([
-                'token' => $token,
-                'user' => Auth::user(),
-                'pasture' => $pasture,
-            ]);
+
+            $user = User::where('login_id', $credentials['login_id'])->first();
+            if ($user->login_type !== 1) {
+                $pasture = Pasture::where('user_id', $user['id'])->first();
+                return response()->json([
+                    'token' => $token,
+                    'user' => Auth::user(),
+                    'pasture' => $pasture,
+                ]);
+            }else {
+                return response()->json(['token' => null]);
+            }
+
         }
 
         else{
@@ -83,28 +87,12 @@ class UserController extends Controller
         }
     }
 
-    public function register()
+    public function loginHp()
     {
         $data = request()->input('data');
-        \Log::info($data);
-        $login_id = $data['login_id'];
-        $password = $data['password'];
+
         $email = $data['user_email'];
-        // $name = $data['user_name'];
-
-        $user = new User();
-
-        $user->name = $login_id;
-        $user->email = $email;
-        $user->login_id = $login_id;
-        $user->password = bcrypt($password);
-        $user->user_pt = 5000;
-        $user->level = 0;
-        $user->role = 0;
-        $user->image_url = "default.jpg";
-
-        $user->save();
-
+        $password = $data['password'];
         $credentials = [
             'email' => $email,
             'password' => $password
@@ -113,18 +101,279 @@ class UserController extends Controller
         $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
+
             $user = User::where('email', $credentials['email'])->first();
-            $pasture = Pasture::where('user_id', $user['id'])->first();
-            return response()->json([
-                'token' => $token,
-                'user' => Auth::user(),
-                'pasture' => $pasture
-            ]);
+            if ($user->login_type !== 0) {
+                $pasture = Pasture::where('user_id', $user['id'])->first();
+                return response()->json([
+                    'token' => $token,
+                    'user' => Auth::user(),
+                    'pasture' => $pasture,
+                ]);
+            }else{
+                return response()->json(['token' => null]);
+            }
+
         }
 
         else{
             return response()->json(['token' => null]);
+        }
+    }
+
+    public function registerMobile()
+    {
+        $data = request()->input('data');
+
+        $login_id = $data['login_id'];
+        $password = $data['password'];
+        $email = $data['user_email'];
+
+        $existingUser = User::where('login_id', $login_id)->first();
+        $existingEmail = User::where('email', $email)->first();
+        if ($existingUser) {
+            return response()->json(['message' => 'ログインIDはすでに存在します。']);
+        }else if ($existingEmail) {
+            return response()->json(['message' => 'ユーザーメールはすでに存在します。']);
+        }else {
+            $user = new User();
+
+            $user->name = "";
+            $user->email = $email;
+            $user->login_id = $login_id;
+            $user->password = bcrypt($password);
+            $user->user_pt = 10000;
+            $user->level = 0;
+            $user->role = 0;
+            $user->login_type = 0;
+            $user->image_url = "default.jpg";
+
+            $user->save();
+
+            $credentials = [
+                'login_id' => $login_id,
+                'password' => $password
+            ];
+
+            $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+
+            $users = User::where('login_id', $credentials['login_id'])->first();
+            $pasture = Pasture::where('user_id', $user['id'])->first();
+            return response()->json([
+                'token' => $token,
+                'user' => $users,
+                'pasture' => $pasture,
+                'message' => ""
+            ]);
+        }
+    }
+
+    public function registerHp()
+    {
+        $data = request()->input('data');
+
+        $name = $data['login_id'];
+        $password = $data['password'];
+        $email = $data['user_email'];
+
+        $existingUser = User::where('name', $name)->first();
+        $existingEmail = User::where('email', $email)->first();
+        if ($existingUser) {
+            return response()->json(['message' => 'ログインIDはすでに存在します。'], 401);
+        }else if ($existingEmail) {
+            return response()->json(['message' => 'ユーザーメールはすでに存在します。'], 402);
+        }else {
+            $user = new User();
+
+            $user->name = $name;
+            $user->email = $email;
+            $user->login_id = $name;
+            $user->password = bcrypt($password);
+            $user->user_pt = 10000;
+            $user->level = 0;
+            $user->role = 0;
+            $user->login_type = 1;
+            $user->image_url = "default.jpg";
+
+            $user->save();
+
+            $credentials = [
+                'email' => $email,
+                'password' => $password
+            ];
+           
+            $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+
+            $users = User::where('email', $credentials['email'])->first();
+            $pasture = Pasture::where('user_id', $user['id'])->first();
+            return response()->json([
+                'token' => $token,
+                'user' => $users,
+                'pasture' => $pasture,
+            ]);
+
+        }
+    }
+
+    public function unionUserRegister()
+    {
+        $data = request()->input('data');
+
+        $login_id = $data['login_id'];
+        $password = $data['password'];
+        $email = $data['user_email'];
+        $type = $data['type'];
+
+        if ($type == 'mobile') {
+            $credentialsHp = [
+                'email' => $email,
+                'password' => $password
+            ];
+
+            if (Auth::attempt($credentialsHp)) {
+                
+                $existingUserBothStatus = User::where('email', $email)->where('login_type', 2)->first();
+                $existingUserHpStatus = User::where('email', $email)->where('login_type', 1)->first();
+                $existingUserIpStatus = User::where('login_id', $login_id)->first();
+
+                if ($existingUserBothStatus) {
+                    return response()->json(['message' => 'このアカウントはすでに提携しています。', 'unionState' => 1, 'token' => null]);
+                }else if($existingUserHpStatus) {
+                    if (!$existingUserIpStatus) {
+                        User::where('email', $email)->update([
+                            'login_type' => 2,
+                            'login_id' => $login_id,
+                        ]);
+            
+                        $credentials = [
+                            'login_id' => $login_id,
+                            'password' => $password
+                        ];
+            
+                        $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+            
+                        $user = User::where('login_id', $credentials['login_id'])->first();
+                        $pasture = Pasture::where('user_id', $user['id'])->first();
+    
+                        return response()->json([
+                            'token' => $token,
+                            'user' => Auth::user(),
+                            'pasture' => $pasture,
+                            'message' => "",
+                            'unionState' => 1
+                        ]);
+                    }else {
+
+                        if ($existingUserIpStatus->email == $email) {
+                            User::where('email', $email)->update([
+                                'login_type' => 2,
+                                'login_id' => $login_id,
+                            ]);
+                
+                            $credentials = [
+                                'login_id' => $login_id,
+                                'password' => $password
+                            ];
+                
+                            $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+                
+                            $user = User::where('login_id', $credentials['login_id'])->first();
+                            $pasture = Pasture::where('user_id', $user['id'])->first();
+        
+                            return response()->json([
+                                'token' => $token,
+                                'user' => Auth::user(),
+                                'pasture' => $pasture,
+                                'message' => "",
+                                'unionState' => 1
+                            ]);
+                        }else {
+                            return response()->json(['message' => 'ユーザーIDはすでに存在します。', 'unionState' => 1, 'token' => null]);
+                        }
+
+                    }
+                }else {
+                    return response()->json(['unionState' => null, 'token' => null]);
+                }
+            }else {
+                return response()->json(['unionState' => null, 'token' => null]);
+            }
+        }else if ($type == 'hp') {
+            $credentialsMobile = [
+                'login_id' => $login_id,
+                'password' => $password
+            ];
+
+            if (Auth::attempt($credentialsMobile)) {
+                $existingUserBothStatus = User::where('login_id', $login_id)->where('login_type', 2)->first();
+                $existingUserHpStatus = User::where('login_id', $login_id)->where('login_type', 0)->first();
+                $existingUserMailStatus = User::where('email', $email)->first();
+
+                if ($existingUserBothStatus) {
+
+                    return response()->json(['message' => 'このアカウントはすでに提携しています。'], 401);
+
+                }else if($existingUserHpStatus) {
+
+                    if (!$existingUserMailStatus) {
+                        User::where('login_id', $login_id)->update([
+                            'login_type' => 2,
+                            'email' => $email,
+                            'name' => $login_id,
+                        ]);
+            
+                        $credentials = [
+                            'email' => $email,
+                            'password' => $password
+                        ];
+            
+                        $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+            
+
+                        $user = User::where('email', $credentials['email'])->first();
+                        $pasture = Pasture::where('user_id', $user['id'])->first();
+
+                        return response()->json([
+                            'token' => $token,
+                            'user' => Auth::user(),
+                            'pasture' => $pasture,
+                        ]);
+                    }else {
+                        if ($existingUserMailStatus->login_id == $login_id) {
+                            User::where('login_id', $login_id)->update([
+                                'login_type' => 2,
+                                'email' => $email,
+                                'name' => $login_id,
+                            ]);
+                
+                            $credentials = [
+                                'email' => $email,
+                                'password' => $password
+                            ];
+                
+                            $token = JWT::encode($credentials, env("JWT_SECRET"), 'HS256');
+                
+    
+                            $user = User::where('email', $credentials['email'])->first();
+                            $pasture = Pasture::where('user_id', $user['id'])->first();
+    
+                            return response()->json([
+                                'token' => $token,
+                                'user' => Auth::user(),
+                                'pasture' => $pasture,
+                            ]);
+                        }else{
+                            return response()->json(['message' => 'ユーザーメールはすでに存在します。'], 402);
+                        }
+                    }
+
+
+                }else {
+                    return response()->json(['message' => '育成ゲーム情報が正確ではありません。'], 404);
+                }
+            }else {
+                return response()->json(['message' => '育成ゲーム情報が正確ではありません。'], 403);
+            }
         }
     }
 
@@ -134,8 +383,9 @@ class UserController extends Controller
     public function show(string $id)
     {
         //
-        \Log::info($id);
+
         $userData = User::find($id);
+
         return response()->json(['user' => $userData]);
     }
 
@@ -153,23 +403,23 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'login_id' => 'required',
+            'user_name' => 'required',
             'old_password' => 'required',
             'new_password' => 'required',
             // 'imageUrl' => 'required|image|mimes:jpeg,png,jpg,gif', // Adjust the validation rules as per your requirements
         ]);
         
         $userData = [
-            'login_id' => $request->input('login_id'),
+            'name' => $request->input('user_name'),
             'password' => bcrypt($request->input('new_password')),
         ];
 
         $user = User::find($id);
 
         if (!$user) {
-            return response()->json(['maessage' => 'User not found'], 404);
+            return response()->json(['message' => 'User not found'], 404);
         }else if (!Hash::check($request->input('old_password'), $user->password)) {
-            return response()->json(['maessage' => 'Incorrect old password'], 400);
+            return response()->json(['message' => 'Incorrect old password'], 400);
         }
         
         if ($request->hasFile('imageUrl')) {

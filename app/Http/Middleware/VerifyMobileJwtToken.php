@@ -8,7 +8,7 @@ use Exception;
 use Firebase\JWT\JWT;
 Use Firebase\JWT\Key;
 
-class VerifyJwtToken
+class VerifyMobileJwtToken
 {
     public function handle($request, Closure $next)
     {
@@ -24,9 +24,10 @@ class VerifyJwtToken
             if ($key !== null) {
                 $decoded = JWT::decode($jwt, new key ($key,'HS256'));
                 $credentials = [
-                    'email' => $decoded->email,
+                    'login_id' => $decoded->login_id,
                     'password' => $decoded->password
                 ];
+                \Log::info($credentials);
                 if(!Auth::attempt($credentials)){
                     return response()->json(['message' => "UnAuthorized"], 401);
                 }
