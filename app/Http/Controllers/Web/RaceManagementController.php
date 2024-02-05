@@ -57,7 +57,9 @@ class RaceManagementController extends Controller
             $running_horse->save();
         }
 
-        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
+        $response_data = RaceManagement::with('places')
+            ->with('running_horses')->with('web_race_results')
+            ->with('delete_horses')->orderByDesc('event_date')->get();
         return response()->json(['races_data' => $response_data]);
     }
 
@@ -114,7 +116,9 @@ class RaceManagementController extends Controller
             $horse_id++;
         }
 
-        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
+        $response_data = RaceManagement::with('places')
+            ->with('running_horses')->with('web_race_results')
+            ->with('delete_horses')->orderByDesc('event_date')->get();
         return response()->json(['races_data' => $response_data]);
     }
 
@@ -128,7 +132,9 @@ class RaceManagementController extends Controller
     {
         //
         RaceManagement::find($id)->delete();
-        $response_data = RaceManagement::with('places')->with('running_horses')->with('web_race_results')->with('delete_horses')->get();
+        $response_data = RaceManagement::with('places')
+            ->with('running_horses')->with('web_race_results')
+            ->with('delete_horses')->orderByDesc('event_date')->get();
         return response()->json(['races_data' => $response_data]);
     }
 

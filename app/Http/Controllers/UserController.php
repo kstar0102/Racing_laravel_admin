@@ -53,10 +53,10 @@ class UserController extends Controller
     /**
      * login for mobile
      */
-    public function loginMobile()
+    public function loginMobile(Request $request)
     {
-        $data = request()->input('data');
-
+        $data = $request['data'];
+        \Log::info($data);
         $login_id = $data['login_id'];
         $password = $data['password'];
         $credentials = [
@@ -121,9 +121,9 @@ class UserController extends Controller
         }
     }
 
-    public function registerMobile()
+    public function registerMobile(Request $request)
     {
-        $data = request()->input('data');
+        $data = $request['data'];
 
         $login_id = $data['login_id'];
         $password = $data['password'];
@@ -215,9 +215,9 @@ class UserController extends Controller
         }
     }
 
-    public function unionUserRegister()
+    public function unionUserRegister(Request $request)
     {
-        $data = request()->input('data');
+        $data = $request['data'];
 
         $login_id = $data['login_id'];
         $password = $data['password'];

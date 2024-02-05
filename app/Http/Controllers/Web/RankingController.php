@@ -15,7 +15,9 @@ class RankingController extends Controller
     public function get_month(){
         $month = Carbon::today()->format('m');
         $currentMonth = Carbon::now()->month;
-
+        \Log::info("+++++++++++++++++++++++++++++++++++++++");
+        \Log::info($currentMonth);
+        \Log::info("+++++++++++++++++++++++++++++++++++++++");
         $ranking_data = $this->get_ranking_data($currentMonth, 0);
         return response()->json(['ranking_data' => $ranking_data]);
     }
@@ -672,10 +674,7 @@ class RankingController extends Controller
                 );
 
                 array_push($ranking_data, $old_ranking_data);
-            }else {
-                return [];
             }
-            
         }
 
         // Adding index and sorting based on number_times
